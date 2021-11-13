@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: theorem
+# key: theorem
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (shell-command-to-string "xkb-switch -n") (evil-insert-state) (right-char) (setq latex-theorem-count (1+ latex-theorem-count)))))
+# --
+#+begin_latex latex
+\begin{theorem}{`(insert (number-to-string latex-theorem-count))`}
+  $0
+\end{theorem}
+#+end_latex
+*Доказательство.*

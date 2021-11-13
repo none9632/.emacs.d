@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: change environment
+# key: ;ce
+# --
+\begin{${1:environment}}
+`(yank)`
+\end{$1}

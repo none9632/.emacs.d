@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: frac
+# key: //
+# expand-env: ((numerator 't))
+# --
+`(condition-case nil (save-excursion (insert " ") (left-word) (kill-sexp) (delete-char 1)) (error (setq numerator 'nil)))`\\frac{`(if numerator (yank))`}{$1}$0

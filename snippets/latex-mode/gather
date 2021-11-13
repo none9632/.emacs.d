@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: gather
+# key: gt
+# --
+\begin{gather*}
+    $1
+\end{gather*}$0

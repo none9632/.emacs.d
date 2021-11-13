@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: theorem
+# key: theorem
+# --
+\begin{theorem}
+    $1
+\end{theorem}
+
+\textbf{Доказательство}

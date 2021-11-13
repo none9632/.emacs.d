@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: figure
+# key: figure
+# --
+[[`(my/inkscape-figures-create)`]]

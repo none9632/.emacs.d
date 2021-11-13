@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: lemma
+# key: lemma
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (evil-insert-state) (right-char) (setq latex-lemma-count (1+ latex-lemma-count)))))
+# --
+#+begin_latex latex
+\begin{lemma}{`(insert (number-to-string latex-lemma-count))`}
+  $0
+\end{lemma}
+#+end_latex
+*Доказательство.*

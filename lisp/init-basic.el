@@ -1,0 +1,177 @@
+;; -*- lexical-binding: t -*-
+
+(require 'init-custom)
+(require 'init-funcs)
+
+(setq user-full-name    "none"
+      user-mail-address "none")
+
+;; UTF-8 as the default coding system
+(when (fboundp 'set-charset-priority)
+  (set-charset-priority 'unicode))
+
+;; Explicitly set the prefered coding systems to avoid annoying prompt
+;; from emacs (especially on Microsoft Windows)
+(prefer-coding-system          'utf-8)
+(setq locale-coding-system     'utf-8)
+
+(set-language-environment      'utf-8)
+(set-default-coding-systems    'utf-8)
+(set-buffer-file-coding-system 'utf-8)
+(set-clipboard-coding-system   'utf-8)
+(set-file-name-coding-system   'utf-8)
+(set-keyboard-coding-system    'utf-8)
+(set-terminal-coding-system    'utf-8)
+(set-selection-coding-system   'utf-8)
+(modify-coding-system-alist    'process "*" 'utf-8)
+
+;; (when sys/linux-x-p
+;;   (use-package exec-path-from-shell
+;;     :init
+;;     (setq exec-path-from-shell-check-startup-files nil
+;;           exec-path-from-shell-variables '("PATH" "MANPATH")
+;;           exec-path-from-shell-arguments '("-l"))
+;;     (exec-path-from-shell-initialize)))
+
+;; (server-start)
+
+(shell-command "rm -f ~/.emacs.d/session.*")
+(shell-command "rm -f ~/.emacs.d/org-src-*.txt")
+
+;; Set the font face based on platform
+(set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+
+;; Set the fixed pitch fac
+(set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+
+;; Set the variable pitch face
+(set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular)
+
+(use-package saveplace
+  :ensure nil
+  :hook (after-init . save-place-mode))
+
+(use-package savehist
+  :ensure nil
+  :hook (after-init . savehist-mode)
+  :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+              history-length 1000
+              savehist-additional-variables '(mark-ring
+                                              global-mark-ring
+                                              search-ring
+                                              regexp-search-ring
+                                              extended-command-history)
+              savehist-autosave-interval 300))
+
+(use-package simple
+  :ensure nil
+  :hook ((after-init                          . size-indication-mode)
+         ((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace))
+  :init
+  (setq column-number-mode          t
+        line-number-mode            t
+        line-move-visual            nil
+        track-eol                   t   ; Keep cursor at end of lines. Require line-move-visual is nil.
+        set-mark-command-repeat-pop t)  ; Repeating C-SPC after popping mark pops it again
+
+  ;; Visualize TAB, (HARD) SPACE, NEWLINE
+  (setq-default show-trailing-whitespace nil) ; Don't show trailing whitespace by default
+  (defun enable-trailing-whitespace ()
+    "Show trailing spaces and delete on saving."
+    (setq show-trailing-whitespace t)
+    (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
+
+(use-package time
+  :ensure nil
+  :unless (display-graphic-p)
+  :hook (after-init . display-time-mode)
+  :init (setq display-time-24hr-format t
+              display-time-day-and-date t))
+
+(use-package so-long
+    :ensure nil
+    :hook (after-init . global-so-long-mode)
+    :config (setq so-long-threshold 400))
+
+(when (display-graphic-p)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
+        mouse-wheel-progressive-speed nil))
+(setq scroll-step 1
+      scroll-margin 7
+      scroll-conservatively 100000)
+
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+(global-set-key (kbd "C-S-n")    'make-frame-command)
+(global-set-key (kbd "M-k")      nil)
+
+(use-package general
+  :config
+  (general-create-definer leader-key-def
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC"))
+
+(leader-key-def
+  "hk"  'helpful-key
+  "hv"  'counsel-describe-variable
+  "hf"  'counsel-describe-function
+  "hF"  'counsel-describe-face
+  "hs"  'counsel-describe-symbol
+  "ch"  'counsel-command-history
+  "cl"  (lambda ()
+          (interactive)
+          (command-log-mode t)
+          (clm/toggle-command-log-buffer))
+  "SPC" 'counsel-find-file
+  "q"   'evil-quit
+  "a"   'mark-whole-buffer
+  "bb"  'counsel-switch-buffer
+  "pl"  'counsel-package
+  "pr"  'package-refresh-contents)
+
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq-default major-mode       'text-mode
+              tab-width        4
+              fill-column      100
+              indent-tabs-mode nil)       ; Permanently indent with spaces, never with TABs
+
+(setq visible-bell                   t
+      inhibit-compacting-font-caches t    ; Don’t compact font caches during GC.
+      delete-by-moving-to-trash      t    ; Deleting files go to OS's trash folder
+      make-backup-files              nil  ; Forbide to make backup files
+      auto-save-default              nil  ; Disable auto save
+      confirm-kill-processes         nil  ; Disable confirm killing processes on exit
+      enable-local-variables         :all ; Disable confirm to set local variables
+
+      uniquify-buffer-name-style      'post-forward-angle-brackets ; Show path if names are same
+      adaptive-fill-regexp            "[ t]+|[ t]*([0-9]+.|*+)[ t]*"
+      adaptive-fill-first-line-regexp "^* *$"
+      sentence-end                    "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*"
+      sentence-end-double-space       nil)
+
+(provide 'init-basic)
+
+(defun reverse-input-method (input-method)
+  "Build the reverse mapping of single letters from INPUT-METHOD."
+  (interactive
+   (list (read-input-method-name "Use input method (default current): ")))
+  (if (and input-method (symbolp input-method))
+      (setq input-method (symbol-name input-method)))
+  (let ((current current-input-method)
+        (modifiers '(nil (control) (meta) (control meta))))
+    (when input-method
+      (activate-input-method input-method))
+    (when (and current-input-method quail-keyboard-layout)
+      (dolist (map (cdr (quail-map)))
+        (let* ((to (car map))
+               (from (quail-get-translation
+                      (cadr map) (char-to-string to) 1)))
+          (when (and (characterp from) (characterp to))
+            (dolist (mod modifiers)
+              (define-key local-function-key-map
+                (vector (append mod (list from)))
+                (vector (append mod (list to)))))))))
+    (when input-method
+      (activate-input-method current))))
+
+(reverse-input-method 'russian-computer)

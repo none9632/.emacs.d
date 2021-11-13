@@ -1,0 +1,4058 @@
+# -*- eval: (setq org-jump-to-previous-block t); eval: (setq org-edit-src-auto-save-idle-delay 1) -*-
+
+#+TITILE: Emacs configuration
+#+STARTUP: fold
+
+* Early-init
+
+Emacs 27 introduces early-init.el, which is run before init.el, before package and UI initialization happens.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./early-init.el
+	
+  ;; -*- lexical-binding: t -*-
+
+#+end_src
+
+** Early-init
+
+#+begin_src emacs-lisp :tangle ./early-init.el
+
+  ;; Defer garbage collection further back in the startup process
+  (setq gc-cons-threshold most-positive-fixnum)
+
+  ;; Package initialize occurs automatically, before `user-init-file' is
+  ;; loaded, but after `early-init-file'. We handle package
+  ;; initialization, so we must prevent Emacs from doing it early!
+  (setq package-enable-at-startup nil)
+
+  ;; Faster to disable these here (before they've been initialized)
+  (push '(menu-bar-lines . 0) default-frame-alist)
+  (push '(tool-bar-lines . 0) default-frame-alist)
+  (push '(vertical-scroll-bars) default-frame-alist)
+  (when (featurep 'ns)
+    (push '(ns-transparent-titlebar . t) default-frame-alist))
+
+#+end_src
+
+* Init
+** Header
+
+#+begin_src emacs-lisp :tangle ./init.el
+
+  ;; -*- lexical-binding: t no-byte-compile: t -*-
+
+#+end_src
+
+** Speed up startup
+
+#+begin_src emacs-lisp :tangle ./init.el
+
+  (defvar centaur-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
+    "The default value to use for `gc-cons-threshold'. If you experience freezing,
+  decrease this. If you experience stuttering, increase this.")
+
+  (defvar centaur-gc-cons-upper-limit (if (display-graphic-p) 400000000 100000000)
+    "The temporary value for `gc-cons-threshold' to defer it.")
+
+  (defvar centaur-gc-timer (run-with-idle-timer 10 t #'garbage-collect)
+    "Run garbarge collection when idle 10s.")
+
+  (defvar default-file-name-handler-alist file-name-handler-alist)
+
+  (setq file-name-handler-alist nil)
+  (setq gc-cons-threshold centaur-gc-cons-upper-limit
+        gc-cons-percentage 0.5)
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              "Restore defalut values after startup."
+              (setq file-name-handler-alist default-file-name-handler-alist)
+              (setq gc-cons-threshold centaur-gc-cons-threshold
+                    gc-cons-percentage 0.1)
+
+              ;; GC automatically while unfocusing the frame
+              ;; `focus-out-hook' is obsolete since 27.1
+              (if (boundp 'after-focus-change-function)
+                  (add-function :after after-focus-change-function
+                                (lambda ()
+                                  (unless (frame-focus-state)
+                                    (garbage-collect))))
+                (add-hook 'focus-out-hook 'garbage-collect))
+
+              ;; Avoid GCs while using `ivy'/`counsel'/`swiper' and `helm', etc.
+              ;; @see http://bling.github.io/blog/2016/01/18/why-are-you-changing-gc-cons-threshold/
+              (defun my/minibuffer-setup-hook ()
+                (setq gc-cons-threshold centaur-gc-cons-upper-limit))
+
+              (defun my/minibuffer-exit-hook ()
+                (setq gc-cons-threshold centaur-gc-cons-threshold))
+
+              (add-hook 'minibuffer-setup-hook #'my/minibuffer-setup-hook)
+              (add-hook 'minibuffer-exit-hook #'my/minibuffer-exit-hook)))
+
+#+end_src
+
+** Startup theme
+
+#+begin_src emacs-lisp :tangle ./init.el
+
+  ;; Hide cursor and mode-line at startup
+  (setq-default mode-line-format nil)
+  (internal-show-cursor nil nil)
+
+#+end_src
+
+** Load path
+
+#+begin_src emacs-lisp :tangle ./init.el
+
+  ;; Optimize: Force "lisp" at the head to reduce the startup time.
+  (defun update-load-path (&rest _)
+    "Update `load-path'."
+    (dolist (dir '("lisp"))
+      (push (expand-file-name dir user-emacs-directory) load-path)))
+
+  (advice-add #'package-initialize :after #'update-load-path)
+
+  (update-load-path)
+	
+#+end_src
+
+** Packages
+
+#+begin_src emacs-lisp :tangle ./init.el
+
+  ;; Without this comment Emacs25 adds (package-initialize) here
+  (require 'init-package)
+
+  ;; Preferences
+  (require 'init-basic)
+  ;; (require 'init-hydra)
+
+  (require 'init-ui)
+  (require 'init-evil)
+  (require 'init-edit)
+  (require 'init-ivy)
+  (require 'init-completion)
+  (require 'init-snippets)
+
+  (require 'init-dashboard)
+  ;; (require 'init-dired)
+  (require 'init-highlight)
+  (require 'init-ibuffer)
+  (require 'init-window)
+  (require 'init-treemacs)
+
+  ;; (require 'init-eshell)
+  ;; (require 'init-shell)
+
+  ;; (require 'init-markdown)
+  (require 'init-org)
+
+  (require 'init-utils)
+
+  ;; Programming
+  (require 'init-vcs)
+  ;; (require 'init-flycheck)
+  (require 'init-projectile)
+
+  (require 'init-prog)
+  (require 'init-elisp)
+  (require 'init-tex)
+  ;; (require 'init-c)
+  ;; (require 'init-python)
+
+  (require 'init-myconfig)
+
+#+end_src
+
+* Basic
+
+Better defaults configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-custom)
+  (require 'init-funcs)
+	
+#+end_src
+
+** Personal information
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (setq user-full-name    "none"
+        user-mail-address "none")
+	
+#+end_src
+
+** Encoding
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  ;; UTF-8 as the default coding system
+  (when (fboundp 'set-charset-priority)
+    (set-charset-priority 'unicode))
+
+  ;; Explicitly set the prefered coding systems to avoid annoying prompt
+  ;; from emacs (especially on Microsoft Windows)
+  (prefer-coding-system          'utf-8)
+  (setq locale-coding-system     'utf-8)
+
+  (set-language-environment      'utf-8)
+  (set-default-coding-systems    'utf-8)
+  (set-buffer-file-coding-system 'utf-8)
+  (set-clipboard-coding-system   'utf-8)
+  (set-file-name-coding-system   'utf-8)
+  (set-keyboard-coding-system    'utf-8)
+  (set-terminal-coding-system    'utf-8)
+  (set-selection-coding-system   'utf-8)
+  (modify-coding-system-alist    'process "*" 'utf-8)
+
+#+end_src
+
+** Environment
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  ;; (when sys/linux-x-p
+  ;;   (use-package exec-path-from-shell
+  ;;     :init
+  ;;     (setq exec-path-from-shell-check-startup-files nil
+  ;;           exec-path-from-shell-variables '("PATH" "MANPATH")
+  ;;           exec-path-from-shell-arguments '("-l"))
+  ;;     (exec-path-from-shell-initialize)))
+
+#+end_src
+
+** Start server
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  ;; (server-start)
+
+#+end_src
+
+** Keep Folders Clean
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (shell-command "rm -f ~/.emacs.d/session.*")
+  (shell-command "rm -f ~/.emacs.d/org-src-*.txt")
+
+#+end_src
+
+** Fonts
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  ;; Set the font face based on platform
+  (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+
+  ;; Set the fixed pitch fac
+  (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+
+  ;; Set the variable pitch face
+  (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular)
+
+#+end_src
+
+** History
+*** saveplace
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+	
+  (use-package saveplace
+    :ensure nil
+    :hook (after-init . save-place-mode))
+
+#+end_src
+
+*** savehist
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (use-package savehist
+    :ensure nil
+    :hook (after-init . savehist-mode)
+    :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+                history-length 1000
+                savehist-additional-variables '(mark-ring
+                                                global-mark-ring
+                                                search-ring
+                                                regexp-search-ring
+                                                extended-command-history)
+                savehist-autosave-interval 300))
+
+#+end_src
+
+*** simple
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (use-package simple
+    :ensure nil
+    :hook ((after-init                          . size-indication-mode)
+           ((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace))
+    :init
+    (setq column-number-mode          t
+          line-number-mode            t
+          line-move-visual            nil
+          track-eol                   t   ; Keep cursor at end of lines. Require line-move-visual is nil.
+          set-mark-command-repeat-pop t)  ; Repeating C-SPC after popping mark pops it again
+
+    ;; Visualize TAB, (HARD) SPACE, NEWLINE
+    (setq-default show-trailing-whitespace nil) ; Don't show trailing whitespace by default
+    (defun enable-trailing-whitespace ()
+      "Show trailing spaces and delete on saving."
+      (setq show-trailing-whitespace t)
+      (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
+
+#+end_src
+
+*** time
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+	
+  (use-package time
+    :ensure nil
+    :unless (display-graphic-p)
+    :hook (after-init . display-time-mode)
+    :init (setq display-time-24hr-format t
+                display-time-day-and-date t))
+
+#+end_src
+
+*** so-long
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+	
+  (use-package so-long
+      :ensure nil
+      :hook (after-init . global-so-long-mode)
+      :config (setq so-long-threshold 400))
+
+#+end_src
+
+** Mouse & Smooth Scroll
+
+Scroll one line at a time (less "jumpy" than defaults)
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (when (display-graphic-p)
+    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
+          mouse-wheel-progressive-speed nil))
+  (setq scroll-step 1
+        scroll-margin 7
+        scroll-conservatively 100000)
+	
+#+end_src
+
+** Keybinding
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  (global-set-key (kbd "C-S-n")    'make-frame-command)
+  (global-set-key (kbd "M-k")      nil)
+
+  (use-package general
+    :config
+    (general-create-definer leader-key-def
+      :keymaps '(normal insert visual emacs)
+      :prefix "SPC"
+      :global-prefix "C-SPC"))
+
+  (leader-key-def
+    "hk"  'helpful-key
+    "hv"  'counsel-describe-variable
+    "hf"  'counsel-describe-function
+    "hF"  'counsel-describe-face
+    "hs"  'counsel-describe-symbol
+    "ch"  'counsel-command-history
+    "cl"  (lambda ()
+            (interactive)
+            (command-log-mode t)
+            (clm/toggle-command-log-buffer))
+    "SPC" 'counsel-find-file
+    "q"   'evil-quit
+    "a"   'mark-whole-buffer
+    "bb"  'counsel-switch-buffer
+    "pl"  'counsel-package
+    "pr"  'package-refresh-contents)
+
+#+end_src
+
+** Misc
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (setq-default major-mode       'text-mode
+                tab-width        4
+                fill-column      100
+                indent-tabs-mode nil)       ; Permanently indent with spaces, never with TABs
+
+  (setq visible-bell                   t
+        inhibit-compacting-font-caches t    ; Don’t compact font caches during GC.
+        delete-by-moving-to-trash      t    ; Deleting files go to OS's trash folder
+        make-backup-files              nil  ; Forbide to make backup files
+        auto-save-default              nil  ; Disable auto save
+        confirm-kill-processes         nil  ; Disable confirm killing processes on exit
+        enable-local-variables         :all ; Disable confirm to set local variables
+
+        uniquify-buffer-name-style      'post-forward-angle-brackets ; Show path if names are same
+        adaptive-fill-regexp            "[ t]+|[ t]*([0-9]+.|*+)[ t]*"
+        adaptive-fill-first-line-regexp "^* *$"
+        sentence-end                    "\\([。！？]\\|……\\|[.?!][]\"')}]*\\($\\|[ \t]\\)\\)[ \t\n]*"
+        sentence-end-double-space       nil)
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (provide 'init-basic)
+
+#+end_src
+
+* Completion
+
+Auto-completion configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-custom)
+  (require 'init-funcs)
+	
+#+end_src
+
+** company
+
+#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+
+  (use-package company
+    :diminish
+    :bind (:map company-active-map
+                ("<tab>"     . expand-snippet-or-complete-selection)
+                ("<backtab>" . company-select-previous))
+    :hook ((after-init . global-company-mode))
+    :init
+    (setq company-tooltip-align-annotations t
+          company-tooltip-limit             12
+          company-idle-delay                0
+          company-minimum-prefix-length     2
+          company-box-scrollbar             nil
+          company-require-match             nil
+          company-dabbrev-ignore-case       nil
+          company-dabbrev-downcase          nil
+          company-global-modes             '(not erc-mode message-mode help-mode
+                                                 gud-mode eshell-mode shell-mode))
+    :config
+    ;; (setq company-backends
+    ;;       '((company-files          ; files & directory
+    ;;          company-keywords       ; keywords
+    ;;          company-capf
+    ;;          company-yasnippet
+    ;;          )
+    ;;         (company-abbrev company-dabbrev)
+    ;;         ))
+
+    (defun do-yas-expand ()
+      (let ((yas/fallback-behavior 'return-nil))
+        (yas/expand)))
+
+    (defun expand-snippet-or-complete-selection ()
+      (interactive)
+      (if (or (not yas/minor-mode)
+              (null (do-yas-expand))
+              (company-abort)
+              (not (org-try-cdlatex-tab)))
+          (company-complete-common-or-cycle))))
+
+#+end_src
+
+** company-prescient
+
+Better sorting and filtering
+
+#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+
+  (use-package company-prescient
+    :after company
+    :init
+    (company-prescient-mode 1))
+
+#+end_src
+
+** company-box
+
+#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+
+  (use-package company-box
+    :after company
+    :diminish
+    :defines company-box-icons-all-the-icons
+    :hook (company-mode . company-box-mode)
+    :init (setq company-box-enable-icon     centaur-icon
+                company-box-backends-colors nil
+                company-box-doc-enable      nil)
+    :config
+    (when (icons-displayable-p)
+      (declare-function all-the-icons-faicon   'all-the-icons)
+      (declare-function all-the-icons-material 'all-the-icons)
+      (declare-function all-the-icons-octicon  'all-the-icons)
+      (setq company-box-icons-all-the-icons
+            `((Unknown       . ,(all-the-icons-material "find_in_page"             :height 0.8  :v-adjust -0.15                             ))
+              (Text          . ,(all-the-icons-faicon   "text-width"               :height 0.8  :v-adjust -0.02                             ))
+              (Method        . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+              (Function      . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+              (Constructor   . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+              (Field         . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
+              (Variable      . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
+              (Class         . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+              (Interface     . ,(all-the-icons-material "share"                    :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+              (Module        . ,(all-the-icons-material "view_module"              :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+              (Property      . ,(all-the-icons-faicon   "wrench"                   :height 0.8  :v-adjust -0.02                             ))
+              (Unit          . ,(all-the-icons-material "settings_system_daydream" :height 0.8  :v-adjust -0.15                             ))
+              (Value         . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+              (Enum          . ,(all-the-icons-material "storage"                  :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+              (Keyword       . ,(all-the-icons-material "filter_center_focus"      :height 0.8  :v-adjust -0.15                             ))
+              (Snippet       . ,(all-the-icons-material "format_align_center"      :height 0.8  :v-adjust -0.15                             ))
+              (Color         . ,(all-the-icons-material "palette"                  :height 0.8  :v-adjust -0.15                             ))
+              (File          . ,(all-the-icons-faicon   "file-o"                   :height 0.8  :v-adjust -0.02                             ))
+              (Reference     . ,(all-the-icons-material "collections_bookmark"     :height 0.8  :v-adjust -0.15                             ))
+              (Folder        . ,(all-the-icons-faicon   "folder-open"              :height 0.8  :v-adjust -0.02                             ))
+              (EnumMember    . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15                             ))
+              (Constant      . ,(all-the-icons-faicon   "square-o"                 :height 0.8  :v-adjust -0.1                              ))
+              (Struct        . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+              (Event         . ,(all-the-icons-octicon  "zap"                      :height 0.8  :v-adjust 0     :face 'all-the-icons-orange ))
+              (Operator      . ,(all-the-icons-material "control_point"            :height 0.8  :v-adjust -0.15                             ))
+              (TypeParameter . ,(all-the-icons-faicon   "arrows"                   :height 0.8  :v-adjust -0.02                             ))
+              (Template      . ,(all-the-icons-material "format_align_left"        :height 0.8  :v-adjust -0.15                             )))
+            company-box-icons-alist 'company-box-icons-all-the-icons)))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+
+  (provide 'init-completion)
+
+#+end_src
+
+* Custom
+
+Customization.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-custom.el
+
+  ;; -*- lexical-binding: t -*-
+
+#+end_src
+
+** Custom definitions
+
+#+begin_src emacs-lisp :tangle ./lisp/init-custom.el
+
+  (defcustom centaur-icon (display-graphic-p)
+    "Display icons or not."
+    :group 'centaur
+    :type 'boolean)
+
+  ;; Emacs Lisp Package Archive (ELPA)
+  (defcustom centaur-package-archives-alist
+    (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                        (not (gnutls-available-p))))
+           (proto (if no-ssl "http" "https")))
+      `(,(cons 'melpa
+               `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
+                 ,(cons "melpa" (concat proto "://melpa.org/packages/"))))
+        ,(cons 'netease
+               `(,(cons "gnu"   (concat proto "://mirrors.163.com/elpa/gnu/"))
+                 ,(cons "melpa" (concat proto "://mirrors.163.com/elpa/melpa/"))))
+        ,(cons 'ustc
+               `(,(cons "gnu"   (concat proto "://mirrors.ustc.edu.cn/elpa/gnu/"))
+                 ,(cons "melpa" (concat proto "://mirrors.ustc.edu.cn/elpa/melpa/"))))
+        ,(cons 'tuna
+               `(,(cons "gnu"   (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/"))
+                 ,(cons "melpa" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))))
+    "The package archives group list."
+    :group 'centaur
+    :type '(alist :key-type (symbol :tag "Archive group name")
+                  :value-type (alist :key-type (string :tag "Archive name")
+                                     :value-type (string :tag "URL or directory name"))))
+
+  (defcustom centaur-package-archives 'melpa
+    "Set package archives from which to fetch."
+    :group 'centaur
+    :set (lambda (symbol value)
+           (set symbol value)
+           (setq package-archives
+                 (or (alist-get value centaur-package-archives-alist)
+                     (error "Unknown package archives: `%s'" value))))
+    :type `(choice ,@(mapcar
+                      (lambda (item)
+                        (let ((name (car item)))
+                          (list 'const
+                                :tag (capitalize (symbol-name name))
+                                name)))
+                      centaur-package-archives-alist)))
+
+  (defcustom centaur-lsp 'lsp-mode
+    "Set language server."
+    :group 'centaur
+    :type '(choice
+            (const :tag "LSP Mode" 'lsp-mode)
+            (const :tag "Eglot" 'eglot)
+            nil))
+
+  (defcustom centaur-lsp-format-on-save-ignore-modes '(c-mode c++-mode python-mode)
+    "The modes that don't auto format and organize imports while saving the buffers.
+  `prog-mode' means ignoring all derived modes.
+  "
+    :group 'centaur
+    :type '(repeat (symbol :tag "Major-Mode")))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-custom.el
+	
+  (provide 'init-custom)
+
+#+end_src
+
+* Dashboard
+
+Dashboard configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-custom)
+
+#+end_src
+
+** Dashboard
+
+#+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
+
+  (use-package dashboard
+    :diminish (dashboard-mode page-break-lines-mode)
+    :functions (all-the-icons-faicon
+                all-the-icons-material
+                winner-undo
+                widget-forward)
+    :custom-face (dashboard-heading ((t (:inherit (font-lock-string-face bold)))))
+    :bind (("<f2>" . open-dashboard)
+           :map dashboard-mode-map
+           ("R"    . restore-previous-session)
+           ("L"    . restore-session)
+           ("S"    . open-org-file)
+           ("U"    . update-config-and-packages)
+           ("q"    . quit-dashboard)
+           ("h"    . dashboard-hydra/body)
+           ("?"    . dashboard-hydra/body))
+    :hook (dashboard-mode . (lambda () (setq-local frame-title-format "")))
+    :preface
+    (defun my/dashboard-banner ()
+      (defvar package-count 0)
+
+      (when (bound-and-true-p package-alist)
+        (setq package-count (length package-activated-list)))
+      (when (boundp 'straight--profile-cache)
+        (setq package-count (+ (hash-table-size straight--profile-cache) package-count)))
+
+      (setq dashboard-init-info
+            (format "%d packages loaded in %.3f seconds\n"
+                    package-count
+                    (float-time (time-subtract after-init-time before-init-time)))))
+    :init
+    (add-hook 'after-init-hook     'dashboard-refresh-buffer)
+    (add-hook 'dashboard-mode-hook 'my/dashboard-banner)
+
+    (setq dashboard-startup-banner    'logo
+          dashboard-center-content    t
+          dashboard-show-shortcuts    nil
+          dashboard-set-footer        t
+          dashboard-set-init-info     t
+          dashboard-set-file-icons    t
+          dashboard-page-separator    "\n\f\n"
+          dashboard-set-heading-icons t
+          dashboard-items             '((recents   . 5)
+                                        (bookmarks . 5)
+                                        (projects  . 5))
+          dashboard-heading-icons     '((recents   . "file-text")
+                                        (bookmarks . "bookmark")
+                                        (projects  . "briefcase"))
+
+          dashboard-set-navigator t
+          dashboard-navigator-buttons
+          `(((,(when (icons-displayable-p)
+                 (all-the-icons-material "restore" :height 1.35 :v-adjust -0.24))
+              "Restore" "Restore previous session"
+              (lambda (&rest _)))
+             (,(when (icons-displayable-p)
+                 (all-the-icons-octicon "tools" :height 1.0 :v-adjust 0.0))
+              "Settings" "Open org file"
+              (lambda (&rest _) ))
+             (,(when (icons-displayable-p)
+                 (all-the-icons-material "update" :height 1.35 :v-adjust -0.24))
+              "Update" "Update Emacs"
+              (lambda (&rest _) (update-packages)))
+             (,(if (icons-displayable-p)
+                   (all-the-icons-faicon "question" :height 1.2 :v-adjust -0.1)
+                 "?")
+              "" "Help (?/h)"
+              (lambda (&rest _) (dashboard-hydra/body))
+              font-lock-string-face))))
+
+    (dashboard-setup-startup-hook)
+    :config
+    (defvar dashboard-recover-layout-p nil
+      "Wether recovers the layout.")
+
+    (defun dashboard-goto-recent-files ()
+      "Go to recent files."
+      (interactive)
+      (let ((func (local-key-binding "r")))
+        (and func (funcall func))))
+
+    (defun dashboard-goto-projects ()
+      "Go to projects."
+      (interactive)
+      (let ((func (local-key-binding "p")))
+        (and func (funcall func))))
+
+    (defun dashboard-goto-bookmarks ()
+      "Go to bookmarks."
+      (interactive)
+      (let ((func (local-key-binding "m")))
+        (and func (funcall func))))
+
+    (defun open-dashboard ()
+      "Open the *dashboard* buffer and jump to the first widget."
+      (interactive)
+      ;; Check if need to recover layout
+      (if (> (length (window-list-1))
+             ;; exclude `treemacs' window
+             (if (and (fboundp 'treemacs-current-visibility)
+                      (eq (treemacs-current-visibility) 'visible))
+                 2
+               1))
+          (setq dashboard-recover-layout-p t))
+
+      (delete-other-windows)
+
+      ;; Refresh dashboard buffer
+      (when (get-buffer dashboard-buffer-name)
+        (kill-buffer dashboard-buffer-name))
+      (dashboard-insert-startupify-lists)
+      (switch-to-buffer dashboard-buffer-name)
+
+      ;; Jump to the first section
+      (dashboard-goto-recent-files))
+
+    (defun quit-dashboard ()
+      "Quit dashboard window."
+      (interactive)
+      (quit-window t)
+      (when (and dashboard-recover-layout-p
+                 (bound-and-true-p winner-mode))
+        (winner-undo)
+        (setq dashboard-recover-layout-p nil))))
+
+#+end_src
+
+** Dashboard in emacsclient
+
+Lauches the dashboard in a emacsclient
+
+#+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
+
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+
+#+end_src
+
+** Break lines
+
+#+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
+
+  (use-package page-break-lines
+    :hook (dashboard-mode-hook . page-break-lines-mode))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
+	
+  (provide 'init-dashboard)
+
+#+end_src
+
+* Edit
+
+Editing configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  ;; -*- lexical-binding: t -*-
+	
+  (require 'init-evil)
+  (require 'init-basic)
+
+#+end_src
+
+** Russian keyboard
+
+#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+
+  (defun reverse-input-method (input-method)
+    "Build the reverse mapping of single letters from INPUT-METHOD."
+    (interactive
+     (list (read-input-method-name "Use input method (default current): ")))
+    (if (and input-method (symbolp input-method))
+        (setq input-method (symbol-name input-method)))
+    (let ((current current-input-method)
+          (modifiers '(nil (control) (meta) (control meta))))
+      (when input-method
+        (activate-input-method input-method))
+      (when (and current-input-method quail-keyboard-layout)
+        (dolist (map (cdr (quail-map)))
+          (let* ((to (car map))
+                 (from (quail-get-translation
+                        (cadr map) (char-to-string to) 1)))
+            (when (and (characterp from) (characterp to))
+              (dolist (mod modifiers)
+                (define-key local-function-key-map
+                  (vector (append mod (list from)))
+                  (vector (append mod (list to)))))))))
+      (when input-method
+        (activate-input-method current))))
+
+  (reverse-input-method 'russian-computer)
+
+#+end_src
+
+** delete-selection
+
+Delete selection if you insert
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+	
+  (use-package delsel
+    :ensure nil
+    :hook (after-init . delete-selection-mode))
+
+#+end_src
+
+** auto-revert
+
+Automatically reload files was modified by external program
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+	
+  (use-package autorevert
+    :ensure nil
+    :diminish
+    :hook (after-init . global-auto-revert-mode))
+
+#+end_src
+
+** goto-addr
+
+Click to browse URL or to send to e-mail address
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package goto-addr
+    :ensure nil
+    :hook ((text-mode . goto-address-mode)
+           (prog-mode . goto-address-prog-mode)))
+
+#+end_src
+
+** avy
+
+Jump to things in Emacs tree-style
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+	
+  (use-package avy
+    :bind (:map evil-normal-state-map
+           ("/" . avy-goto-char-timer)
+           :map evil-visual-state-map
+           ("/" . avy-goto-char-timer)
+           :map evil-motion-state-map
+           ("/" . avy-goto-char-timer))
+    :config
+    (setq avy-all-windows     nil
+          avy-timeout-seconds 0.4))
+
+#+end_src
+
+** ace-link
+
+Quickly follow links
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package ace-link
+    :hook (after-init . ace-link-setup-default)
+    :config
+    (leader-key-def
+      "bu" 'ace-link-addr))
+	
+#+end_src
+
+** aggressive-indent
+
+Minor mode to aggressively keep your code always indented
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package aggressive-indent
+    :diminish
+    :hook ((after-init . global-aggressive-indent-mode)
+           ;; FIXME: Disable in big files due to the performance issues
+           ;; https://github.com/Malabarba/aggressive-indent-mode/issues/73
+           (find-file . (lambda ()
+                          (if (> (buffer-size) (* 3000 80))
+                              (aggressive-indent-mode -1)))))
+    :config
+    ;; Disable in some modes
+    (dolist (mode '(asm-mode html-mode css-mode))
+      (push mode aggressive-indent-excluded-modes))
+
+    ;; Disable in some commands
+    (add-to-list 'aggressive-indent-protected-commands #'delete-trailing-whitespace t)
+
+    ;; Be slightly less aggressive in C/C++/C#/Java/Go/Swift
+    (add-to-list 'aggressive-indent-dont-indent-if
+                 '(and (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                       (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+                                           (thing-at-point 'line))))))
+
+#+end_src
+
+** comment-dwim-2
+
+An all-in-one comment command to rule them all
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package comment-dwim-2
+    :init
+    (leader-key-def
+      "/" (lambda ()
+            (interactive)
+            (if (eq major-mode 'org-mode)
+                (org-comment-dwim-2)
+              (comment-dwim-2)))))
+
+#+end_src
+
+** drag-stuff
+
+Drag stuff (lines, words, region, etc...) around
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package drag-stuff
+    :diminish
+    :after evil
+    :hook (after-init . drag-stuff-global-mode)
+    :bind ((:map evil-visual-state-map
+                 ("C-M-k" . drag-stuff-up)
+                 ("C-M-j" . drag-stuff-down))
+           (:map evil-normal-state-map
+                 ("M-k"   . drag-stuff-up)
+                 ("M-j"   . drag-stuff-down))
+           (:map evil-insert-state-map
+                 ("M-k"   . drag-stuff-up)
+                 ("M-j"   . drag-stuff-down)))
+    :config
+    (add-to-list 'drag-stuff-except-modes 'org-mode))
+
+#+end_src
+
+** ediff
+
+A comprehensive visual interface to diff & patch
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package ediff
+    :ensure nil
+    :hook(;; show org ediffs unfolded
+          ;; (ediff-prepare-buffer . outline-show-all)
+          ;; restore window layout when done
+          (ediff-quit . winner-undo))
+    :config
+    (setq ediff-window-setup-function       'ediff-setup-windows-plain)
+    (setq ediff-split-window-function       'split-window-horizontally)
+    (setq ediff-merge-split-window-function 'split-window-horizontally))
+
+#+end_src
+
+** electric-pair
+
+Automatic parenthesis pairing
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package electric-pair
+    :ensure nil
+    :hook (after-init . electric-pair-mode)
+    :init
+    (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
+
+#+end_src
+
+** expand-region
+
+Increase selected region by semantic units
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package expand-region
+    :after evil
+    :bind (:map evil-visual-state-map
+                ("M-k" . er/expand-region)
+                ("M-j" . er/contract-region)))
+
+#+end_src
+
+** multiplite-regiton
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package multiple-cursors
+    :bind (("C-S-c C-S-c"   . mc/edit-lines)
+           ("C->"           . mc/mark-next-like-this)
+           ("C-<"           . mc/mark-previous-like-this)
+           ("C-c C-<"       . mc/mark-all-like-this)
+           ("C-M->"         . mc/skip-to-next-like-this)
+           ("C-M-<"         . mc/skip-to-previous-like-this)
+           ("s-<mouse-1>"   . mc/add-cursor-on-click)
+           ("C-S-<mouse-1>" . mc/add-cursor-on-click)
+           :map mc/keymap
+           ("C-|"           . mc/vertical-align-with-space)))
+
+#+end_src
+
+** smart-region
+
+Smartly select region, rectangle, multi cursors
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package smart-region
+    :hook (after-init . smart-region-on))
+
+#+end_src
+
+** Goto
+*** Goto last change
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+	
+  (use-package goto-chg
+    :bind ("C-," . goto-last-change))
+
+#+end_src
+
+*** goto-last-point
+
+Record and jump to the last point in the buffer
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+	
+  (use-package goto-last-point
+    :diminish
+    :bind ("C-M-," . goto-last-point)
+    :hook (after-init . goto-last-point-mode))
+
+#+end_src
+
+*** Preview when `goto-line'
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+	
+  (use-package goto-line-preview
+    :bind ([remap goto-line] . goto-line-preview))
+
+#+end_src
+
+** subword
+
+Handling capitalized subwords in a nomenclature
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package subword
+    :ensure nil
+    :diminish
+    :hook ((prog-mode        . subword-mode)
+           (minibuffer-setup . subword-mode)))
+
+#+end_src
+
+** origami
+
+Flexible text folding
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package origami
+    :hook (prog-mode . origami-mode)
+    :init (setq origami-show-fold-header t)
+    :config (face-spec-reset-face 'origami-fold-header-face))
+
+#+end_src
+
+** sudo-edit
+
+Open files as another user
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package sudo-edit)
+
+#+end_src
+
+** pretty-symbols
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package prettify-symbols
+    :ensure nil
+    :hook (after-init . global-prettify-symbols-mode)
+    :init
+    (defun my/org-load-prettify-symbols ()
+      (interactive)
+      ;; (set-face-background 'org-block-begin-line "#282c34")
+      ;; (push '("#+begin_latex latex" . ? ) prettify-symbols-alist)
+      ;; (push '("#+end_latex"         . ? ) prettify-symbols-alist)
+      (push '("\\\\"                . ?↵) prettify-symbols-alist))
+    (defun my/latex-load-prettify-symbols ()
+      (interactive)
+      (push '("\\pm"        . ?±)  prettify-symbols-alist)
+      (push '("\\mp"        . ?∓)  prettify-symbols-alist)
+      (push '("\\left("     . ?\() prettify-symbols-alist)
+      (push '("\\right)"    . ?\)) prettify-symbols-alist)
+      (push '("\\left["     . ?\[) prettify-symbols-alist)
+      (push '("\\right]"    . ?\]) prettify-symbols-alist)
+      (push '("\\left\\{"   . ?\{) prettify-symbols-alist)
+      (push '("\\right\\}"  . ?\}) prettify-symbols-alist)
+      (push '("\\mathbb{N}" . ?ℕ) prettify-symbols-alist)
+      (push '("\\mathbb{Z}" . ?ℤ) prettify-symbols-alist)
+      (push '("\\mathbb{Q}" . ?ℚ) prettify-symbols-alist)
+      (push '("\\mathbb{R}" . ?ℝ) prettify-symbols-alist)
+      (push '("\\mathbb{C}" . ?ℂ) prettify-symbols-alist)
+      (push '("\\not\\in"   . ?∉) prettify-symbols-alist)
+      (push '("\\\\"        . ?↵) prettify-symbols-alist)))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (provide 'init-edit)
+	
+#+end_src
+
+* Elisp
+
+Emacs Lisp configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+
+  ;; -*- lexical-binding: t -*-
+
+#+end_src
+
+** Emacs lisp mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+
+  (use-package elisp-mode
+    :ensure nil
+    :hook (emacs-lisp-mode . (lambda ()
+                               "Disable the checkdoc checker."
+                               (setq-local flycheck-disabled-checkers
+                                           '(emacs-lisp-checkdoc))))
+    :config
+    (when (boundp 'elisp-flymake-byte-compile-load-path)
+      (add-to-list 'elisp-flymake-byte-compile-load-path load-path))
+
+    ;; Syntax highlighting of known Elisp symbols
+    (use-package highlight-defined
+      :hook (emacs-lisp-mode . highlight-defined-mode)
+      :init
+      (setq highlight-defined-face-use-itself t)))
+
+#+end_src
+
+** helpful
+
+A better help buffer
+
+#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+
+  (use-package helpful
+    :defines (counsel-describe-function-function
+              counsel-describe-variable-function)
+    :commands helpful--buffer
+    :bind (([remap describe-key] . helpful-key)
+           ([remap describe-symbol] . helpful-symbol)
+           ("C-c C-d" . helpful-at-point)
+           :map helpful-mode-map
+           ("r" . remove-hook-at-point))
+    :hook (helpful-mode . cursor-sensor-mode) ; for remove-advice button
+    :init
+    (with-eval-after-load 'counsel
+      (setq counsel-describe-function-function #'helpful-callable
+            counsel-describe-variable-function #'helpful-variable))
+
+    (with-eval-after-load 'apropos
+      ;; patch apropos buttons to call helpful instead of help
+      (dolist (fun-bt '(apropos-function apropos-macro apropos-command))
+        (button-type-put
+         fun-bt 'action
+         (lambda (button)
+           (helpful-callable (button-get button 'apropos-symbol)))))
+      (dolist (var-bt '(apropos-variable apropos-user-option))
+        (button-type-put
+         var-bt 'action
+         (lambda (button)
+           (helpful-variable (button-get button 'apropos-symbol))))))
+
+    ;; Add remove buttons for advices
+    ;; (define-advice helpful-update (:after () advice-remove-button)
+    ;;   (when helpful--callable-p
+    ;;     (add-button-to-remove-advice (helpful--buffer helpful--sym t) helpful--sym)))
+    :config
+    (with-no-warnings
+      ;; Open the buffer in other window
+      (defun my/helpful--navigate (button)
+        "Navigate to the path this BUTTON represents."
+        (find-file-other-window (substring-no-properties (button-get button 'path)))
+        ;; We use `get-text-property' to work around an Emacs 25 bug:
+        ;; http://git.savannah.gnu.org/cgit/emacs.git/commit/?id=f7c4bad17d83297ee9a1b57552b1944020f23aea
+        (-when-let (pos (get-text-property button 'position
+                                           (marker-buffer button)))
+          (helpful--goto-char-widen pos)))
+      (advice-add #'helpful--navigate :override #'my/helpful--navigate)))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+	
+  (provide 'init-elisp)
+
+#+end_src
+
+* Evil
+
+Evil configuration.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+	
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-basic)
+
+#+end_src
+
+** evil
+
+#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+
+  (use-package evil
+    :hook (prog-mode . evil-mode)
+    :bind ((:map evil-motion-state-map
+                 ("RET"     . nil)
+                 ("M-k"     . nil)
+                 ("SPC"     . nil)
+                 ("DEL"     . nil))
+           (:map evil-normal-state-map
+                 ("H"       . left-word)
+                 ("L"       . right-word)
+                 ("J"       . forward-paragraph)
+                 ("K"       . backward-paragraph)
+                 ("U"       . evil-redo)
+                 ("SPC TAB" . evil-close-folds)
+                 ("S-M-h"   . evil-window-increase-width)
+                 ("S-M-l"   . evil-window-decrease-width)
+                 ("S-M-k"   . evil-window-increase-height)
+                 ("S-M-j"   . evil-window-decrease-height)
+                 ("TAB"     . (lambda ()
+                                (interactive)
+                                (insert "\t"))))
+           (:map evil-visual-state-map
+                 ("H"       . left-word)
+                 ("L"       . right-word)
+                 ("J"       . forward-paragraph)
+                 ("K"       . backward-paragraph))
+           (:map evil-insert-state-map
+                 ("M-k"     . nil)))
+    :custom (evil-want-keybinding nil)
+    :config
+    (global-set-key (kbd "C-l") 'evil-window-right)
+    (global-set-key (kbd "C-h") 'evil-window-left)
+    (global-set-key (kbd "C-k") 'evil-window-up)
+    (global-set-key (kbd "C-j") 'evil-window-down)
+
+    (add-hook 'evil-visual-state-entry-hook (lambda () (prettify-symbols-mode -1)))
+    (add-hook 'evil-visual-state-exit-hook  (lambda () (prettify-symbols-mode 1)))
+
+    (use-package undo-fu)
+
+    (setq evil-whan-fine-undo t
+          evil-undo-system    'undo-fu
+          evil-undo-function  'undo-fu-only-undo
+          evil-redo-function  'undo-fu-only-redo))
+
+#+end_src
+
+** evil-collection
+
+#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
+
+#+end_src
+
+** key-chord
+
+#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+
+  (use-package key-chord
+    :after evil
+    :hook (prog-mode . key-chord-mode)
+    :config
+    (setq key-chord-two-keys-delay 0.15)
+    (key-chord-define evil-insert-state-map (kbd "jj") 'evil-normal-state)
+
+    (define-key evil-insert-state-map "о" #'my/maybe-exit)
+
+    (evil-define-command my/maybe-exit ()
+      :repeat change
+      (interactive)
+      (insert "о")
+      (let ((evt (read-event "" nil 0.18)))
+        (cond
+         ((null evt))
+         ((and (integerp evt) (char-equal evt ?о))
+          (delete-char -1)
+          (evil-normal-state))
+         (t (insert evt)))))
+    )
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+	
+  (provide 'init-evil)
+
+#+end_src
+
+* Funcs
+
+Define functions.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+
+  ;; -*- lexical-binding: t -*-
+	
+  (require 'cl-lib)
+  (require 'init-custom)
+
+#+end_src
+
+** Open this file
+
+#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+
+  (defun open-org-file ()
+    "Open or create `.emacs.d.org'."
+    (interactive))
+
+#+end_src
+
+** Misc
+
+#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+
+  (defun create-scratch-buffer ()
+    "Create a scratch buffer."
+    (interactive)
+    (switch-to-buffer (get-buffer-create "*scratch*"))
+    (lisp-interaction-mode))
+
+  (defun recompile-elpa ()
+    "Recompile packages in elpa directory. Useful if you switch Emacs versions."
+    (interactive)
+    (if (fboundp 'async-byte-recompile-directory)
+        (async-byte-recompile-directory package-user-dir)
+      (byte-recompile-directory package-user-dir 0 t)))
+
+  (defun icons-displayable-p ()
+    "Return non-nil if `all-the-icons' is displayable."
+    (and centaur-icon
+         (display-graphic-p)
+         (require 'all-the-icons nil t)))
+
+  (defun centaur-set-variable (variable value &optional no-save)
+    "Set the VARIABLE to VALUE, and return VALUE.
+
+  Save to `custom-file' if NO-SAVE is nil."
+    (customize-set-variable variable value))
+
+  (defun my/current-line-empty-p ()
+    (save-excursion
+      (beginning-of-line)
+      (looking-at-p "^[[:space:]]*$")))
+
+  (defun my/test ()
+    (interactive)
+    (my/inkscape-figures-create (test)))
+
+#+end_src
+
+** Pakcage repository (ELPA)
+
+#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+
+  (defun set-package-archives (archives &optional refresh async no-save)
+    "Set the package archives (ELPA).
+
+  REFRESH is non-nil, will refresh archive contents.
+  ASYNC specifies whether to perform the downloads in the background.
+  Save to `custom-file' if NO-SAVE is nil."
+    (interactive
+     (list
+      (intern (completing-read "Select package archives: "
+                               (mapcar #'car centaur-package-archives-alist)))))
+    ;; Set option
+    (centaur-set-variable 'centaur-package-archives archives no-save)
+
+    ;; Refresh if need
+    (and refresh (package-refresh-contents async))
+
+    (message "Set package archives to `%s'" archives))
+  (defalias 'centaur-set-package-archives #'set-package-archives)
+
+#+end_src
+
+** Update
+
+#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+
+  (defvar centaur--updating-packages nil)
+  (defun update-packages (&optional sync)
+    "Refresh package contents and update all packages.
+
+  If SYNC is non-nil, the updating process is synchronous."
+    (interactive)
+    (when centaur--updating-packages
+      (user-error "Still updating packages..."))
+
+    (message "Updating packages...")
+    (if (and (not sync)
+             (require 'async nil t))
+        (progn
+          (setq centaur--updating-packages t)
+          (async-start
+           `(lambda ()
+              ,(async-inject-variables "\\`\\(load-path\\)\\'")
+              (require 'init-funcs)
+              (require 'init-package)
+              (upgrade-packages)
+              (with-current-buffer auto-package-update-buffer-name
+                (buffer-string)))
+           (lambda (result)
+             (setq centaur--updating-packages nil)
+             (message "%s" result)
+             (message "Updating packages...done"))))
+      (progn
+        (upgrade-packages)
+        (message "Updating packages...done"))))
+  (defalias 'centaur-update-packages #'update-packages)
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+	
+  (provide 'init-funcs)
+
+#+end_src
+
+* Highlight
+
+Highlighting configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  ;; -*- lexical-binding: t -*-
+	
+#+end_src
+
+** Highlight the current line
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package hl-line
+    :ensure nil
+    :hook (after-init   . global-hl-line-mode))
+
+#+end_src
+
+** Highlight matching parens
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package paren
+    :ensure nil
+    :hook (after-init . show-paren-mode)
+    :init (setq show-paren-when-point-inside-paren t
+                show-paren-when-point-in-periphery t))
+
+#+end_src
+
+** Highlight symbols
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package symbol-overlay
+    :diminish
+    :functions (turn-off-symbol-overlay turn-on-symbol-overlay)
+    :custom-face (symbol-overlay-default-face ((t (:inherit (region bold)))))
+    :bind (("M-i" . symbol-overlay-put)
+           ("M-n" . symbol-overlay-jump-next)
+           ("M-p" . symbol-overlay-jump-prev)
+           ("M-N" . symbol-overlay-switch-forward)
+           ("M-P" . symbol-overlay-switch-backward)
+           ("M-C" . symbol-overlay-remove-all)
+           ([M-f3] . symbol-overlay-remove-all))
+    :hook ((prog-mode . symbol-overlay-mode)
+           (iedit-mode . turn-off-symbol-overlay)
+           (iedit-mode-end . turn-on-symbol-overlay))
+    :init (setq symbol-overlay-idle-time 0.1)
+    (with-eval-after-load 'all-the-icons
+      (setq symbol-overlay-faces
+            '((:inherit (all-the-icons-blue   bold) :inverse-video t)
+              (:inherit (all-the-icons-pink   bold) :inverse-video t)
+              (:inherit (all-the-icons-yellow bold) :inverse-video t)
+              (:inherit (all-the-icons-purple bold) :inverse-video t)
+              (:inherit (all-the-icons-red    bold) :inverse-video t)
+              (:inherit (all-the-icons-orange bold) :inverse-video t)
+              (:inherit (all-the-icons-green  bold) :inverse-video t)
+              (:inherit (all-the-icons-cyan   bold) :inverse-video t))))
+    :config
+    ;; Disable symbol highlighting while selecting
+    (defun turn-off-symbol-overlay (&rest _)
+      "Turn off symbol highlighting."
+      (interactive)
+      (symbol-overlay-mode -1))
+    (advice-add #'set-mark :after #'turn-off-symbol-overlay)
+
+    (defun turn-on-symbol-overlay (&rest _)
+      "Turn on symbol highlighting."
+      (interactive)
+
+      (when (derived-mode-p 'prog-mode)
+        (symbol-overlay-mode 1)))
+    (advice-add #'deactivate-mark :after #'turn-on-symbol-overlay))
+
+#+end_src
+
+** Highlight indentions
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (defun my/hig-restart ()
+    (interactive)
+    (if (eq major-mode 'emacs-lisp-mode)
+        (progn
+          (highlight-indent-guides-mode)
+          (highlight-indent-guides-mode))))
+
+  (leader-key-def
+    "hr" 'my/hig-restart)
+  ;; (add-hook 'after-save-hook 'my/hig-restart)
+
+  (when (display-graphic-p)
+    (use-package highlight-indent-guides
+      :diminish
+      :hook (prog-mode  . highlight-indent-guides-mode)
+      :config
+      (setq highlight-indent-guides-method     'character
+            highlight-indent-guides-responsive 'top)
+
+      (with-no-warnings
+        ;; Don't display indentations in `swiper'
+        (with-eval-after-load 'ivy
+          (defun my/ivy-cleanup-indentation (str)
+            "Clean up indentation highlighting in ivy minibuffer."
+            (let ((pos 0)
+                  (next 0)
+                  (limit (length str))
+                  (prop 'highlight-indent-guides-prop))
+              (while (and pos next)
+                (setq next (text-property-not-all pos limit prop nil str))
+                (when next
+                  (setq pos (text-property-any next limit prop nil str))
+                  (ignore-errors
+                    (remove-text-properties next pos '(display nil face nil) str))))))
+          (advice-add #'ivy-cleanup-string :after #'my/ivy-cleanup-indentation)))))
+
+#+end_src
+
+** Colorize color names in buffers
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package rainbow-mode
+    :diminish
+    :hook (find-file . rainbow-mode)
+    :config
+    (with-no-warnings
+      ;; HACK: Use overlay instead of text properties to override `hl-line' faces.
+      ;; @see https://emacs.stackexchange.com/questions/36420
+      (defun my/rainbow-colorize-match (color &optional match)
+        (let* ((match (or match 0))
+               (ov (make-overlay (match-beginning match) (match-end match))))
+          (overlay-put ov 'ovrainbow t)
+          (overlay-put ov 'face `((:foreground ,(if (> 0.5 (rainbow-x-color-luminance color))
+                                                    "white" "black"))
+                                  (:background ,color)))))
+      (advice-add #'rainbow-colorize-match :override #'my/rainbow-colorize-match)
+
+      (defun my/rainbow-clear-overlays ()
+        "Clear all rainbow overlays."
+        (remove-overlays (point-min) (point-max) 'ovrainbow t))
+      (advice-add #'rainbow-turn-off :after #'my/rainbow-clear-overlays)))
+
+#+end_src
+
+** Highlight TODO and similar keywords in comments and strings
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package hl-todo
+    :bind (:map hl-todo-mode-map
+           ([C-f3] . hl-todo-occur)
+           ("C-c t p" . hl-todo-previous)
+           ("C-c t n" . hl-todo-next)
+           ("C-c t o" . hl-todo-occur))
+    :hook (after-init . global-hl-todo-mode)
+    :config
+    (dolist (keyword '("BUG" "DEFECT" "ISSUE"))
+      (cl-pushnew `(,keyword . ,(face-foreground 'error)) hl-todo-keyword-faces))
+    (dolist (keyword '("WORKAROUND" "HACK" "TRICK"))
+      (cl-pushnew `(,keyword . ,(face-foreground 'warning)) hl-todo-keyword-faces)))
+	
+#+end_src
+
+** Highlight uncommitted changes using VC
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package diff-hl
+    :custom-face
+    (diff-hl-change ((t (:foreground ,(face-background 'highlight) :background nil))))
+    (diff-hl-insert ((t (:background nil))))
+    (diff-hl-delete ((t (:background nil))))
+    :hook ((after-init . global-diff-hl-mode)
+           (dired-mode . diff-hl-dired-mode))
+    :init
+    (setq diff-hl-draw-borders nil)
+    :config
+    ;; Highlight on-the-fly
+    (diff-hl-flydiff-mode 1)
+
+    ;; Set fringe style
+    (setq-default fringes-outside-margins t)
+
+    (with-no-warnings
+      (defun my/diff-hl-fringe-bmp-function (_type _pos)
+        "Fringe bitmap function for use as `diff-hl-fringe-bmp-function'."
+        (define-fringe-bitmap 'my/diff-hl-bmp
+          (vector #b11111100)
+          1 8
+          '(center t)))
+      (setq diff-hl-fringe-bmp-function #'my/diff-hl-fringe-bmp-function)
+
+      (unless (display-graphic-p)
+        (setq diff-hl-margin-symbols-alist
+              '((insert . " ") (delete . " ") (change . " ")
+                (unknown . " ") (ignored . " ")))
+        ;; Fall back to the display margin since the fringe is unavailable in tty
+        (diff-hl-margin-mode 1)
+        ;; Avoid restoring `diff-hl-margin-mode'
+        (with-eval-after-load 'desktop
+          (add-to-list 'desktop-minor-mode-table
+                       '(diff-hl-margin-mode nil))))
+
+      ;; Integration with magit
+      (with-eval-after-load 'magit
+        (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
+        (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))))
+
+#+end_src
+
+** Highlight some operations
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package volatile-highlights
+    :diminish
+    :hook (after-init . volatile-highlights-mode)
+    :config
+    (with-no-warnings
+      (when (fboundp 'pulse-momentary-highlight-region)
+        (defun my/vhl-pulse (beg end &optional _buf face)
+          "Pulse the changes."
+          (pulse-momentary-highlight-region beg end face))
+        (advice-add #'vhl/.make-hl :override #'my/vhl-pulse))))
+
+#+end_src
+
+** Pulse current line
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (use-package pulse
+    :ensure nil
+    :custom-face
+    (pulse-highlight-start-face ((t (:inherit region))))
+    (pulse-highlight-face ((t (:inherit region))))
+    :hook (((dumb-jump-after-jump
+             imenu-after-jump)     . my/recenter-and-pulse)
+           ((bookmark-after-jump
+             magit-diff-visit-file
+             next-error)           . my/recenter-and-pulse-line))
+    :init
+    (with-no-warnings
+      (defun my/pulse-momentary-line (&rest _)
+        "Pulse the current line."
+        (pulse-momentary-highlight-one-line (point)))
+
+      (defun my/pulse-momentary (&rest _)
+        "Pulse the region or the current line."
+        (if (fboundp 'xref-pulse-momentarily)
+            (xref-pulse-momentarily)
+          (my/pulse-momentary-line)))
+
+      (defun my/recenter-and-pulse(&rest _)
+        "Recenter and pulse the region or the current line."
+        (recenter)
+        (my/pulse-momentary))
+
+      (defun my/recenter-and-pulse-line (&rest _)
+        "Recenter and pulse the current line."
+        (recenter)
+        (my/pulse-momentary-line))
+
+      (dolist (cmd '(recenter-top-bottom
+                     other-window windmove-do-window-select
+                     ace-window aw--select-window
+                     pager-page-down pager-page-up
+                     treemacs-select-window
+                     symbol-overlay-basic-jump))
+        (advice-add cmd :after #'my/pulse-momentary-line))
+
+      (dolist (cmd '(pop-to-mark-command
+                     pop-global-mark
+                     goto-last-change))
+        (advice-add cmd :after #'my/recenter-and-pulse))))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+
+  (provide 'init-highlight)
+
+#+end_src
+
+* Ibuffer
+
+IBuffer configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-funcs)
+  (require 'init-treemacs)
+
+#+end_src
+
+** ibuffer
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+
+  (use-package ibuffer
+    :after evil avy
+    :ensure nil
+    :bind (:map ibuffer-mode-map
+           ("j" . evil-next-line)
+           ("k" . evil-previous-line)
+           ("h" . evil-backward-char)
+           ("l" . evil-forward-char)
+           ("/" . avy-goto-char-timer))
+    :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
+    :config
+    ;; Display icons for buffers
+    (use-package all-the-icons-ibuffer
+      :if (icons-displayable-p)
+      :init (all-the-icons-ibuffer-mode 1))
+
+    (with-eval-after-load 'counsel
+      (with-no-warnings
+        (defun my/ibuffer-find-file ()
+          (interactive)
+          (let ((default-directory (let ((buf (ibuffer-current-buffer)))
+                                     (if (buffer-live-p buf)
+                                         (with-current-buffer buf
+                                           default-directory)
+                                       default-directory))))
+            (counsel-find-file default-directory)))
+        (advice-add #'ibuffer-find-file :override #'my/ibuffer-find-file))))
+
+#+end_src
+
+** ibuffer-projectile
+
+Group ibuffer's list by project root
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+
+  (use-package ibuffer-projectile
+    :functions all-the-icons-octicon ibuffer-do-sort-by-alphabetic
+    :hook ((ibuffer . (lambda ()
+                        (ibuffer-projectile-set-filter-groups)
+                        (unless (eq ibuffer-sorting-mode 'alphabetic)
+                          (ibuffer-do-sort-by-alphabetic)))))
+    :config
+    (setq ibuffer-projectile-prefix
+          (if (icons-displayable-p)
+              (concat
+               (all-the-icons-octicon "file-directory"
+                                      :face ibuffer-filter-group-name-face
+                                      :v-adjust 0.0
+                                      :height 1.0)
+               " ")
+            "Project: ")))
+
+#+end_src
+
+** Keybinding
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+
+  (leader-key-def
+    "l" (lambda ()
+          (interactive)
+          (if (equal major-mode 'treemacs-mode)
+              (treemacs-visit-node-ace-horizontal-split)
+            (progn
+              (split-window-horizontally)
+              (other-window 1)
+              (ibuffer))))
+    "j" (lambda ()
+          (interactive)
+          (if (equal major-mode 'treemacs-mode)
+              (treemacs-visit-node-ace-vertical-split)
+            (progn
+              (split-window-vertically)
+              (other-window 1)
+              (ibuffer)))))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+	
+  (provide 'init-ibuffer)
+
+#+end_src
+
+* Ivy
+
+Ivy configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-custom)
+  (require 'init-funcs)
+  (require 'init-evil)
+
+#+end_src
+
+** counsel
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+
+  (use-package counsel
+    :diminish ivy-mode counsel-mode
+    :bind ((:map counsel-mode-map
+                 ([remap swiper]             . counsel-grep-or-swiper)
+                 ([remap swiper-backward]    . counsel-grep-or-swiper-backward)
+                 ([remap dired]              . counsel-dired)
+                 ([remap set-variable]       . counsel-set-variable)
+                 ([remap insert-char]        . counsel-unicode-char)
+                 ([remap recentf-open-files] . counsel-recentf))
+           (:map ivy-minibuffer-map
+                 ("M-j" . ivy-next-line)
+                 ("M-k" . ivy-previous-line)))
+    :hook ((after-init . ivy-mode)
+           (ivy-mode   . counsel-mode))
+    :init
+    (setq enable-recursive-minibuffers t) ; Allow commands in minibuffers
+
+    (setq ivy-use-selectable-prompt   t
+          ivy-use-virtual-buffers     t    ; Enable bookmarks and recentf
+          ivy-height                  12
+          ivy-fixed-height-minibuffer t
+          ivy-count-format            "%d/%d "
+          ivy-on-del-error-function   nil
+          ivy-initial-inputs-alist    nil
+          ivy-extra-directories       nil)
+
+    (setq swiper-action-recenter t)
+
+    (setq counsel-find-file-at-point t)
+
+    ;; Use the faster search tool: ripgrep (`rg')
+    (when (executable-find "rg")
+      (setq counsel-grep-base-command "rg -S --no-heading --line-number --color never %s %s"))
+    :config
+    (with-no-warnings
+      ;; Display an arrow with the selected item
+      (defun my/ivy-format-function-arrow (cands)
+        "Transform CANDS into a string for minibuffer."
+        (ivy--format-function-generic
+         (lambda (str)
+           (concat (if (and (bound-and-true-p all-the-icons-ivy-rich-mode)
+                            (>= (length str) 1)
+                            (string= " " (substring str 0 1)))
+                       ">"
+                     "> ")
+                   (ivy--add-face str 'ivy-current-match)))
+         (lambda (str)
+           (concat (if (and (bound-and-true-p all-the-icons-ivy-rich-mode)
+                            (>= (length str) 1)
+                            (string= " " (substring str 0 1)))
+                       " "
+                     "  ")
+                   str))
+         cands
+         "\n"))
+      (setf (alist-get 't ivy-format-functions-alist) #'my/ivy-format-function-arrow)
+
+      ;; Pre-fill search keywords
+      ;; @see https://www.reddit.com/r/emacs/comments/b7g1px/withemacs_execute_commands_like_marty_mcfly/
+      (defvar my/ivy-fly-commands
+        '(query-replace-regexp
+          flush-lines keep-lines ivy-read
+          swiper swiper-backward swiper-all
+          swiper-isearch swiper-isearch-backward
+          lsp-ivy-workspace-symbol lsp-ivy-global-workspace-symbol
+          counsel-grep-or-swiper counsel-grep-or-swiper-backward
+          counsel-grep counsel-ack counsel-ag counsel-rg counsel-pt))
+      (defvar-local my/ivy-fly--travel nil)
+
+      (defun my/ivy-fly-back-to-present ()
+        (cond ((and (memq last-command my/ivy-fly-commands)
+                    (equal (this-command-keys-vector) (kbd "M-p")))
+               ;; repeat one time to get straight to the first history item
+               (setq unread-command-events
+                     (append unread-command-events
+                             (listify-key-sequence (kbd "M-p")))))
+              ((or (memq this-command '(self-insert-command
+                                        ivy-forward-char
+                                        ivy-delete-char delete-forward-char
+                                        end-of-line mwim-end-of-line
+                                        mwim-end-of-code-or-line mwim-end-of-line-or-code
+                                        yank ivy-yank-word counsel-yank-pop))
+                   (equal (this-command-keys-vector) (kbd "M-n")))
+               (unless my/ivy-fly--travel
+                 (delete-region (point) (point-max))
+                 (when (memq this-command '(ivy-forward-char
+                                            ivy-delete-char delete-forward-char
+                                            end-of-line mwim-end-of-line
+                                            mwim-end-of-code-or-line
+                                            mwim-end-of-line-or-code))
+                   (insert (ivy-cleanup-string ivy-text))
+                   (when (memq this-command '(ivy-delete-char delete-forward-char))
+                     (beginning-of-line)))
+                 (setq my/ivy-fly--travel t)))))
+
+      (defun my/ivy-fly-time-travel ()
+        (when (memq this-command my/ivy-fly-commands)
+          (let* ((kbd (kbd "M-n"))
+                 (cmd (key-binding kbd))
+                 (future (and cmd
+                              (with-temp-buffer
+                                (when (ignore-errors
+                                        (call-interactively cmd) t)
+                                  (buffer-string))))))
+            (when future
+              (save-excursion
+                (insert (propertize (replace-regexp-in-string
+                                     "\\\\_<" ""
+                                     (replace-regexp-in-string
+                                      "\\\\_>" ""
+                                      future))
+                                    'face 'shadow)))
+              (add-hook 'pre-command-hook 'my/ivy-fly-back-to-present nil t)))))
+
+      (add-hook 'minibuffer-setup-hook #'my/ivy-fly-time-travel)
+      (add-hook 'minibuffer-exit-hook
+                (lambda ()
+                  (remove-hook 'pre-command-hook 'my/ivy-fly-back-to-present t)))
+
+      ;; Improve search experience of `swiper' and `counsel'
+      (defun my/ivy-switch-to-swiper (&rest _)
+        "Switch to `swiper' with the current input."
+        (swiper ivy-text))
+
+      (defun my/ivy-switch-to-swiper-isearch (&rest _)
+        "Switch to `swiper-isearch' with the current input."
+        (swiper-isearch ivy-text))
+
+      (defun my/ivy-switch-to-swiper-all (&rest _)
+        "Switch to `swiper-all' with the current input."
+        (swiper-all ivy-text))
+
+      (defun my/ivy-switch-to-rg-dwim (&rest _)
+        "Switch to `rg-dwim' with the current input."
+        (rg-dwim default-directory))
+
+      (defun my/ivy-switch-to-counsel-rg (&rest _)
+        "Switch to `counsel-rg' with the current input."
+        (counsel-rg ivy-text default-directory))
+
+      (defun my/ivy-switch-to-counsel-git-grep (&rest _)
+        "Switch to `counsel-git-grep' with the current input."
+        (counsel-git-grep ivy-text default-directory))
+
+      (defun my/ivy-switch-to-counsel-find-file (&rest _)
+        "Switch to `counsel-find-file' with the current input."
+        (counsel-find-file ivy-text))
+
+      (defun my/ivy-switch-to-counsel-fzf (&rest _)
+        "Switch to `counsel-fzf' with the current input."
+        (counsel-fzf ivy-text default-directory))
+
+      (defun my/ivy-switch-to-counsel-git (&rest _)
+        "Switch to `counsel-git' with the current input."
+        (counsel-git ivy-text))
+
+      (defun my/swiper-toggle-counsel-rg ()
+        "Toggle `counsel-rg' and `swiper'/`swiper-isearch' with the current input."
+        (interactive)
+        (ivy-quit-and-run
+          (if (memq (ivy-state-caller ivy-last) '(swiper swiper-isearch))
+              (my/ivy-switch-to-counsel-rg)
+            (my/ivy-switch-to-swiper-isearch))))
+      (bind-key "<C-return>" #'my/swiper-toggle-counsel-rg swiper-map)
+      (bind-key "<C-return>" #'my/swiper-toggle-counsel-rg counsel-ag-map)
+
+      (with-eval-after-load 'rg
+        (defun my/swiper-toggle-rg-dwim ()
+          "Toggle `rg-dwim' with the current input."
+          (interactive)
+          (ivy-quit-and-run
+            (rg-dwim default-directory)))
+        (bind-key "<M-return>" #'my/swiper-toggle-rg-dwim swiper-map)
+        (bind-key "<M-return>" #'my/swiper-toggle-rg-dwim counsel-ag-map))
+
+      (defun my/counsel-find-file-toggle-fzf ()
+        "Toggle `counsel-fzf' with the current `counsel-find-file' input."
+        (interactive)
+        (ivy-quit-and-run
+          (counsel-fzf (or ivy-text "") default-directory)))
+      (bind-key "<C-return>" #'my/counsel-find-file-toggle-fzf counsel-find-file-map)
+
+      (defun my/swiper-toggle-rg-dwim ()
+        "Toggle `rg-dwim' with the current input."
+        (interactive)
+        (ivy-quit-and-run (my/ivy-switch-to-rg-dwim)))
+      (bind-key "<M-return>" #'my/swiper-toggle-rg-dwim swiper-map)
+      (bind-key "<M-return>" #'my/swiper-toggle-rg-dwim counsel-ag-map)
+
+      ;; More actions
+      (ivy-add-actions
+       #'swiper-isearch
+       '(("r" my/ivy-switch-to-counsel-rg "rg")
+         ("d" my/ivy-switch-to-rg-dwim "rg dwim")
+         ("s" my/ivy-switch-to-swiper "swiper")
+         ("a" my/ivy-switch-to-swiper-all "swiper all")))
+
+      (ivy-add-actions
+       #'swiper
+       '(("r" my/ivy-switch-to-counsel-rg "rg")
+         ("d" my/ivy-switch-to-rg-dwim "rg dwim")
+         ("s" my/ivy-switch-to-swiper-isearch "swiper isearch")
+         ("a" my/ivy-switch-to-swiper-all "swiper all")))
+
+      (ivy-add-actions
+       #'swiper-all
+       '(("g" my/ivy-switch-to-counsel-git-grep "git grep")
+         ("r" my/ivy-switch-to-counsel-rg "rg")
+         ("d" my/ivy-switch-to-rg-dwim "rg dwim")
+         ("S" my/ivy-switch-to-swiper "swiper")))
+
+      (ivy-add-actions
+       #'counsel-rg
+       '(("s" my/ivy-switch-to-swiper-isearch "swiper isearch")
+         ("S" my/ivy-switch-to-swiper "swiper")
+         ("a" my/ivy-switch-to-swiper-all "swiper all")
+         ("d" my/ivy-switch-to-rg-dwim "rg dwim")))
+
+      (ivy-add-actions
+       #'counsel-git-grep
+       '(("s" my/ivy-switch-to-swiper-isearch "swiper isearch")
+         ("S" my/ivy-switch-to-swiper "swiper")
+         ("r" my/ivy-switch-to-rg-dwim "rg")
+         ("d" my/ivy-switch-to-rg-dwim "rg dwim")
+         ("a" my/ivy-switch-to-swiper-all "swiper all")))
+
+      (ivy-add-actions
+       #'counsel-find-file
+       '(("g" my/ivy-switch-to-counsel-git "git")
+         ("z" my/ivy-switch-to-counsel-fzf "fzf")))
+
+      (ivy-add-actions
+       #'counsel-git
+       '(("f" my/ivy-switch-to-counsel-find-file "find file")
+         ("z" my/ivy-switch-to-counsel-fzf "fzf")))
+
+      (ivy-add-actions
+       'counsel-fzf
+       '(("f" my/ivy-switch-to-counsel-find-file "find file")
+         ("g" my/ivy-switch-to-counsel-git "git")))
+
+      ;; Integration with `projectile'
+      (with-eval-after-load 'projectile
+        (setq projectile-completion-system 'ivy))
+
+      ;; Integration with `magit'
+      (with-eval-after-load 'magit
+        (setq magit-completing-read-function 'ivy-completing-read)))
+
+    ;; Better sorting and filtering
+    (use-package prescient
+      :commands prescient-persist-mode
+      :init (prescient-persist-mode 1))
+
+    (use-package ivy-prescient
+      :commands ivy-prescient-re-builder
+      :custom-face
+      (ivy-minibuffer-match-face-1 ((t (:inherit font-lock-doc-face :foreground nil))))
+      :init
+      (defun ivy-prescient-non-fuzzy (str)
+        "Generate an Ivy-formatted non-fuzzy regexp list for the given STR.
+  This is for use in `ivy-re-builders-alist'."
+        (let ((prescient-filter-method '(literal regexp)))
+          (ivy-prescient-re-builder str)))
+
+      (setq ivy-prescient-retain-classic-highlighting t
+            ivy-re-builders-alist
+            '((counsel-ag                      . ivy-prescient-non-fuzzy)
+              (counsel-rg                      . ivy-prescient-non-fuzzy)
+              (counsel-pt                      . ivy-prescient-non-fuzzy)
+              (counsel-grep                    . ivy-prescient-non-fuzzy)
+              (counsel-imenu                   . ivy-prescient-non-fuzzy)
+              (counsel-yank-pop                . ivy-prescient-non-fuzzy)
+              (swiper                          . ivy-prescient-non-fuzzy)
+              (swiper-isearch                  . ivy-prescient-non-fuzzy)
+              (swiper-all                      . ivy-prescient-non-fuzzy)
+              (lsp-ivy-workspace-symbol        . ivy-prescient-non-fuzzy)
+              (lsp-ivy-global-workspace-symbol . ivy-prescient-non-fuzzy)
+              (insert-char                     . ivy-prescient-non-fuzzy)
+              (counsel-unicode-char            . ivy-prescient-non-fuzzy)
+              (t                               . ivy-prescient-re-builder))
+            ivy-prescient-sort-commands
+            '(:not swiper swiper-isearch ivy-switch-buffer
+                   lsp-ivy-workspace-symbol ivy-resume ivy--restore-session
+                   counsel-grep counsel-git-grep counsel-rg counsel-ag
+                   counsel-ack counsel-fzf counsel-pt counsel-imenu
+                   counsel-org-capture counsel-load-theme counsel-yank-pop
+                   counsel-recentf counsel-buffer-or-recentf))
+
+      (ivy-prescient-mode 1))
+
+    ;; Ivy integration for Projectile
+    (use-package counsel-projectile
+      :hook (counsel-mode . counsel-projectile-mode)
+      :init (setq counsel-projectile-grep-initial-input '(ivy-thing-at-point))))
+
+#+end_src
+
+** swiper
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+
+  (use-package swiper
+    :after evil
+    :bind (:map evil-normal-state-map
+           ("?"   . swiper)))
+	
+#+end_src
+
+** all-the-icons-ivy-rich
+
+Better experience with icons
+Enable it before`ivy-rich-mode' for better performance
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+
+  (use-package all-the-icons-ivy-rich
+    :if (icons-displayable-p)
+    :hook (ivy-mode . all-the-icons-ivy-rich-mode))
+
+#+end_src
+
+** ivy-rich
+
+More friendly display transformer for Ivy
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+
+  (use-package ivy-rich
+    :hook (;; Must load after `counsel-projectile'
+           (counsel-projectile-mode . ivy-rich-mode)
+           (ivy-rich-mode . (lambda ()
+                              "Use abbreviate in `ivy-rich-mode'."
+                              (setq ivy-virtual-abbreviate
+                                    (or (and ivy-rich-mode 'abbreviate) 'name)))))
+    :init
+    ;; For better performance
+    (setq ivy-rich-parse-remote-buffer nil))
+	
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+
+  (provide 'init-ivy)
+	
+#+end_src
+
+* Org mode
+
+Org configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-evil)
+  (require 'init-basic)
+
+#+end_src
+
+** General configuration
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (defun org-mode-setup ()
+    (variable-pitch-mode 1)
+    (visual-line-mode t)
+    (diff-hl-mode 0))
+
+  (use-package org
+    :defer t
+    :after yasnippet
+    :hook ((org-mode . org-mode-setup)
+           (org-mode . turn-on-auto-fill))
+    :bind (:map org-mode-map
+                ("M-k" . org-metaup)
+                ("M-j" . org-metadown))
+    :config
+    (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+    (setq org-ellipsis                      " ▾ "
+          org-src-fontify-natively          t
+          org-src-tab-acts-natively         t
+          org-edit-src-content-indentation  2
+          org-hide-block-startup            nil
+          org-src-preserve-indentation      nil
+          org-cycle-separator-lines         2
+          org-startup-folded                'all
+          org-src-window-setup              'current-window
+          org-edit-src-persistent-message   nil
+          org-return-follows-link           t
+          org-startup-indented              t)
+
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+    (use-package org-bullets
+      :hook (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.15)
+                    (org-level-3 . 1.10)
+                    (org-level-4 . 1.05)
+                    (org-level-5 . 1.0)
+                    (org-level-6 . 1.0)
+                    (org-level-7 . 1.0)
+                    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :font "SauceCodePro Nerd Font" :weight 'regular :height (cdr face)))
+
+    ;; set local scroll-margin
+    (add-hook 'org-mode-hook (lambda ()
+                               (set (make-variable-buffer-local 'scroll-margin) 0)))
+
+    (use-package visual-fill-column
+      :hook (org-mode . visual-fill-column-mode)
+      :config
+      (setq-default visual-fill-column-width       110
+                    visual-fill-column-center-text t))
+
+#+end_src
+
+** LaTeX
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
+        org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+
+  ;; (setq org-latex-create-formula-image-program 'imagemagick)
+
+  (with-eval-after-load 'ox-latex
+    (add-to-list 'org-latex-classes
+                 '("org-plain-latex"
+                   "\\documentclass{article}
+                    [NO-DEFAULT-PACKAGES]
+                    [PACKAGES]
+                    [EXTRA]"
+                   ("\\part{%s}"          . "\\part*{%s}")
+                   ("\\section{%s}"       . "\\section*{%s}")
+                   ("\\subsection{%s}"    . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}"     . "\\paragraph*{%s}"))))
+
+  (use-package org-fragtog
+    :hook (org-mode . org-fragtog-mode)
+    :config
+    (setq org-fragtog-preview-delay 0.25))
+
+  (defun my/update-theorem-and-lemma-counts ()
+    (interactive)
+    (setq latex-theorem-count 1
+          latex-lemma-count   1)
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\begin{theorem}" nil t)
+        (setq latex-theorem-count (1+ latex-theorem-count)))
+      (goto-char (point-min))
+      (while (re-search-forward "\\\\begin{lemma}" nil t)
+        (setq latex-lemma-count (1+ latex-lemma-count)))))
+
+  (defun my/inkscape-figures-create ()
+    (interactive)
+    (setq img-file-path (shell-command-to-string "inkscape-figures create"))
+    (if (not (equal img-file-path ""))
+        (progn
+          (insert img-file-path)
+          (if (not (equal org-inline-image-overlays nil))
+              (org-toggle-inline-images))
+          (org-toggle-inline-images))
+      (progn
+        (evil-previous-line)
+        (kill-whole-line 2))))
+
+  (defun my/insert-image ()
+    (interactive)
+    (setq old-default-directory default-directory
+          default-directory     "~/Pictures/screenshots/"
+          selected-file         (ivy-read "Choose file: " #'read-file-name-internal))
+    (setq default-directory     old-default-directory
+          img-file-path         (shell-command-to-string (concat "inkscape-figures move " selected-file)))
+    (if (not (equal img-file-path ""))
+        (progn
+          (insert img-file-path)
+          (if (not (equal org-inline-image-overlays nil))
+              (org-toggle-inline-images))
+          (org-toggle-inline-images))
+      (progn
+        (evil-previous-line)
+        (kill-whole-line 2))))
+
+  (defun my/inkscape-figures-edit (line-str)
+    (interactive)
+    (setq file-name (replace-regexp-in-string "\\[\\|\\]" "" line-str))
+    (shell-command-to-string (concat "inkscape-figures edit " file-name))
+    (org-toggle-inline-images)
+    (org-toggle-inline-images))
+
+  (defun my/change-environment ()
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (if (save-excursion (re-search-forward "align" nil t))
+          (replace-regexp "align" "gather")
+        (replace-regexp "gather" "align"))))
+
+  (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
+
+  (defun my/org-latex-export ()
+    (interactive)
+    (setq tex-file-name (org-latex-export-to-latex))
+    (shell-command-to-string (concat
+                              "sed -i -e '/\\\\begin{latex}/d; /\\\\end{latex}/d' ./" tex-file-name ";"
+                              "sed -i 's/^\\\\begin{theorem}/\\\\begin{boxtheorem}/' ./" tex-file-name ";"
+                              "sed -i 's/^\\\\end{theorem}/\\\\end{boxtheorem}/' ./" tex-file-name ";"
+                              "sed -i 's/^\\\\begin{lemma}/\\\\begin{boxlemma}/' ./" tex-file-name ";"
+                              "sed -i 's/^\\\\end{lemma}/\\\\end{boxlemma}/' ./" tex-file-name))
+    (setq pdf-file-name (org-latex-compile tex-file-name))
+    (async-shell-command (concat "zathura " pdf-file-name) nil nil))
+
+  (defun my/org-latex-mode ()
+    (interactive)
+    (setq org-src-window-setup        'split-window-below
+          org-babel-tangle-async-mode nil
+          my/enable-refresh-markers   t)
+    (aas-activate-for-major-mode)
+    (my/update-theorem-and-lemma-counts)
+    (my/org-load-prettify-symbols)
+    (set-face-background 'org-block-begin-line "#282c34")
+    (set-face-foreground 'org-block-begin-line "#282c34")
+    )
+
+#+end_src
+
+** Keybindings
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (setq org-jump-to-previous-block nil
+        org-latex-mode             nil)
+
+  (defun my/isearch-line-forward (regexp-p)
+    (catch 'my-catch
+      (narrow-to-region (line-beginning-position) (line-end-position))
+      (if (search-forward regexp-p nil t nil)
+          (progn
+            (widen)
+            (throw 'my-catch t)))
+      (widen)))
+
+  (defun my/just-one-space ()
+    (insert "x")
+    (if (my/isearch-line-forward "\\(")
+        (progn
+          (evil-backward-char 2)
+          (delete-horizontal-space)))
+    (backward-delete-char 1))
+
+  (defun my/org-edit-special ()
+    (interactive)
+    (setq line-str           (buffer-substring (line-beginning-position) (line-end-position))
+          processed-line-str (replace-regexp-in-string "\\[\\[[[:word:]\\|\\.\\|/]*\\]\\]" "" line-str)
+          current-layout     (shell-command-to-string "xkb-switch -p"))
+    (shell-command-to-string "xdotool key Mode_switch")
+    (if (and (equal processed-line-str "")
+             (not (equal line-str "")))
+        (my/inkscape-figures-edit line-str)
+      (progn
+        (org-edit-special)
+        (setq-local org-latex-mode t)
+        (if (equal current-layout "ru\n")
+            (setq change-lang t)
+          (setq change-lang nil)))))
+
+  (defun my/org-edit-src-exit ()
+    (interactive)
+    (yas-exit-all-snippets)
+    (if (equal (count-lines (point-min) (point-max)) 1)
+        (setq latex-fragment t)
+      (setq latex-fragment nil))
+    (org-edit-src-exit)
+    (cond (change-lang                (shell-command-to-string "xkb-switch -n")))
+    (cond (org-jump-to-previous-block (org-previous-block 1))
+          (latex-fragment             (progn
+                                        (if (org-in-item-p) (my/just-one-space))
+                                        (my/isearch-line-forward "\\)")
+                                        (org-latex-preview)))))
+
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
+  (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'evil-window-down)
+  (evil-define-key '(normal visual)        org-mode-map (kbd "J")   'org-next-visible-heading)
+  (evil-define-key '(normal visual)        org-mode-map (kbd "K")   'org-previous-visible-heading)
+  (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'org-insert-item)
+
+  (leader-key-def
+    "bt" 'org-babel-tangle
+    "i"  'my/org-edit-special
+    "q"  (lambda ()
+           (interactive)
+           (cond (org-latex-mode (my/org-edit-src-exit))
+                 (t              (evil-quit))))
+    "op" 'org-latex-preview
+    "el" 'my/org-latex-export
+    "ce" 'my/change-environment
+    "rc" 'my/update-theorem-and-lemma-counts)
+
+#+end_src
+
+** Auto tangle
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (setq org-babel-tangle-async-mode t)
+
+  (defun my/org-babel-tangle-async (file)
+    "Invoke `org-babel-tangle-file' asynchronously."
+    (message "Tangling %s..." (buffer-file-name))
+    (async-start
+     (let ((args (list file)))
+       `(lambda ()
+          (require 'org)
+          (let ((start-time (current-time)))
+            (apply #'org-babel-tangle-file ',args)
+            (format "%.2f" (float-time (time-since start-time))))))
+     (let ((message-string (format "Tangling %S completed after " file)))
+       `(lambda (tangle-time)
+          (message (concat ,message-string
+                           (format "%s seconds" tangle-time)))))))
+
+  (defun my/org-babel-tangle-current-buffer-async ()
+    "Tangle current buffer asynchronously."
+    (interactive)
+    (if org-babel-tangle-async-mode
+        (my/org-babel-tangle-async (buffer-file-name))))
+
+  (add-hook 'org-mode-hook (lambda ()
+                             (add-hook 'after-save-hook #'my/org-babel-tangle-current-buffer-async
+                                       'run-at-end 'only-in-org-mode)))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  )
+	
+  (provide 'init-org)
+
+#+end_src
+
+* Tex
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+
+  ;; -*- lexical-binding: t -*-
+	
+#+end_src
+
+** pdf-tools
+
+#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+
+  (use-package pdf-tools
+    :mode (("\\.pdf\\'" . pdf-view-mode))
+    :bind (:map pdf-view-mode-map
+                ;; ("SPC" . nil)
+                ;; ("SPC h v" . 'counsel-describe-variable-function)
+                ("j"       . pdf-view-next-line-or-next-page)
+                ("k"       . pdf-view-previous-line-or-previous-page)
+                ("J"       . pdf-view-next-page)
+                ("K"       . pdf-view-previous-page)
+                )
+    :hook (pdf-view-mode . solaire-mode)
+    :config
+    (pdf-tools-install :no-query)
+
+    (pdf-view-themed-minor-mode)
+
+    ;; (setq-default pdf-view-display-size 'fit-page)
+    (setq pdf-view-resize-factor 1.1))
+
+#+end_src
+
+** Auctex
+
+#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+
+  (use-package auctex
+    :hook ((LaTeX-mode . display-line-numbers-mode)
+           (LaTeX-mode . TeX-fold-mode)
+           (LaTeX-mode . turn-on-auto-fill)
+           (LaTeX-mode . (lambda ()
+                           (interactive)
+                           (define-key LaTeX-mode-map "\C-j" 'nil)
+                           (add-hook 'find-file-hook 'TeX-fold-buffer t)
+                           (electric-pair-local-mode -1)
+                           (my/latex-load-prettify-symbols))))
+    :custom
+    (TeX-auto-save                     t)
+    (TeX-parse-self                    t)
+    (TeX-PDF-mode                      t)
+    (TeX-file-line-error               t)
+    (TeX-fold-auto                     t)
+    (TeX-source-correlate-start-server t)
+    (TeX-view-program-selection        '((output-pdf "pdf-tools"))
+                                       TeX-source-correlate-start-server t)
+    (TeX-view-program-list             '(("pdf-tools" "TeX-pdf-tools-sync-view")))
+    (preview-auto-cache-preamble       t)
+    :config
+    (setq-default TeX-master nil)
+
+    (bind-key "SPC p d" #'preview-document LaTeX-mode-map))
+
+#+end_src
+
+** evil-tex
+
+#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+
+  ;; (use-package evil-tex
+  ;;   :hook (LaTeX-mode . evil-tex-mode))
+
+#+end_src
+
+** cdlatex
+
+#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+
+  (use-package cdlatex
+    :after yasnippet
+    ;; :hook ((LaTeX-mode  . turn-on-cdlatex)
+    ;;        (cdlatex-tab . my/cdlatex-in-yas-field))
+    :bind (:map cdlatex-mode-map
+                ("<tab>" . cdlatex-tab))
+    :config
+    (defun my/cdlatex-in-yas-field ()
+      ;; Check if we're at the end of the Yas field
+      (when-let* ((_ (overlayp yas--active-field-overlay))
+                  (end (overlay-end yas--active-field-overlay)))
+        (if (>= (point) end)
+            ;; Call yas-next-field if cdlatex can't expand here
+            (let ((s (thing-at-point 'sexp)))
+              (unless (and s (assoc (substring-no-properties s)
+                                    cdlatex-command-alist-comb))
+                (yas-next-field-or-maybe-expand)
+                t))
+          ;; otherwise expand and jump to the correct location
+          (let (cdlatex-tab-hook minp)
+            (setq minp
+                  (min (save-excursion (cdlatex-tab)
+                                       (point))
+                       (overlay-end yas--active-field-overlay)))
+            (goto-char minp) t)))))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+
+  (provide 'init-tex)
+
+#+end_src
+
+* Package
+
+Emacs Package management configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-custom)
+  (require 'init-funcs)
+	
+#+end_src
+
+** Save selected packages
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+
+  ;; HACK: DO NOT copy package-selected-packages to init/custom file forcibly.
+  ;; https://github.com/jwiegley/use-package/issues/383#issuecomment-247801751
+  (defun my/save-selected-packages (&optional value)
+    "Set `package-selected-packages' to VALUE but don't save to `custom-file'."
+    (when value
+      (setq package-selected-packages value)))
+  (advice-add 'package--save-selected-packages :override #'my/save-selected-packages)
+	
+#+end_src
+
+** Set ELPA packages
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+
+  (set-package-archives centaur-package-archives nil nil t)
+	
+#+end_src
+
+** Initialize packages
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+
+  (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
+    (setq package-enable-at-startup nil)          ; To prevent initializing twice
+    (package-initialize))
+	
+#+end_src
+
+** use-pakcage
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+
+  ;; Setup `use-package'
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  ;; Should set before loading `use-package'
+  (eval-and-compile
+    (setq use-package-always-ensure        t)
+    (setq use-package-always-defer         t)
+    (setq use-package-expand-minimally     t)
+    (setq use-package-enable-imenu-support t))
+
+  (eval-when-compile
+    (require 'use-package))
+
+  ;; Required by `use-package'
+  (use-package diminish)
+  (use-package bind-key)
+
+#+end_src
+
+** Update GPG keyring for GNU ELPA
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+
+  (use-package gnu-elpa-keyring-update)
+	
+#+end_src
+
+** Auto update packages
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+
+  (use-package auto-package-update
+    :init
+    (setq auto-package-update-delete-old-versions t
+          auto-package-update-hide-results t)
+    (defalias 'upgrade-packages #'auto-package-update-now))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+	
+  (provide 'init-package)
+
+#+end_src
+
+* Prog
+
+General programming configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  ;; -*- lexical-binding: t -*-
+	
+  (require 'init-custom)
+
+#+end_src
+
+** dump-mode
+
+Jump to definition
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (use-package dumb-jump
+    :bind (("M-g o" . dumb-jump-go-other-window)
+           ("M-g j" . dumb-jump-go)
+           ("M-g i" . dumb-jump-go-prompt)
+           ("M-g x" . dumb-jump-go-prefer-external)
+           ("M-g z" . dumb-jump-go-prefer-external-other-window)
+           ("C-M-j" . dumb-jump-hydra/body))
+    :init
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+    (setq dumb-jump-prefer-searcher 'rg
+          dumb-jump-selector        'ivy))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (provide 'init-prog)
+	
+#+end_src
+
+* Projectile
+
+Projectile configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-projectile.el
+
+  ;; -*- lexical-binding: t -*-
+	
+#+end_src
+
+** projectile
+
+Manage and navigate projects
+
+#+begin_src emacs-lisp :tangle ./lisp/init-projectile.el
+
+  (use-package projectile
+    :diminish
+    :bind (:map projectile-mode-map
+           ("s-t"   . projectile-find-file) ; `cmd-t' or `super-t'
+           ("C-c p" . projectile-command-map))
+    :hook (after-init . projectile-mode)
+    :init
+    (setq projectile-mode-line-prefix ""
+          projectile-sort-order       'recentf
+          projectile-use-git-grep     t)
+    :config
+    ;; (projectile-update-mode-line)         ; Update mode-line at the first time
+
+    ;; Use the faster searcher to handle project files: ripgrep `rg'.
+    (when (and (not (executable-find "fd"))
+               (executable-find "rg"))
+      (setq projectile-generic-command
+            (let ((rg-cmd ""))
+              (dolist (dir projectile-globally-ignored-directories)
+                (setq rg-cmd (format "%s --glob '!%s'" rg-cmd dir)))
+              (concat "rg -0 --files --color=never --hidden" rg-cmd))))
+
+    ;; Support Perforce project
+    (let ((val (or (getenv "P4CONFIG") ".p4config")))
+      (add-to-list 'projectile-project-root-files-bottom-up val)))
+
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-projectile.el
+
+  (provide 'init-projectile)
+	
+#+end_src
+
+* Treemacs
+
+Treemacs: A tree layout file explorer.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-custom)
+  (require 'init-evil)
+  (require 'init-vcs)
+
+#+end_src
+
+** treemacs
+
+#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+
+  (defun my/treemacs-select-window ()
+    (interactive)
+    (if (equal major-mode 'treemacs-mode)
+        (treemacs)
+      (treemacs-select-window)))
+
+  (use-package treemacs
+    :after evil
+    :commands (treemacs-follow-mode
+               treemacs-filewatch-mode
+               treemacs-git-mode)
+    :bind (:map treemacs-mode-map
+           ("d"   . treemacs-delete)
+           ("r"   . treemacs-rename)
+           ("C-n" . treemacs)
+           ("C-/" . treemacs-helpful-hydra)
+           ("C-j" . evil-window-down)
+           :map evil-normal-state-map
+           ("C-n" . my/treemacs-select-window)
+           :map evil-visual-state-map
+           ("C-n" . my/treemacs-select-window)
+           :map evil-insert-state-map
+           ("C-n" . my/treemacs-select-window))
+    :custom-face (treemacs-git-modified-face ((t (:foreground "#51afef"))))
+    :config
+    (setq treemacs-collapse-dirs     0
+          treemacs-sorting           'alphabetic-asc
+          treemacs-follow-after-init t
+          treemacs-width             30
+          treemacs-file-event-delay  500
+          treemacs-no-png-images     (not centaur-icon))
+    :config
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-git-mode 'deferred)
+
+    (add-hook 'treemacs-mode-hook (lambda ()
+                                    (set (make-variable-buffer-local 'scroll-margin) 0))))
+
+#+end_src
+
+** treemacs-evil
+
+#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+
+  (use-package treemacs-evil
+    :after treemacs evil)
+
+#+end_src
+
+** treemacs-projectile
+
+#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+
+  (use-package treemacs-projectile
+    :after treemacs projectile
+    :bind (:map projectile-command-map
+           ("h" . treemacs-projectile)))
+
+#+end_src
+
+** treemacs-magit
+
+#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+
+  (use-package treemacs-magit
+    :after treemacs magit
+    :commands treemacs-magit--schedule-update
+    :hook ((magit-post-commit
+            git-commit-post-finish
+            magit-post-stage
+            magit-post-unstage)
+           . treemacs-magit--schedule-update))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+	
+  (provide 'init-treemacs)
+
+#+end_src
+
+* UI
+
+Visual (UI) configurations for better lookings and appearances.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'init-custom)
+  (require 'init-funcs)
+
+#+end_src
+
+** Optimization
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (setq idle-update-delay 1.0)
+
+  (setq-default cursor-in-non-selected-windows nil)
+  (setq highlight-nonselected-windows nil)
+
+  (setq fast-but-imprecise-scrolling t)
+  (setq redisplay-skip-fontification-on-input t)
+
+#+end_src
+
+** Inhibit resizing frame
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (setq frame-inhibit-implied-resize t
+        frame-resize-pixelwise       t)
+
+#+end_src
+
+** Theme
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  ;; Make certain buffers grossly incandescent
+  ;; Must before loading the theme
+  (use-package solaire-mode
+    :hook (((change-major-mode
+             after-revert
+             ediff-prepare-buffer) . turn-on-solaire-mode)
+           (minibuffer-setup       . solaire-mode-fix-minibuffer))
+    :init
+    (solaire-global-mode 1))
+
+  (use-package doom-themes
+    :custom-face (doom-modeline-buffer-file ((t (:inherit (mode-line bold)))))
+    :custom (doom-themes-treemacs-theme "doom-colors")
+    :init
+    (load-theme 'doom-one t)
+    :config
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable customized theme
+    (doom-themes-treemacs-config))
+
+#+end_src
+
+** Mode-line
+*** doom-modeline
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (use-package doom-modeline
+    :custom
+    (doom-modeline-icon             t)
+    (doom-modeline-minor-modes      t)
+    (doom-modeline-unicode-fallback t)
+    (doom-modeline-mu4e             nil)
+    (doom-modeline-height           34)
+    :hook (after-init . doom-modeline-mode)
+    :init
+    ;; Prevent flash of unstyled modeline at startup
+    (unless after-init-time
+      (setq doom-modeline--default-format mode-line-format)
+      (setq-default mode-line-format nil)))
+
+#+end_src
+
+*** hide-mode-line
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (use-package hide-mode-line
+    :hook (((completion-list-mode
+             completion-in-region-mode
+             flycheck-error-list-mode) . hide-mode-line-mode)))
+	
+#+end_src
+
+*** minions
+
+A minor-mode menu for mode-line
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (use-package minions
+    :hook (doom-modeline-mode . minions-mode))
+
+#+end_src
+
+** Icons
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (use-package all-the-icons
+    :if (display-graphic-p)
+    :init (unless (find-font (font-spec :name "all-the-icons"))
+            (all-the-icons-install-fonts t)))
+
+#+end_src
+
+** Line numbers
+
+Show native line numbers
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (use-package display-line-numbers
+    :ensure nil
+    :hook (prog-mode . display-line-numbers-mode))
+	
+#+end_src
+
+** Suppress GUI features
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (setq use-file-dialog                   nil
+        use-dialog-box                    nil
+        inhibit-startup-screen            t
+        inhibit-startup-echo-area-message t)
+
+#+end_src
+
+** Display dividers between windows
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (setq window-divider-default-places       t
+        window-divider-default-bottom-width 1
+        window-divider-default-right-width  1)
+
+  (add-hook 'window-setup-hook #'window-divider-mode)
+
+#+end_src
+
+** text-scale
+
+Easily adjust the font size
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (global-set-key (kbd "C-=") 'text-scale-increase)
+  (global-set-key (kbd "C--") 'text-scale-decrease)
+  (global-set-key (kbd "C-0") (lambda () (text-scale-mode 0)))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+
+  (provide 'init-ui)
+	
+#+end_src
+
+* Utils
+
+Some usefule Utilities.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+
+  ;; -*- lexical-binding: t -*-
+	
+#+end_src
+
+** which-key
+
+Display available keybindings in popup
+
+#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+
+  (use-package which-key
+    :diminish
+    :hook (after-init . which-key-mode)
+    :init (setq which-key-max-description-length 30
+                which-key-show-remaining-keys t))
+
+#+end_src
+
+** Search tools
+
+#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+
+  ;; ;; Writable `grep' buffer
+  ;; (use-package wgrep
+  ;;   :init
+  ;;   (setq wgrep-auto-save-buffer t
+  ;;         wgrep-change-readonly-file t))
+
+  ;; ;; Fast search tool `ripgrep'
+  ;; (use-package rg
+  ;;   :defines projectile-command-map
+  ;;   :hook (after-init . rg-enable-default-bindings)
+  ;;   :bind (:map rg-global-map
+  ;;          ("c" . rg-dwim-current-dir)
+  ;;          ("f" . rg-dwim-current-file)
+  ;;          ("m" . rg-menu)
+  ;;          :map rg-mode-map
+  ;;          ("m" . rg-menu))
+  ;;   :init (setq rg-group-result t
+  ;;               rg-show-columns t)
+  ;;   :config
+  ;;   (cl-pushnew '("tmpl" . "*.tmpl") rg-custom-type-aliases)
+
+  ;;   (with-eval-after-load 'projectile
+  ;;     (defalias 'projectile-ripgrep #'rg-project)
+  ;;     (bind-key "s R" #'rg-project projectile-command-map))
+
+  ;;   (with-eval-after-load 'counsel
+  ;;     (bind-keys
+  ;;      :map rg-global-map
+  ;;      ("R" . counsel-rg)
+  ;;      ("F" . counsel-fzf))))
+
+#+end_src
+
+** real-auto-save
+
+#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+
+  (use-package real-auto-save
+    :hook (find-file . real-auto-save-mode)
+    :config
+    (setq real-auto-save-interval 1))
+
+#+end_src
+
+** Process
+
+#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+
+  ;; (use-package proced
+  ;;   :ensure nil
+  ;;   :init
+  ;;   (setq-default proced-format 'verbose)
+  ;;   (setq proced-auto-update-flag t
+  ;;         proced-auto-update-interval 3))
+
+#+end_src
+
+** Misc
+
+#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+
+  (use-package copyit)                    ; copy path, url, etc.
+  (use-package esup)                      ; Emacs startup profiler
+  (use-package list-environment)
+  (use-package memory-usage)
+  (use-package daemons)                   ; system services/daemons
+  (use-package command-log-mode)
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+
+  (provide 'init-utils)
+	
+#+end_src
+
+* VCS
+
+Version control systems.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+
+  ;; -*- lexical-binding: t -*-
+
+#+end_src
+
+** magit
+
+#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+
+  (use-package magit
+    :bind (:map magit-status-mode-map
+                ("j" . evil-next-line)
+                ("k" . evil-previous-line))
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+  (leader-key-def
+    "g"  'magit-status
+    "ef" 'with-editor-finish)
+
+#+end_src
+
+** magit-todos
+
+Show TODOs in magit
+
+#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+
+  (use-package magit-todos
+    :after magit
+    :init
+    (setq magit-todos-nice (if (executable-find "nice") t nil))
+    (magit-todos-mode 1))
+
+#+end_src
+
+** git-timemachine
+
+Walk through git revisions of a file
+
+#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+
+  (use-package git-timemachine
+    :custom-face
+    (git-timemachine-minibuffer-author-face ((t (:inherit success))))
+    (git-timemachine-minibuffer-detail-face ((t (:inherit warning))))
+    :bind (:map vc-prefix-map
+           ("t" . git-timemachine))
+    :hook (before-revert . (lambda ()
+                             (when (bound-and-true-p git-timemachine-mode)
+                               (user-error "Cannot revert the timemachine buffer")))))
+	
+#+end_src
+
+** Git related modes
+
+#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+
+  ;; (use-package gitattributes-mode)
+  ;; (use-package gitconfig-mode)
+  ;; (use-package gitignore-mode)
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+
+  (provide 'init-vcs)
+	
+#+end_src
+
+* Window
+
+Window configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+
+  ;; -*- lexical-binding: t -*-
+
+#+end_src
+
+** windmove
+
+Directional window-selection routines
+
+#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+
+  (use-package windmove
+    :ensure nil
+    :hook (after-init . windmove-default-keybindings))
+
+#+end_src
+
+** winner
+
+Restore old window configurations
+
+#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+
+  (use-package winner
+    :ensure nil
+    :commands (winner-undo winner-redo)
+    :hook (after-init . winner-mode)
+    :init (setq winner-boring-buffers '("*Completions*"
+                                        "*Compile-Log*"
+                                        "*inferior-lisp*"
+                                        "*Fuzzy Completions*"
+                                        "*Apropos*"
+                                        "*Help*"
+                                        "*cvs*"
+                                        "*Buffer List*"
+                                        "*Ibuffer*"
+                                        "*esh command on file*")))
+	
+#+end_src
+
+** ace-window
+
+Quickly switch windows
+
+#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+
+  (use-package ace-window
+    :custom-face
+    ;; (aw-leading-char-face ((t (:inherit font-lock-keyword-face :bold t :height 3.0))))
+    ;; (aw-minibuffer-leading-char-face ((t (:inherit font-lock-keyword-face :bold t :height 2.0))))
+    ;; (aw-mode-line-face ((t (:inherit mode-line-emphasis :bold t))))
+    :bind (([remap other-window] . ace-window)
+           ("C-c w" . ace-window-hydra/body))
+    :hook (emacs-startup . ace-window-display-mode)
+    :config
+    (defun toggle-window-split ()
+      (interactive)
+      (if (= (count-windows) 2)
+          (let* ((this-win-buffer (window-buffer))
+                 (next-win-buffer (window-buffer (next-window)))
+                 (this-win-edges (window-edges (selected-window)))
+                 (next-win-edges (window-edges (next-window)))
+                 (this-win-2nd (not (and (<= (car this-win-edges)
+                                             (car next-win-edges))
+                                         (<= (cadr this-win-edges)
+                                             (cadr next-win-edges)))))
+                 (splitter
+                  (if (= (car this-win-edges)
+                         (car (window-edges (next-window))))
+                      'split-window-horizontally
+                    'split-window-vertically)))
+            (delete-other-windows)
+            (let ((first-win (selected-window)))
+              (funcall splitter)
+              (if this-win-2nd (other-window 1))
+              (set-window-buffer (selected-window) this-win-buffer)
+              (set-window-buffer (next-window) next-win-buffer)
+              (select-window first-win)
+              (if this-win-2nd (other-window 1))))
+        (user-error "`toggle-window-split' only supports two windows")))
+
+    ;; Bind hydra to dispatch list
+    (add-to-list 'aw-dispatch-alist '(?w ace-window-hydra/body) t)
+
+    ;; Select widnow via `M-1'...`M-9'
+    (defun aw--select-window (number)
+      "Slecet the specified window."
+      (when (numberp number)
+        (let ((found nil))
+          (dolist (win (aw-window-list))
+            (when (and (window-live-p win)
+                       (eq number (string-to-number (window-parameter win 'ace-window-path))))
+              (setq found t)
+              (aw-switch-to-window win)))
+          (unless found
+            (message "No specified window: %d" number)))))
+    (dotimes (n 9)
+      (bind-key (format "M-%d" (1+ n))
+                (lambda ()
+                  (interactive)
+                  (aw--select-window (1+ n))))))
+
+#+end_src
+
+** shackle
+
+Enforce rules for popups
+
+#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+
+  (use-package shackle
+    :functions org-switch-to-buffer-other-window
+    :commands shackle-display-buffer
+    :hook (after-init . shackle-mode)
+    :config
+    (with-no-warnings
+      (defvar shackle--popup-window-list nil) ; all popup windows
+      (defvar-local shackle--current-popup-window nil) ; current popup window
+      (put 'shackle--current-popup-window 'permanent-local t)
+
+      (defun shackle-last-popup-buffer ()
+        "View last popup buffer."
+        (interactive)
+        (ignore-errors
+          (display-buffer shackle-last-buffer)))
+      ;; (bind-key "C-h z" #'shackle-last-popup-buffer)
+
+      ;; Add keyword: `autoclose'
+      (defun shackle-display-buffer-hack (fn buffer alist plist)
+        (let ((window (funcall fn buffer alist plist)))
+          (setq shackle--current-popup-window window)
+
+          (when (plist-get plist :autoclose)
+            (push (cons window buffer) shackle--popup-window-list))
+          window))
+
+      (defun shackle-close-popup-window-hack (&rest _)
+        "Close current popup window via `C-g'."
+        (setq shackle--popup-window-list
+              (cl-loop for (window . buffer) in shackle--popup-window-list
+                       if (and (window-live-p window)
+                               (equal (window-buffer window) buffer))
+                       collect (cons window buffer)))
+        ;; `C-g' can deactivate region
+        (when (and (called-interactively-p 'interactive)
+                   (not (region-active-p)))
+          (let (window buffer)
+            (if (one-window-p)
+                (progn
+                  (setq window (selected-window))
+                  (when (equal (buffer-local-value 'shackle--current-popup-window
+                                                   (window-buffer window))
+                               window)
+                    (winner-undo)))
+              (setq window (caar shackle--popup-window-list))
+              (setq buffer (cdar shackle--popup-window-list))
+              (when (and (window-live-p window)
+                         (equal (window-buffer window) buffer))
+                (delete-window window)
+
+                (pop shackle--popup-window-list))))))
+
+      (advice-add #'keyboard-quit :before #'shackle-close-popup-window-hack)
+      (advice-add #'shackle-display-buffer :around #'shackle-display-buffer-hack))
+
+    ;; HACK: compatibility issue with `org-switch-to-buffer-other-window'
+    (advice-add #'org-switch-to-buffer-other-window :override #'switch-to-buffer-other-window)
+
+    ;; rules
+    (setq shackle-default-size 0.4
+          shackle-default-alignment 'below
+          shackle-default-rule nil
+          shackle-rules
+          '((("*Help*" "*Apropos*") :select t :size 0.3 :align 'below :autoclose t)
+            (compilation-mode :select t :size 0.3 :align 'below :autoclose t)
+            (comint-mode :select t :size 0.4 :align 'below :autoclose t)
+            ("*Completions*" :size 0.3 :align 'below :autoclose t)
+            ("*Pp Eval Output*" :size 15 :align 'below :autoclose t)
+            ("*Backtrace*" :select t :size 15 :align 'below)
+            (("*Warnings*" "*Messages*") :size 0.3 :align 'below :autoclose t)
+            ("^\\*.*Shell Command.*\\*$" :regexp t :size 0.3 :align 'below :autoclose t)
+            ("\\*[Wo]*Man.*\\*" :regexp t :select t :align 'below :autoclose t)
+            ("*Calendar*" :select t :size 0.3 :align 'below)
+            ;; (("*shell*" "*eshell*" "*ielm*") :popup t :size 0.3 :align 'below)
+            ("^\\*vc-.*\\*$" :regexp t :size 0.3 :align 'below :autoclose t)
+            ("*gud-debug*" :select t :size 0.4 :align 'below :autoclose t)
+            ("\\*ivy-occur .*\\*" :regexp t :select t :size 0.3 :align 'below)
+            (" *undo-tree*" :select t)
+            ("*quickrun*" :select t :size 15 :align 'below)
+            ("*tldr*" :size 0.4 :align 'below :autoclose t)
+            ("*osx-dictionary*" :size 20 :align 'below :autoclose t)
+            ("*Youdao Dictionary*" :size 15 :align 'below :autoclose t)
+            ("*Finder*" :select t :size 0.3 :align 'below :autoclose t)
+            ("^\\*macro expansion\\**" :regexp t :size 0.4 :align 'below)
+            ("^\\*elfeed-entry" :regexp t :size 0.7 :align 'below :autoclose t)
+            (" *Install vterm* " :size 0.35 :same t :align 'below)
+            (("*Paradox Report*" "*package update results*") :size 0.2 :align 'below :autoclose t)
+            ("*Package-Lint*" :size 0.4 :align 'below :autoclose t)
+            (("*Gofmt Errors*" "*Go Test*") :select t :size 0.3 :align 'below :autoclose t)
+            ("*How Do You*" :select t :size 0.5 :align 'below :autoclose t)
+
+            (("*Org Agenda*" " *Agenda Commands*" " *Org todo*" "*Org Dashboard*" "*Org Select*") :select t :size 0.1 :align 'below :autoclose t)
+            (("\\*Capture\\*" "^CAPTURE-.*\\.org*") :regexp t :select t :size 0.3 :align 'below :autoclose t)
+
+            ("*ert*" :size 15 :align 'below :autoclose t)
+            (overseer-buffer-mode :size 15 :align 'below :autoclose t)
+
+            (" *Flycheck checkers*" :select t :size 0.3 :align 'below :autoclose t)
+            ((flycheck-error-list-mode flymake-diagnostics-buffer-mode)
+             :select t :size 0.25 :align 'below :autoclose t)
+
+            (("*lsp-help*" "*lsp session*") :size 0.3 :align 'below :autoclose t)
+            ("*DAP Templates*" :select t :size 0.4 :align 'below :autoclose t)
+            (dap-server-log-mode :size 15 :align 'below :autoclose t)
+            ("*rustfmt*" :select t :size 0.3 :align 'below :autoclose t)
+            ((rustic-compilation-mode rustic-cargo-clippy-mode rustic-cargo-outdated-mode rustic-cargo-test-mode) :select t :size 0.3 :align 'below :autoclose t)
+
+            (profiler-report-mode :select t :size 0.5 :align 'below)
+            ("*ELP Profiling Restuls*" :select t :size 0.5 :align 'below)
+
+            ((inferior-python-mode inf-ruby-mode swift-repl-mode) :size 0.4 :align 'below)
+            ("*prolog*" :size 0.4 :align 'below)
+
+            ((grep-mode rg-mode deadgrep-mode ag-mode pt-mode) :select t :size 0.4 :align 'below)
+            (Buffer-menu-mode :select t :size 20 :align 'below :autoclose t)
+            (gnus-article-mode :select t :size 0.7 :align 'below :autoclose t)
+            (helpful-mode :select t :size 0.3 :align 'below :autoclose t)
+            ((process-menu-mode cargo-process-mode) :select t :size 0.3 :align 'below :autoclose t)
+            (list-environment-mode :select t :size 0.3 :align 'below :autoclose t)
+            (tabulated-list-mode :size 0.4 :align 'below))))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+
+  (provide 'init-window)
+	
+#+end_src
+
+* Snippets
+
+Snippets configurations.
+
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-snippets.el
+
+  ;; -*- lexical-binding: t -*-
+
+  (require 'warnings)
+
+#+end_src
+
+** yasnippet
+
+#+begin_src emacs-lisp :tangle ./lisp/init-snippets.el
+
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    ;; :after cdlatex
+    :hook (after-init . yas-global-mode)
+    ;; :bind (:map yas-keymap
+    ;;             ("<tab>" . my/yas-next-field-or-cdlatex)
+    ;;             ("TAB"   . my/yas-next-field-or-cdlatex))
+    :config
+    (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
+
+    (defun my/delete-one-blank-line ()
+      (interactive)
+      (save-excursion
+        (if (re-search-forward "^[[:space:]]*$" nil t)
+            (kill-whole-line))))
+
+    (defun my/yas-next-field-or-cdlatex ()
+      (interactive)
+      "Jump to the next Yas field correctly with cdlatex active."
+      (if (bound-and-true-p cdlatex-mode)
+          (cdlatex-tab)
+        (yas-next-field-or-maybe-expand))))
+
+#+end_src
+
+** Auto Activating Snippets
+
+#+begin_src emacs-lisp :tangle ./lisp/init-snippets.el
+
+  (defun my/change-lang-in-snippet ()
+    (shell-command-to-string "xkb-switch -n")
+    (remove-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet t))
+
+  (use-package aas
+    :hook (LaTeX-mode . aas-activate-for-major-mode)
+    :config
+    (aas-set-snippets 'org-mode
+                      ";lb" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "latex block"))
+                              (my/delete-one-blank-line))
+                      "жди" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "latex block"))
+                              (my/delete-one-blank-line))
+                      "tm"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "theorem"))
+                              (my/delete-one-blank-line))
+                      "еь"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "theorem"))
+                              (my/delete-one-blank-line))
+                      "lm"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "lemma"))
+                              (my/delete-one-blank-line))
+                      "дь"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "lemma"))
+                              (my/delete-one-blank-line))
+                      "mk"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\($0\\\\)")
+                              (my/org-edit-special)
+                              (evil-insert-state)
+                              (search-forward "(" nil t nil))
+                      "ьл"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\($0\\\\)")
+                              (my/org-edit-special)
+                              (evil-insert-state)
+                              (search-forward "(" nil t nil))
+                      "ms"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\($1\\\\)$0"))
+                      "ьы"  (lambda ()
+                              (interactive)
+                              (shell-command-to-string "xdotool key Mode_switch")
+                              (yas-expand-snippet "\\\\($1\\\\)$0"))
+                      "dm"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "display math"))
+                              (my/delete-one-blank-line))
+                      "вь"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "display math"))
+                              (my/delete-one-blank-line))
+                      "gr"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "gather"))
+                              (my/delete-one-blank-line))
+                      "пк"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "gather"))
+                              (my/delete-one-blank-line))
+                      ";fn" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "[fn::$1]$0"))
+                      ";fg" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "figure")))
+                      "жап" (lambda ()
+                              (interactive)
+                              (shell-command-to-string "xdotool key Mode_switch")
+                              (yas-expand-snippet (yas-lookup-snippet "figure")))
+                      ";im" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "image")))
+                      "жшь" (lambda ()
+                              (interactive)
+                              (shell-command-to-string "xdotool key Mode_switch")
+                              (yas-expand-snippet (yas-lookup-snippet "image")))
+                      ";cp" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "#+caption: $0")
+                              (shell-command-to-string "xkb-switch -n"))
+                      "жсз" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "#+caption: $0"))
+                      "\\\\" (lambda ()
+                               (interactive)
+                               (yas-expand-snippet " \\\\\\\\")))
+
+    (aas-set-snippets 'latex-mode
+                      "mk"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "$$1$"))
+                      "ьл"  (lambda ()
+                              (interactive)
+                              (shell-command-to-string "xdotool key Mode_switch")
+                              (yas-expand-snippet "$$1$")
+                              (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
+                      "dm"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "align"))
+                              (my/delete-one-blank-line))
+                      "вь"  (lambda ()
+                              (interactive)
+                              (shell-command-to-string "xdotool key Mode_switch")
+                              (yas-expand-snippet (yas-lookup-snippet "align"))
+                              (my/delete-one-blank-line))
+                      "gr"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet (yas-lookup-snippet "gather"))
+                              (my/delete-one-blank-line))
+                      "пк"  (lambda ()
+                              (interactive)
+                              (shell-command-to-string "xdotool key Mode_switch")
+                              (yas-expand-snippet (yas-lookup-snippet "gather"))
+                              (my/delete-one-blank-line))
+                      "("   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "($1)$0"))
+                      "["   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "[$1]$0"))
+                      "\\{" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\{$1\\\\}$0")))
+
+    (aas-set-snippets 'latex-mode
+                      :cond #'texmathp
+                      "*"     "\\cdot "
+                      "  "    "\\ "
+                      "xx"    "\\times "
+                      "..."   "\\ldots "
+                      "->"    "\\to "
+                      "=="    "&="
+                      "=>"    "\\Rightarrow "
+                      "=<"    "\\Leftarrow "
+                      ">>"    "\\gg "
+                      "<<"    "\\ll "
+                      "<>"    "\\Leftrightarrow "
+                      "<="    "\\leq "
+                      ">="    "\\geq "
+                      ";="    "\\neq "
+                      "pm"    "\\pm "
+                      "mp"    "\\mp "
+                      "~~"    "\\sim "
+                      "~="    "\\approx "
+                      "||"    "\\mid "
+                      "|="    "\\models "
+                      ";a"    "\\alpha "
+                      ";b"    "\\beta "
+                      ";g"    "\\gamma "
+                      ";G"    "\\Gamma "
+                      ";d"    "\\delta "
+                      ";D"    "\\Delta "
+                      ";e"    "\\varepsilon "
+                      ";z"    "\\zeta "
+                      ";h"    "\\eta "
+                      ";q"    "\\theta "
+                      ";Q"    "\\Theta "
+                      ";i"    "\\iota "
+                      ";k"    "\\kappa "
+                      ";l"    "\\lambda "
+                      ";L"    "\\Lambda "
+                      ";m"    "\\mu "
+                      ";n"    "\\nu "
+                      ";x"    "\\xi "
+                      ";X"    "\\Xi "
+                      ";p"    "\\pi "
+                      ";P"    "\\Pi "
+                      ";r"    "\\rho "
+                      ";s"    "\\sigma "
+                      ";S"    "\\Sigma "
+                      ";t"    "\\tau "
+                      ";u"    "\\upsilon "
+                      ";U"    "\\Upsilon "
+                      ";f"    "\\varphi "
+                      ";F"    "\\Phi "
+                      ";o"    "\\chi "
+                      ";y"    "\\psi "
+                      ";Y"    "\\Psi "
+                      ";w"    "\\omega "
+                      ";W"    "\\Omega "
+                      ";8"    "\\infty "
+                      ";0"    "\\emptyset "
+                      "acos"  "\\arccos "
+                      "acot"  "\\arccot "
+                      "acsc"  "\\arccsc "
+                      "asec"  "\\arcsec "
+                      "asin"  "\\arcsin "
+                      "atan"  "\\arctan "
+                      "atg"   "\\arctg "
+                      "tg"    "\\tg "
+                      "ctg"   "\\ctg "
+                      "cos"   "\\cos "
+                      "cot"   "\\cot "
+                      "csc"   "\\csc "
+                      "csec"  "\\cosec "
+                      "sin"   "\\sin "
+                      "exp"   "\\exp"
+                      "ln"    "\\ln "
+                      "log"   "\\log "
+                      "perp"  "\\perp"
+                      "min"   "\\min "
+                      "max"   "\\max "
+                      "inn"   "\\in "
+                      "cup"   "\\cup "
+                      "cap"   "\\cap "
+                      "bcup"  "\\bigcup "
+                      "bcap"  "\\bigcap "
+                      "notin" "\\not\\in "
+                      "cc"    "\\subset "
+                      "dg"    "\\degree "
+                      "vd"    "\\ \\vdots\\ "
+                      "vv"    "\\vee "
+                      "nvv"   "\\wedge "
+                      "qq"    "\\quad "
+                      "md"    "\\mathrm{d} "
+                      "eq"    "\\equiv "
+                      "ds"    "\\displaystyle "
+                      "AA"    "\\forall "
+                      "EE"    "\\exists "
+                      "nEE"   "\\nexists "
+                      "NN"    "\\mathbb{N}"
+                      "ZZ"    "\\mathbb{Z}"
+                      "QQ"    "\\mathbb{Q}"
+                      "RR"    "\\mathbb{R}"
+                      "CC"    "\\mathbb{C}"
+                      "sr"    "^2"
+                      "cb"    "^3"
+                      "inv"   "^{-1}"
+                      "td"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "^{$1}$0"))
+                      "^"     (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\hat{$1}$0"))
+                      "_"     (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "_{$1}$0"))
+                      "//"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\frac{$1}{$2}$0"))
+                      "dd"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\frac{\\mathrm{d} $1}{\\mathrm{d} ${2:t}}$0"))
+                      "prt"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\frac{\\partial $1}{\\partial ${2:x}}$0"))
+                      "set"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\set{$1}{$2}$0"))
+                      "mod"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\Mod{$1}$0"))
+                      "bar"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\bar{$1}$0"))
+                      "oln"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\overline{$1}$0"))
+                      "uln"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\overline{$1}$0"))
+                      "obr"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\overbrace{$1}^{$2}$0"))
+                      "ubr"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\underbrace{$1}_{$2}$0"))
+                      ";T"    (lambda ()
+                                (interactive)
+                                (shell-command-to-string "xkb-switch -n")
+                                (yas-expand-snippet "\\T{$1} $0")
+                                (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
+                      "vc"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\vec{$1}$0"))
+                      "sq"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\sqrt{$1}$0"))
+                      "Sq"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\sqrt[$1]{$2}$0"))
+                      "cas"   (lambda ()
+                                (interactive)
+                                (if (not (my/current-line-empty-p))
+                                    (evil-open-below 1))
+                                (yas-expand-snippet "\\begin{cases}\n$1\\\\\\\\\n    $2\n\\end{cases}$0"))
+                      "scs"   (lambda ()
+                                (interactive)
+                                (if (not (my/current-line-empty-p))
+                                    (evil-open-below 1))
+                                (yas-expand-snippet "\\begin{scases}\n$1\\\\\\\\\n    $2\n\\end{scases}$0"))
+                      "tg"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\tag{$0}"))
+                      "rng"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "${1:1},${2:2},\\ldots,${3:n}$0"))
+                      "ilrr"  (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\left(${1:-\\infty},\\ ${2:+\\infty}\\right)$0"))
+                      "ilss"  (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\left[$1,\\ $2\\right]$0"))
+                      "ilrs"  (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\left(${1:-\\infty},\\ $2\\right]$0"))
+                      "ilsr"  (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\left[$1,\\ ${2:+\\infty}\\right)$0"))
+                      "binom" (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\binom{${1:n}}{${2:k}}"))
+                      "sum"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\sum_{$1}^{$2}$0"))
+                      "prod"  (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\prod_{$1}^{$2}$0"))
+                      "cprod" (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\cprod_{$1}^{$2}$0"))
+                      "lim"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
+                      "int"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
+                      "ing"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet (yas-lookup-snippet "integ"))
+                                (my/delete-one-blank-line))
+                      "mat"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet (yas-lookup-snippet "matrix"))
+                                (my/delete-one-blank-line))
+                      ";;"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\left($1\\right)$0"))
+                      ";["    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\left[$1\\right]$0")
+                                (delete-char))
+                      ";{"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\left\\\\{$1\\right\\\\}$0"))))
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-snippets.el
+
+  (provide 'init-snippets)
+
+#+end_src
+
+* Myconfig
+** Header
+
+#+begin_src emacs-lisp :tangle ./lisp/init-myconfig.el
+
+  ;; -*- lexical-binding: t -*-
+
+#+end_src
+
+** End
+
+#+begin_src emacs-lisp :tangle ./lisp/init-myconfig.el
+
+  (provide 'init-myconfig)
+
+#+end_src
+
+

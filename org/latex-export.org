@@ -1,0 +1,92 @@
+#+LATEX_CLASS: org-plain-latex
+#+LATEX_CLASS_OPTIONS: [12pt, a4paper]
+#+OPTIONS: toc:t
+#+OPTIONS: H:5
+#+STARTUP: latexpreview
+#+STARTUP: fold
+#+STARTUP: inlineimages
+
+#+LATEX_HEADER: \usepackage{hyperref}                % For adding links
+#+LATEX_HEADER: \usepackage{mathtext}
+#+LATEX_HEADER: \usepackage[T2A]{fontenc}
+#+LATEX_HEADER: \usepackage[utf8x]{inputenc}
+#+LATEX_HEADER: \usepackage[english,russian]{babel}
+
+#+LATEX_HEADER: \usepackage[a4paper,top=1.5cm,bottom=1.5cm,left=2cm,right=2cm]{geometry}
+#+LATEX_HEADER: \usepackage{amsmath}       % Mathematics
+#+LATEX_HEADER: \usepackage{amssymb}       % For varnothing
+#+LATEX_HEADER: \usepackage{amsfonts}      % For to sign numerical sets
+#+LATEX_HEADER: \usepackage{graphicx}      % For image paste
+#+LATEX_HEADER: \usepackage{setspace}      % Add doublespacing and singlespacing
+#+LATEX_HEADER: \usepackage{gensymb}       % Add degree symbol
+#+LATEX_HEADER: \usepackage{abraces}       % Add \overbrace
+#+LATEX_HEADER: \usepackage{mdframed}      % Boxed theorem
+
+#+LATEX_HEADER: \usepackage{siunitx}       % Required for alignment (S in tabular)
+#+LATEX_HEADER: \usepackage{multirow}      % Required for multirows
+#+LATEX_HEADER: \usepackage{booktabs}      % For prettier tables
+#+LATEX_HEADER: \usepackage{longtable}     % To display tables on several pages
+#+LATEX_HEADER: \usepackage{rotating}      % To display tables in landscape
+
+#+LATEX_HEADER: \usepackage{xpatch}
+#+LATEX_HEADER: \xpretocmd{\part}{\setcounter{section}{0}}{}{}
+
+#+LATEX_HEADER: \let\oldpart\part
+#+LATEX_HEADER: \renewcommand\part{\newpage\oldpart}
+
+#+LATEX_HEADER: \let\oldparagraph\paragraph
+#+LATEX_HEADER: \renewcommand{\paragraph[1]}{\oldparagraph{#1}\mbox{}\\}
+
+#+LATEX_HEADER: \let\oldsqrt\sqrt
+#+LATEX_HEADER: \renewcommand{\sqrt}[2][]{%
+#+LATEX_HEADER: \ \oldsqrt[\raisebox{2pt}{$\scriptscriptstyle #1$}]{#2}%
+#+LATEX_HEADER: }
+
+#+LATEX_HEADER: \let\oldDelta\Delta
+#+LATEX_HEADER: \renewcommand\Delta{{\scriptstyle\oldDelta}}
+#+LATEX_HEADER: \renewcommand\varepsilon{\mathcal{E}}
+#+LATEX_HEADER: \renewcommand\emptyset{\varnothing}
+
+#+LATEX_HEADER: \let\oldbigcup\bigcup
+#+LATEX_HEADER: \renewcommand\bigcup{{\textstyle\oldbigcup}}
+#+LATEX_HEADER: \let\oldbigcap\bigcap
+#+LATEX_HEADER: \renewcommand\bigcap{{\textstyle\oldbigcap}}
+
+#+LATEX_HEADER: \let\oldsum\sum
+#+LATEX_HEADER: \renewcommand\sum{\displaystyle\oldsum}
+#+LATEX_HEADER: \let\oldprod\prod
+#+LATEX_HEADER: \renewcommand\prod{\displaystyle\oldprod}
+#+LATEX_HEADER: \let\oldcprod\cprod
+#+LATEX_HEADER: \renewcommand\cprod{\displaystyle\oldcprod}
+
+#+LATEX_HEADER: \let\oldint\int
+#+LATEX_HEADER: \renewcommand\int{\oldint\limits}
+
+#+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+#+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
+#+LATEX_HEADER: \newcommand{\T}[1]{\text{ #1 }}
+#+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
+
+#+LATEX_HEADER: \newenvironment{scases}
+#+LATEX_HEADER: {\left[\begin{array}{@{}l@{}}}
+#+LATEX_HEADER: {\end{array}\right.}
+
+#+LATEX_HEADER: \newenvironment{theorem}[2][]%
+#+LATEX_HEADER: {%
+#+LATEX_HEADER: \noindent%
+#+LATEX_HEADER: \textbf{Теорема #2 #1}\em%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: {}
+#+LATEX_HEADER: \newenvironment{boxtheorem}[2][]%
+#+LATEX_HEADER: {\begin{mdframed}[everyline=true]\begin{theorem}[#1]{#2}}
+#+LATEX_HEADER: {\end{theorem}\end{mdframed}}
+
+#+LATEX_HEADER: \newenvironment{lemma}[2][]%
+#+LATEX_HEADER: {%
+#+LATEX_HEADER: \noindent%
+#+LATEX_HEADER: \textbf{Лемма #2 #1}\em%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: {}
+#+LATEX_HEADER: \newenvironment{boxlemma}[2][]%
+#+LATEX_HEADER: {\begin{mdframed}\begin{lemma}[#1]{#2}}
+#+LATEX_HEADER: {\end{lemma}\end{mdframed}}

@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: text
+# key: text
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (shell-command-to-string "xdotool key Mode_switch"))))
+# --
+\T{$1}$0

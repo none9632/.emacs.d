@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: latex block
+# key: <la
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (kill-whole-line) (kill-whole-line) (yas-expand-snippet (yas-lookup-snippet "begin")) (evil-insert-state))))
+# --
+#+begin_latex latex
+\begin{e}$0
+\end{e}
+#+end_latex

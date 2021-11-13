@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: display math
+# key: M
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (evil-insert-state) (right-char))))
+# --
+#+begin_latex latex
+\begin{align*}
+  $0
+\end{align*}
+#+end_latex
