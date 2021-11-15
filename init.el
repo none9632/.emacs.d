@@ -95,5 +95,3 @@ decrease this. If you experience stuttering, increase this.")
 (require 'init-tex)
 ;; (require 'init-c)
 ;; (require 'init-python)
-
-(require 'init-myconfig)

@@ -163,8 +163,6 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
   ;; (require 'init-c)
   ;; (require 'init-python)
 
-  (require 'init-myconfig)
-
 #+end_src
 
 * Basic
@@ -4038,22 +4036,4 @@ Snippets configurations.
   (provide 'init-snippets)
 
 #+end_src
-
-* Myconfig
-** Header
-
-#+begin_src emacs-lisp :tangle ./lisp/init-myconfig.el
-
-  ;; -*- lexical-binding: t -*-
-
-#+end_src
-
-** End
-
-#+begin_src emacs-lisp :tangle ./lisp/init-myconfig.el
-
-  (provide 'init-myconfig)
-
-#+end_src
-
 
