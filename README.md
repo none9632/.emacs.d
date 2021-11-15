@@ -1,2 +1,2 @@
 # my-emacs-config
-my emacs config
+Based on centaur-emacs
