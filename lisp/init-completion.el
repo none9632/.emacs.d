@@ -38,8 +38,8 @@
     (interactive)
     (if (or (not yas/minor-mode)
             (null (do-yas-expand))
-            (company-abort)
-            (not (org-try-cdlatex-tab)))
+            (company-abort))
+        ;; (not (org-try-cdlatex-tab)))
         (company-complete-common-or-cycle))))
 
 (use-package company-prescient

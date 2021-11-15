@@ -28,6 +28,7 @@
                          (define-key LaTeX-mode-map "\C-j" 'nil)
                          (add-hook 'find-file-hook 'TeX-fold-buffer t)
                          (electric-pair-local-mode -1)
+                         (company-mode -1)
                          (my/latex-load-prettify-symbols))))
   :custom
   (TeX-auto-save                     t)
@@ -50,10 +51,15 @@
 
 (use-package cdlatex
   :after yasnippet
-  ;; :hook ((LaTeX-mode  . turn-on-cdlatex)
-  ;;        (cdlatex-tab . my/cdlatex-in-yas-field))
+  :hook ((LaTeX-mode  . turn-on-cdlatex)
+         (cdlatex-tab . my/cdlatex-in-yas-field))
   :bind (:map cdlatex-mode-map
-              ("<tab>" . cdlatex-tab))
+              ("<"     . nil)
+              ("("     . nil)
+              ("["     . nil)
+              ("{"     . nil)
+              ("|"     . nil)
+              ("_"     . nil))
   :config
   (defun my/cdlatex-in-yas-field ()
     ;; Check if we're at the end of the Yas field

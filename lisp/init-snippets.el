@@ -4,11 +4,7 @@
 
 (use-package yasnippet
   :diminish yas-minor-mode
-  ;; :after cdlatex
   :hook (after-init . yas-global-mode)
-  ;; :bind (:map yas-keymap
-  ;;             ("<tab>" . my/yas-next-field-or-cdlatex)
-  ;;             ("TAB"   . my/yas-next-field-or-cdlatex))
   :config
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
@@ -16,14 +12,7 @@
     (interactive)
     (save-excursion
       (if (re-search-forward "^[[:space:]]*$" nil t)
-          (kill-whole-line))))
-
-  (defun my/yas-next-field-or-cdlatex ()
-    (interactive)
-    "Jump to the next Yas field correctly with cdlatex active."
-    (if (bound-and-true-p cdlatex-mode)
-        (cdlatex-tab)
-      (yas-next-field-or-maybe-expand))))
+          (kill-whole-line)))))
 
 (defun my/change-lang-in-snippet ()
   (shell-command-to-string "xkb-switch -n")

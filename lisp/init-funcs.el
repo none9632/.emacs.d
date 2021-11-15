@@ -37,9 +37,9 @@ Save to `custom-file' if NO-SAVE is nil."
     (beginning-of-line)
     (looking-at-p "^[[:space:]]*$")))
 
-(defun my/test ()
-  (interactive)
-  (my/inkscape-figures-create (test)))
+;; (defun my/test ()
+;;   (interactive)
+;;   (my/inkscape-figures-create (test)))
 
 (defun set-package-archives (archives &optional refresh async no-save)
   "Set the package archives (ELPA).
