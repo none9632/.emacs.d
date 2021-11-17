@@ -166,8 +166,7 @@
                     "mp"    "\\mp "
                     "~~"    "\\sim "
                     "~="    "\\approx "
-                    "||"    "\\mid "
-                    "|="    "\\models "
+                    "ml"    "\\models "
                     ";a"    "\\alpha "
                     ";b"    "\\beta "
                     ";g"    "\\gamma "
@@ -238,7 +237,7 @@
                     "qq"    "\\quad "
                     "md"    "\\mathrm{d} "
                     "eq"    "\\equiv "
-                    "ds"    "\\displaystyle "
+                    "ds"    "\\ds "
                     "AA"    "\\forall "
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
@@ -292,7 +291,7 @@
                     ";T"    (lambda ()
                               (interactive)
                               (shell-command-to-string "xkb-switch -n")
-                              (yas-expand-snippet "\\T{$1} $0")
+                              (yas-expand-snippet "\\T{$1}$0")
                               (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
                     "vc"    (lambda ()
                               (interactive)
@@ -303,16 +302,16 @@
                     "Sq"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\sqrt[$1]{$2}$0"))
-                    "cas"   (lambda ()
+                    "bcs"   (lambda ()
                               (interactive)
                               (if (not (my/current-line-empty-p))
                                   (evil-open-below 1))
-                              (yas-expand-snippet "\\begin{cases}\n$1\\\\\\\\\n    $2\n\\end{cases}$0"))
+                              (yas-expand-snippet "\\begin{bcases}\n& $1\\\\\\\\\n    & $2\n\\end{bcases}$0"))
                     "scs"   (lambda ()
                               (interactive)
                               (if (not (my/current-line-empty-p))
                                   (evil-open-below 1))
-                              (yas-expand-snippet "\\begin{scases}\n$1\\\\\\\\\n    $2\n\\end{scases}$0"))
+                              (yas-expand-snippet "\\begin{scases}\n& $1\\\\\\\\\n    & $2\n\\end{scases}$0"))
                     "tg"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\tag{$0}"))
@@ -321,16 +320,16 @@
                               (yas-expand-snippet "${1:1},${2:2},\\ldots,${3:n}$0"))
                     "ilrr"  (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\left(${1:-\\infty},\\ ${2:+\\infty}\\right)$0"))
+                              (yas-expand-snippet "\\Bigl(${1:-\\infty},\\ ${2:+\\infty}\\Bigr)$0"))
                     "ilss"  (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\left[$1,\\ $2\\right]$0"))
+                              (yas-expand-snippet "\\Bigl[$1,\\ $2\\Bigr]$0"))
                     "ilrs"  (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\left(${1:-\\infty},\\ $2\\right]$0"))
+                              (yas-expand-snippet "\\Bigl(${1:-\\infty},\\ $2\\Bigr]$0"))
                     "ilsr"  (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\left[$1,\\ ${2:+\\infty}\\right)$0"))
+                              (yas-expand-snippet "\\Bigl[$1,\\ ${2:+\\infty}\\Bigr)$0"))
                     "binom" (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\binom{${1:n}}{${2:k}}"))
@@ -363,6 +362,9 @@
                     "oex"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\explainup{$1}{$2}$0"))
+                    "|"     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "|$1|$0"))
                     ";;"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\left($1\\right)$0"))
@@ -372,6 +374,10 @@
                               (delete-char))
                     ";{"    (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\left\\\\{$1\\right\\\\}$0"))))
+                              (yas-expand-snippet "\\left\\\\{$1\\right\\\\}$0"))
+                    ";|"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\left|$1\\right|$0")
+                              (delete-char))))
 
 (provide 'init-snippets)

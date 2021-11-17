@@ -162,10 +162,7 @@
         my/enable-refresh-markers   t)
   (aas-activate-for-major-mode)
   (my/update-theorem-and-lemma-counts)
-  (my/org-load-prettify-symbols)
-  (set-face-background 'org-block-begin-line "#282c34")
-  (set-face-foreground 'org-block-begin-line "#282c34")
-  )
+  (my/org-load-prettify-symbols))
 
 (setq org-jump-to-previous-block nil
       org-latex-mode             nil)

@@ -21,7 +21,9 @@
 #+LATEX_HEADER: \usepackage{gensymb}       % Add degree symbol
 #+LATEX_HEADER: \usepackage{abraces}       % Add \overbrace
 #+LATEX_HEADER: \usepackage{mdframed}      % Boxed theorem
+#+LATEX_HEADER: \usepackage{nccmath}       % for \abs
 #+LATEX_HEADER: \usepackage{mathtools}     % for \explain and \explainup
+#+LATEX_HEADER: \usepackage{xparse}        % for \sqrt
 
 #+LATEX_HEADER: \usepackage{siunitx}       % Required for alignment (S in tabular)
 #+LATEX_HEADER: \usepackage{multirow}      % Required for multirows
@@ -32,15 +34,22 @@
 #+LATEX_HEADER: \usepackage{xpatch}
 #+LATEX_HEADER: \xpretocmd{\part}{\setcounter{section}{0}}{}{}
 
+#+LATEX_HEADER: \DeclarePairedDelimiter{\abs}\lvert\rvert
+
 #+LATEX_HEADER: \let\oldpart\part
 #+LATEX_HEADER: \renewcommand\part{\newpage\oldpart}
 
 #+LATEX_HEADER: \let\oldparagraph\paragraph
 #+LATEX_HEADER: \renewcommand{\paragraph[1]}{\oldparagraph{#1}\mbox{}\\}
 
-#+LATEX_HEADER: \let\oldsqrt\sqrt
-#+LATEX_HEADER: \renewcommand{\sqrt}[2][]{%
-#+LATEX_HEADER: \ \oldsqrt[\raisebox{2pt}{$\scriptscriptstyle #1$}]{#2}%
+#+LATEX_HEADER: \NewDocumentCommand \Sqrt { o m } {%
+#+LATEX_HEADER: \IfNoValueTF{#1}
+#+LATEX_HEADER: {%
+#+LATEX_HEADER: \sqrt{#2}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: {%
+#+LATEX_HEADER: \!\sqrt[\raisebox{2pt}{$\scriptscriptstyle #1$}]{#2}\,%
+#+LATEX_HEADER: }%
 #+LATEX_HEADER: }
 
 #+LATEX_HEADER: \let\oldDelta\Delta
@@ -66,14 +75,19 @@
 #+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
 #+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
 #+LATEX_HEADER: \newcommand{\T}[1]{\text{ #1 }}
+#+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
+#+LATEX_HEADER: \newcommand{\lmid}{\bigl|\,}
+#+LATEX_HEADER: \newcommand{\rmid}{\,\bigr|}
 #+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
-
 #+LATEX_HEADER: \newcommand{\explain}[2]{\underset{\mathclap{\overset{\uparrow}{\textrm{#2}}}}{#1}}
 #+LATEX_HEADER: \newcommand{\explainup}[2]{\overset{\mathclap{\underset{\downarrow}{\textrm{#2}}}}{#1}}
 
+#+LATEX_HEADER: \newenvironment{bcases}
+#+LATEX_HEADER: {\left\{\begin{aligned}}
+#+LATEX_HEADER: {\end{aligned}\right.}
 #+LATEX_HEADER: \newenvironment{scases}
-#+LATEX_HEADER: {\left[\begin{array}{@{}l@{}}}
-#+LATEX_HEADER: {\end{array}\right.}
+#+LATEX_HEADER: {\left[\begin{aligned}}
+#+LATEX_HEADER: {\end{aligned}\right.}
 
 #+LATEX_HEADER: \newenvironment{theorem}[2][]%
 #+LATEX_HEADER: {%

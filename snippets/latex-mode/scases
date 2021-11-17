@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: scases
-# key: scases
-# --
-\begin{scases}
-    $0
-\end{scases}
