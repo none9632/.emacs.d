@@ -300,10 +300,10 @@ This is for use in `ivy-re-builders-alist'."
     :hook (counsel-mode . counsel-projectile-mode)
     :init (setq counsel-projectile-grep-initial-input '(ivy-thing-at-point))))
 
-;; (use-package swiper
-;;   :after evil
-;;   :bind (:map evil-normal-state-map
-;;               ("?"   . swiper)))
+(use-package swiper
+  :after evil
+  :bind (:map evil-normal-state-map
+              ("?"   . swiper)))
 
 (use-package all-the-icons-ivy-rich
   :if (icons-displayable-p)

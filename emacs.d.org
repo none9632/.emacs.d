@@ -1,4 +1,4 @@
-# -*- eval: (setq org-jump-to-previous-block t); eval: (setq org-edit-src-auto-save-idle-delay 1) -*-
+# -*- eval: (my/org-config-mode) -*-
 
 #+TITILE: Emacs configuration
 #+STARTUP: fold
@@ -2244,10 +2244,10 @@ Ivy configurations.
 
 #+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
 
-  ;; (use-package swiper
-  ;;   :after evil
-  ;;   :bind (:map evil-normal-state-map
-  ;;               ("?"   . swiper)))
+  (use-package swiper
+    :after evil
+    :bind (:map evil-normal-state-map
+                ("?"   . swiper)))
 
 #+end_src
 
@@ -2310,16 +2310,14 @@ Org configurations.
 
 #+begin_src emacs-lisp :tangle ./lisp/init-org.el
 
-  (defun org-mode-setup ()
-    (variable-pitch-mode 1)
-    (visual-line-mode t)
-    (diff-hl-mode 0))
-
   (use-package org
     :defer t
     :after yasnippet
-    :hook ((org-mode . org-mode-setup)
-           (org-mode . turn-on-auto-fill))
+    :hook (org-mode . (lambda ()
+                        (turn-on-auto-fill)
+                        (variable-pitch-mode 1)
+                        (visual-line-mode t)
+                        (diff-hl-mode 0)))
     :bind (:map org-mode-map
                 ("M-k" . org-metaup)
                 ("M-j" . org-metadown))
@@ -2470,9 +2468,8 @@ Org configurations.
 
   (defun my/org-latex-mode ()
     (interactive)
-    (setq org-src-window-setup        'split-window-below
-          org-babel-tangle-async-mode nil
-          my/enable-refresh-markers   t)
+    (setq org-src-window-setup      'split-window-below
+          my/enable-refresh-markers t)
     (aas-activate-for-major-mode)
     (my/update-theorem-and-lemma-counts)
     (my/org-load-prettify-symbols))
@@ -2557,7 +2554,7 @@ Org configurations.
 
 #+begin_src emacs-lisp :tangle ./lisp/init-org.el
 
-  (setq org-babel-tangle-async-mode t)
+  (setq org-babel-tangle-async-mode nil)
 
   (defun my/org-babel-tangle-async (file)
     "Invoke `org-babel-tangle-file' asynchronously."
@@ -2583,6 +2580,18 @@ Org configurations.
   (add-hook 'org-mode-hook (lambda ()
                              (add-hook 'after-save-hook #'my/org-babel-tangle-current-buffer-async
                                        'run-at-end 'only-in-org-mode)))
+
+#+end_src
+
+** Org config mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (defun my/org-config-mode ()
+    (interactive)
+    (setq org-babel-tangle-async-mode       t
+          org-jump-to-previous-block        t
+          org-edit-src-auto-save-idle-delay 1))
 
 #+end_src
 

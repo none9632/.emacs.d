@@ -3,16 +3,14 @@
 (require 'init-evil)
 (require 'init-basic)
 
-(defun org-mode-setup ()
-  (variable-pitch-mode 1)
-  (visual-line-mode t)
-  (diff-hl-mode 0))
-
 (use-package org
   :defer t
   :after yasnippet
-  :hook ((org-mode . org-mode-setup)
-         (org-mode . turn-on-auto-fill))
+  :hook (org-mode . (lambda ()
+                      (turn-on-auto-fill)
+                      (variable-pitch-mode 1)
+                      (visual-line-mode t)
+                      (diff-hl-mode 0)))
   :bind (:map org-mode-map
               ("M-k" . org-metaup)
               ("M-j" . org-metadown))
@@ -157,9 +155,8 @@
 
 (defun my/org-latex-mode ()
   (interactive)
-  (setq org-src-window-setup        'split-window-below
-        org-babel-tangle-async-mode nil
-        my/enable-refresh-markers   t)
+  (setq org-src-window-setup      'split-window-below
+        my/enable-refresh-markers t)
   (aas-activate-for-major-mode)
   (my/update-theorem-and-lemma-counts)
   (my/org-load-prettify-symbols))
@@ -232,7 +229,7 @@
   "ce" 'my/change-environment
   "rc" 'my/update-theorem-and-lemma-counts)
 
-(setq org-babel-tangle-async-mode t)
+(setq org-babel-tangle-async-mode nil)
 
 (defun my/org-babel-tangle-async (file)
   "Invoke `org-babel-tangle-file' asynchronously."
@@ -258,6 +255,12 @@
 (add-hook 'org-mode-hook (lambda ()
                            (add-hook 'after-save-hook #'my/org-babel-tangle-current-buffer-async
                                      'run-at-end 'only-in-org-mode)))
+
+(defun my/org-config-mode ()
+  (interactive)
+  (setq org-babel-tangle-async-mode       t
+        org-jump-to-previous-block        t
+        org-edit-src-auto-save-idle-delay 1))
 
 )
 
