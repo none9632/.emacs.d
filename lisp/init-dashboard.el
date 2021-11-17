@@ -3,7 +3,7 @@
 (require 'init-custom)
 
 (use-package dashboard
-  :diminish (dashboard-mode page-break-lines-mode)
+  :diminish (dashboard-mode)
   :functions (all-the-icons-faicon
               all-the-icons-material
               winner-undo
@@ -127,9 +127,6 @@
       (winner-undo)
       (setq dashboard-recover-layout-p nil))))
 
-(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-
-(use-package page-break-lines
-  :hook (dashboard-mode-hook . page-break-lines-mode))
+;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 (provide 'init-dashboard)

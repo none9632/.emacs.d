@@ -655,7 +655,7 @@ Dashboard configurations.
 #+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
 
   (use-package dashboard
-    :diminish (dashboard-mode page-break-lines-mode)
+    :diminish (dashboard-mode)
     :functions (all-the-icons-faicon
                 all-the-icons-material
                 winner-undo
@@ -787,16 +787,7 @@ Lauches the dashboard in a emacsclient
 
 #+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
 
-  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-
-#+end_src
-
-** Break lines
-
-#+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
-
-  (use-package page-break-lines
-    :hook (dashboard-mode-hook . page-break-lines-mode))
+  ;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 #+end_src
 
@@ -2253,11 +2244,11 @@ Ivy configurations.
 
 #+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
 
-  (use-package swiper
-    :after evil
-    :bind (:map evil-normal-state-map
-           ("?"   . swiper)))
-	
+  ;; (use-package swiper
+  ;;   :after evil
+  ;;   :bind (:map evil-normal-state-map
+  ;;               ("?"   . swiper)))
+
 #+end_src
 
 ** all-the-icons-ivy-rich
@@ -3956,10 +3947,10 @@ Snippets configurations.
                                 (yas-expand-snippet "\\vec{$1}$0"))
                       "sq"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\sqrt{$1}$0"))
+                                (yas-expand-snippet "\\Sqrt{$1}$0"))
                       "Sq"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\sqrt[$1]{$2}$0"))
+                                (yas-expand-snippet "\\Sqrt[$1]{$2}$0"))
                       "bcs"   (lambda ()
                                 (interactive)
                                 (if (not (my/current-line-empty-p))
