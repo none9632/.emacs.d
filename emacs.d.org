@@ -1148,29 +1148,30 @@ Open files as another user
       (push '("\\\\"                . ?↵) prettify-symbols-alist))
     (defun my/latex-load-prettify-symbols ()
       (interactive)
-      (push '("\\pm"        . ?±)  prettify-symbols-alist)
-      (push '("\\mp"        . ?∓)  prettify-symbols-alist)
-      (push '("\\left("     . ?\() prettify-symbols-alist)
-      (push '("\\right)"    . ?\)) prettify-symbols-alist)
-      (push '("\\left["     . ?\[) prettify-symbols-alist)
-      (push '("\\right]"    . ?\]) prettify-symbols-alist)
-      (push '("\\left\\{"   . ?\{) prettify-symbols-alist)
-      (push '("\\right\\}"  . ?\}) prettify-symbols-alist)
-      (push '("\\left|"     . ?|)  prettify-symbols-alist)
-      (push '("\\right|"    . ?|)  prettify-symbols-alist)
-      (push '("\\Bigl("     . ?\() prettify-symbols-alist)
-      (push '("\\Bigr)"     . ?\)) prettify-symbols-alist)
-      (push '("\\Bigl["     . ?\[) prettify-symbols-alist)
-      (push '("\\Bigr]"     . ?\]) prettify-symbols-alist)
-      (push '("\\Bigl\\{"   . ?\{) prettify-symbols-alist)
-      (push '("\\Bigr\\}"   . ?\}) prettify-symbols-alist)
-      (push '("\\mathbb{N}" . ?ℕ) prettify-symbols-alist)
-      (push '("\\mathbb{Z}" . ?ℤ) prettify-symbols-alist)
-      (push '("\\mathbb{Q}" . ?ℚ) prettify-symbols-alist)
-      (push '("\\mathbb{R}" . ?ℝ) prettify-symbols-alist)
-      (push '("\\mathbb{C}" . ?ℂ) prettify-symbols-alist)
-      (push '("\\not\\in"   . ?∉) prettify-symbols-alist)
-      (push '("\\\\"        . ?↵) prettify-symbols-alist)))
+      (push '("\\pm"           . ?±)  prettify-symbols-alist)
+      (push '("\\mp"           . ?∓)  prettify-symbols-alist)
+      (push '("\\left("        . ?\() prettify-symbols-alist)
+      (push '("\\right)"       . ?\)) prettify-symbols-alist)
+      (push '("\\left["        . ?\[) prettify-symbols-alist)
+      (push '("\\right]"       . ?\]) prettify-symbols-alist)
+      (push '("\\left\\{"      . ?\{) prettify-symbols-alist)
+      (push '("\\right\\}"     . ?\}) prettify-symbols-alist)
+      (push '("\\left|"        . ?|)  prettify-symbols-alist)
+      (push '("\\right|"       . ?|)  prettify-symbols-alist)
+      (push '("\\Bigl("        . ?\() prettify-symbols-alist)
+      (push '("\\Bigr)"        . ?\)) prettify-symbols-alist)
+      (push '("\\Bigl["        . ?\[) prettify-symbols-alist)
+      (push '("\\Bigr]"        . ?\]) prettify-symbols-alist)
+      (push '("\\Bigl\\{"      . ?\{) prettify-symbols-alist)
+      (push '("\\Bigr\\}"      . ?\}) prettify-symbols-alist)
+      (push '("\\mathbb{N}"    . ?ℕ) prettify-symbols-alist)
+      (push '("\\mathbb{Z}"    . ?ℤ) prettify-symbols-alist)
+      (push '("\\mathbb{Q}"    . ?ℚ) prettify-symbols-alist)
+      (push '("\\mathbb{R}"    . ?ℝ) prettify-symbols-alist)
+      (push '("\\mathbb{C}"    . ?ℂ) prettify-symbols-alist)
+      (push '("\\not\\in"      . ?∉) prettify-symbols-alist)
+      (push '("\\updownarrows" . ?⇅) prettify-symbols-alist)
+      (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 #+end_src
 
@@ -3722,7 +3723,8 @@ Snippets configurations.
                       "ьы"  (lambda ()
                               (interactive)
                               (shell-command-to-string "xdotool key Mode_switch")
-                              (yas-expand-snippet "\\\\($1\\\\)$0"))
+                              (yas-expand-snippet "\\\\($1\\\\)$0")
+                              (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
                       "dm"  (lambda ()
                               (interactive)
                               (yas-expand-snippet (yas-lookup-snippet "display math"))
@@ -3881,6 +3883,7 @@ Snippets configurations.
                       "perp"  "\\perp"
                       "min"   "\\min "
                       "max"   "\\max "
+                      "sgn"   "\\sgn "
                       "inn"   "\\in "
                       "cup"   "\\cup "
                       "cap"   "\\cap "
@@ -3896,6 +3899,8 @@ Snippets configurations.
                       "md"    "\\mathrm{d} "
                       "eq"    "\\equiv "
                       "ds"    "\\ds "
+                      "uua"   "\\upuparrows "
+                      "uda"   "\\updownarrows "
                       "AA"    "\\forall "
                       "EE"    "\\exists "
                       "nEE"   "\\nexists "
@@ -3954,22 +3959,28 @@ Snippets configurations.
                       "vc"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\vec{$1}$0"))
+                      "ora"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\overrightarrow{$1}$0"))
+                      "box"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\boxed{$1}$0"))
                       "sq"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\Sqrt{$1}$0"))
                       "Sq"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\Sqrt[$1]{$2}$0"))
-                      "bcs"   (lambda ()
+                      "cas"   (lambda ()
                                 (interactive)
                                 (if (not (my/current-line-empty-p))
                                     (evil-open-below 1))
-                                (yas-expand-snippet "\\begin{bcases}\n& $1\\\\\\\\\n    & $2\n\\end{bcases}$0"))
+                                (yas-expand-snippet "\\begin{dcases}\n$1\\\\\\\\\n    $2\n\\end{dcases}$0"))
                       "scs"   (lambda ()
                                 (interactive)
                                 (if (not (my/current-line-empty-p))
                                     (evil-open-below 1))
-                                (yas-expand-snippet "\\begin{scases}\n& $1\\\\\\\\\n    & $2\n\\end{scases}$0"))
+                                (yas-expand-snippet "\\begin{scases}\n$1\\\\\\\\\n    $2\n\\end{scases}$0"))
                       "tg"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\tag{$0}"))
@@ -3999,7 +4010,7 @@ Snippets configurations.
                                 (yas-expand-snippet "\\prod_{$1}^{$2}$0"))
                       "cprod" (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\cprod_{$1}^{$2}$0"))
+                                (yas-expand-snippet "\\coprod_{$1}^{$2}$0"))
                       "lim"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))

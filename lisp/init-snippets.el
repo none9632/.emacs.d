@@ -240,6 +240,8 @@
                     "md"    "\\mathrm{d} "
                     "eq"    "\\equiv "
                     "ds"    "\\ds "
+                    "uua"   "\\upuparrows "
+                    "uda"   "\\updownarrows "
                     "AA"    "\\forall "
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
@@ -314,12 +316,12 @@
                               (interactive)
                               (if (not (my/current-line-empty-p))
                                   (evil-open-below 1))
-                              (yas-expand-snippet "\\begin{bcases}\n& $1\\\\\\\\\n    & $2\\\\\\\\\n\\end{bcases}$0"))
+                              (yas-expand-snippet "\\begin{dcases}\n$1\\\\\\\\\n    $2\n\\end{dcases}$0"))
                     "scs"   (lambda ()
                               (interactive)
                               (if (not (my/current-line-empty-p))
                                   (evil-open-below 1))
-                              (yas-expand-snippet "\\begin{scases}\n& $1\\\\\\\\\n    & $2\\\\\\\\\n\\end{scases}$0"))
+                              (yas-expand-snippet "\\begin{scases}\n$1\\\\\\\\\n    $2\n\\end{scases}$0"))
                     "tg"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\tag{$0}"))
