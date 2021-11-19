@@ -21,7 +21,6 @@
 #+LATEX_HEADER: \usepackage{gensymb}       % Add degree symbol
 #+LATEX_HEADER: \usepackage{abraces}       % Add \overbrace
 #+LATEX_HEADER: \usepackage{mdframed}      % Boxed theorem
-#+LATEX_HEADER: \usepackage{nccmath}       % for \abs
 #+LATEX_HEADER: \usepackage{mathtools}     % for \explain and \explainup
 #+LATEX_HEADER: \usepackage{xparse}        % for \sqrt
 
@@ -31,16 +30,16 @@
 #+LATEX_HEADER: \usepackage{longtable}     % To display tables on several pages
 #+LATEX_HEADER: \usepackage{rotating}      % To display tables in landscape
 
+#+LATEX_HEADER: \DeclareMathOperator{\sgn}{sgn}
+
 #+LATEX_HEADER: \usepackage{xpatch}
 #+LATEX_HEADER: \xpretocmd{\part}{\setcounter{section}{0}}{}{}
-
-#+LATEX_HEADER: \DeclarePairedDelimiter{\abs}\lvert\rvert
 
 #+LATEX_HEADER: \let\oldpart\part
 #+LATEX_HEADER: \renewcommand\part{\newpage\oldpart}
 
 #+LATEX_HEADER: \let\oldparagraph\paragraph
-#+LATEX_HEADER: \renewcommand{\paragraph[1]}{\oldparagraph{#1}\mbox{}\\}
+#+LATEX_HEADER: \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}\\}
 
 #+LATEX_HEADER: \NewDocumentCommand \Sqrt { o m } {%
 #+LATEX_HEADER: \IfNoValueTF{#1}
@@ -66,8 +65,8 @@
 #+LATEX_HEADER: \renewcommand\sum{\displaystyle\oldsum}
 #+LATEX_HEADER: \let\oldprod\prod
 #+LATEX_HEADER: \renewcommand\prod{\displaystyle\oldprod}
-#+LATEX_HEADER: \let\oldcprod\cprod
-#+LATEX_HEADER: \renewcommand\cprod{\displaystyle\oldcprod}
+#+LATEX_HEADER: \let\oldcoprod\coprod
+#+LATEX_HEADER: \renewcommand\coprod{\displaystyle\oldcoprod}
 
 #+LATEX_HEADER: \let\oldint\int
 #+LATEX_HEADER: \renewcommand\int{\oldint\limits}

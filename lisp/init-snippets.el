@@ -64,7 +64,8 @@
                     "ьы"  (lambda ()
                             (interactive)
                             (shell-command-to-string "xdotool key Mode_switch")
-                            (yas-expand-snippet "\\\\($1\\\\)$0"))
+                            (yas-expand-snippet "\\\\($1\\\\)$0")
+                            (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
                     "dm"  (lambda ()
                             (interactive)
                             (yas-expand-snippet (yas-lookup-snippet "display math"))
@@ -223,6 +224,7 @@
                     "perp"  "\\perp"
                     "min"   "\\min "
                     "max"   "\\max "
+                    "sgn"   "\\sgn "
                     "inn"   "\\in "
                     "cup"   "\\cup "
                     "cap"   "\\cap "
@@ -296,22 +298,28 @@
                     "vc"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\vec{$1}$0"))
+                    "ora"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\overrightarrow{$1}$0"))
+                    "box"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\boxed{$1}$0"))
                     "sq"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\Sqrt{$1}$0"))
                     "Sq"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\Sqrt[$1]{$2}$0"))
-                    "bcs"   (lambda ()
+                    "cas"   (lambda ()
                               (interactive)
                               (if (not (my/current-line-empty-p))
                                   (evil-open-below 1))
-                              (yas-expand-snippet "\\begin{bcases}\n& $1\\\\\\\\\n    & $2\n\\end{bcases}$0"))
+                              (yas-expand-snippet "\\begin{bcases}\n& $1\\\\\\\\\n    & $2\\\\\\\\\n\\end{bcases}$0"))
                     "scs"   (lambda ()
                               (interactive)
                               (if (not (my/current-line-empty-p))
                                   (evil-open-below 1))
-                              (yas-expand-snippet "\\begin{scases}\n& $1\\\\\\\\\n    & $2\n\\end{scases}$0"))
+                              (yas-expand-snippet "\\begin{scases}\n& $1\\\\\\\\\n    & $2\\\\\\\\\n\\end{scases}$0"))
                     "tg"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\tag{$0}"))
@@ -341,7 +349,7 @@
                               (yas-expand-snippet "\\prod_{$1}^{$2}$0"))
                     "cprod" (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\cprod_{$1}^{$2}$0"))
+                              (yas-expand-snippet "\\coprod_{$1}^{$2}$0"))
                     "lim"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
