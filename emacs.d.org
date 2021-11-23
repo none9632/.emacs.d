@@ -3693,11 +3693,11 @@ Snippets configurations.
                               (interactive)
                               (yas-expand-snippet (yas-lookup-snippet "theorem"))
                               (my/delete-one-blank-line))
-                      "lm"  (lambda ()
+                      ";lm" (lambda ()
                               (interactive)
                               (yas-expand-snippet (yas-lookup-snippet "lemma"))
                               (my/delete-one-blank-line))
-                      "дь"  (lambda ()
+                      "ждь" (lambda ()
                               (interactive)
                               (yas-expand-snippet (yas-lookup-snippet "lemma"))
                               (my/delete-one-blank-line))
@@ -3865,16 +3865,11 @@ Snippets configurations.
                       "asin"  "\\arcsin "
                       "atan"  "\\arctan "
                       "atg"   "\\arctg "
-                      "tg"    "\\tg "
-                      "ctg"   "\\ctg "
-                      "cos"   "\\cos "
                       "cot"   "\\cot "
                       "csc"   "\\csc "
                       "csec"  "\\cosec "
-                      "sin"   "\\sin "
                       "exp"   "\\exp"
                       "ln"    "\\ln "
-                      "log"   "\\log "
                       "perp"  "\\perp"
                       "min"   "\\min "
                       "max"   "\\max "
@@ -3956,7 +3951,7 @@ Snippets configurations.
                                 (yas-expand-snippet "\\vec{$1}$0"))
                       "ora"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\overrightarrow{$1}$0"))
+                                (yas-expand-snippet "\\ora{$1}$0"))
                       "box"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\boxed{$1}$0"))
@@ -3966,17 +3961,26 @@ Snippets configurations.
                       "Sq"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\Sqrt[$1]{$2}$0"))
+                      "log"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\log_{$1}$0"))
                       "cas"   (lambda ()
                                 (interactive)
                                 (if (not (my/current-line-empty-p))
                                     (evil-open-below 1))
-                                (yas-expand-snippet "\\begin{dcases}\n$1\\\\\\\\\n    $2\n\\end{dcases}$0"))
+                                ;; (yas-expand-snippet "\\begin{dcases}\n$1\\\\\\\\\n    $2\n\\end{dcases}$0"))
+                                (yas-expand-snippet "\\begin{dcases}\n$1\\\\\\\\$2\n\\end{dcases}$0"))
                       "scs"   (lambda ()
                                 (interactive)
                                 (if (not (my/current-line-empty-p))
                                     (evil-open-below 1))
-                                (yas-expand-snippet "\\begin{scases}\n$1\\\\\\\\\n    $2\n\\end{scases}$0"))
-                      "tg"    (lambda ()
+                                (yas-expand-snippet "\\begin{scases}\n$1\\\\\\\\$2\n\\end{scases}$0"))
+                      "rcs"   (lambda ()
+                                (interactive)
+                                (if (not (my/current-line-empty-p))
+                                    (evil-open-below 1))
+                                (yas-expand-snippet "\\begin{drcases}\n$1\\\\\\\\$2\n\\end{drcases}$0"))
+                      "tag"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\tag{$0}"))
                       "rng"   (lambda ()
@@ -4026,6 +4030,18 @@ Snippets configurations.
                       "oex"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\explainup{$1}{$2}$0"))
+                      "sin"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\sin ${1:\\alpha}"))
+                      "cos"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\cos ${1:\\alpha}"))
+                      "tg"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\tg ${1:\\alpha}"))
+                      "ctg"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\ctg ${1:\\alpha}"))
                       "|"     (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "|$1|$0"))

@@ -23,7 +23,7 @@
 #+LATEX_HEADER: \usepackage{mdframed}      % Boxed theorem
 #+LATEX_HEADER: \usepackage{mathtools}     % for \explain and \explainup
 #+LATEX_HEADER: \usepackage{xparse}        % for \sqrt
-#+LATEX_HEADER: \usepackage{mathabx}       % for \updownarrows etc.
+#+LATEX_HEADER: %\usepackage{mathabx}       % for \updownarrows etc.
 
 #+LATEX_HEADER: \usepackage{siunitx}       % Required for alignment (S in tabular)
 #+LATEX_HEADER: \usepackage{multirow}      % Required for multirows
@@ -76,16 +76,14 @@
 #+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
 #+LATEX_HEADER: \newcommand{\T}[1]{\text{ #1 }}
 #+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
-#+LATEX_HEADER: \newcommand{\lmid}{\bigl|\,}
-#+LATEX_HEADER: \newcommand{\rmid}{\,\bigr|}
+#+LATEX_HEADER: \newcommand{\ora}[1]{\overrightarrow{#1}}
 #+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
 #+LATEX_HEADER: \newcommand{\explain}[2]{\underset{\mathclap{\overset{\uparrow}{\textrm{#2}}}}{#1}}
 #+LATEX_HEADER: \newcommand{\explainup}[2]{\overset{\mathclap{\underset{\downarrow}{\textrm{#2}}}}{#1}}
 
 #+LATEX_HEADER: \makeatletter
 #+LATEX_HEADER: \newcases{scases}{\quad}{%
-#+LATEX_HEADER: %$\m@th\displaystyle##$\hfil}{$\m@th\displaystyle##$\hfil}{\lbrack}{.}
-#+LATEX_HEADER: $\m@th\displaystyle##$\hfil}{$\m@th\displaystyle##$\hfil}{\raisebox{5pt}\left[}{.}
+#+LATEX_HEADER: $\m@th\displaystyle##$\hfil}{$\m@th\displaystyle##$\hfil}{\lbrack}{.}
 #+LATEX_HEADER: \makeatother
 
 #+LATEX_HEADER: \newenvironment{theorem}[2][]%

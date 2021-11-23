@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: latex template
 # key: ltemp
-# expand-env: ((yas-after-exit-snippet-hook (lambda () (my/delete-one-blank-line) (save-buffer) (revert-buffer t t nil))))
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (save-buffer) (revert-buffer t t nil))))
 # --
 # -*- org-src-window-setup: split-window-below; eval: (my/org-latex-mode) -*-
 
