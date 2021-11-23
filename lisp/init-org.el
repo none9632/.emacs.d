@@ -114,15 +114,11 @@
         selected-file         (ivy-read "Choose file: " #'read-file-name-internal))
   (setq default-directory     old-default-directory
         img-file-path         (shell-command-to-string (concat "inkscape-figures move " selected-file)))
-  (if (not (equal img-file-path ""))
-      (progn
-        (insert img-file-path)
-        (if (not (equal org-inline-image-overlays nil))
-            (org-toggle-inline-images))
-        (org-toggle-inline-images))
-    (progn
-      (evil-previous-line)
-      (kill-whole-line 2))))
+  (insert (concat "[[" img-file-path "]]"))
+  (if (not (equal org-inline-image-overlays nil))
+      (org-toggle-inline-images))
+  (org-toggle-inline-images)
+  )
 
 (defun my/inkscape-figures-edit (line-str)
   (interactive)
