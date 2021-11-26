@@ -155,7 +155,16 @@
         my/enable-refresh-markers t)
   (aas-activate-for-major-mode)
   (my/update-theorem-and-lemma-counts)
-  (my/org-load-prettify-symbols))
+  (my/org-load-prettify-symbols)
+  (add-hook 'org-pre-cycle-hook
+            (lambda (arg)
+              (cond ((eq arg 'subtree)  (org-latex-preview nil))
+                    ((eq arg 'children) (org-latex-preview nil))
+                    ((eq arg 'folded)   (org-clear-latex-preview
+                                         (if (org-before-first-heading-p) (point-min)
+                                           (save-excursion
+                                             (org-with-limited-levels (org-back-to-heading t) (point))))
+                                         (org-with-limited-levels (org-entry-end-position))))))))
 
 (setq org-jump-to-previous-block nil
       org-latex-mode             nil)
