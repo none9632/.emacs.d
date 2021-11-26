@@ -127,6 +127,4 @@
       (winner-undo)
       (setq dashboard-recover-layout-p nil))))
 
-;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-
 (provide 'init-dashboard)

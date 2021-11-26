@@ -214,25 +214,25 @@ Better defaults configurations.
 
 #+end_src
 
-** Environment
+** COMMENT Environment
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
 
-  ;; (when sys/linux-x-p
-  ;;   (use-package exec-path-from-shell
-  ;;     :init
-  ;;     (setq exec-path-from-shell-check-startup-files nil
-  ;;           exec-path-from-shell-variables '("PATH" "MANPATH")
-  ;;           exec-path-from-shell-arguments '("-l"))
-  ;;     (exec-path-from-shell-initialize)))
+  (when sys/linux-x-p
+    (use-package exec-path-from-shell
+      :init
+      (setq exec-path-from-shell-check-startup-files nil
+            exec-path-from-shell-variables '("PATH" "MANPATH")
+            exec-path-from-shell-arguments '("-l"))
+      (exec-path-from-shell-initialize)))
 
 #+end_src
 
-** Start server
+** COMMENT Start server
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
 
-  ;; (server-start)
+  (server-start)
 
 #+end_src
 
@@ -781,13 +781,13 @@ Dashboard configurations.
 
 #+end_src
 
-** Dashboard in emacsclient
+** COMMENT Dashboard in emacsclient
 
 Lauches the dashboard in a emacsclient
 
 #+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
 
-  ;; (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 #+end_src
 
@@ -2620,7 +2620,7 @@ Org configurations.
 	
 #+end_src
 
-** pdf-tools
+** COMMENT pdf-tools
 
 #+begin_src emacs-lisp :tangle ./lisp/init-tex.el
 
@@ -3233,40 +3233,40 @@ Display available keybindings in popup
 
 #+end_src
 
-** Search tools
+** COMMENT Search tools
 
 #+begin_src emacs-lisp :tangle ./lisp/init-utils.el
 
-  ;; ;; Writable `grep' buffer
-  ;; (use-package wgrep
-  ;;   :init
-  ;;   (setq wgrep-auto-save-buffer t
-  ;;         wgrep-change-readonly-file t))
+  ;; Writable `grep' buffer
+  (use-package wgrep
+    :init
+    (setq wgrep-auto-save-buffer t
+          wgrep-change-readonly-file t))
 
-  ;; ;; Fast search tool `ripgrep'
-  ;; (use-package rg
-  ;;   :defines projectile-command-map
-  ;;   :hook (after-init . rg-enable-default-bindings)
-  ;;   :bind (:map rg-global-map
-  ;;          ("c" . rg-dwim-current-dir)
-  ;;          ("f" . rg-dwim-current-file)
-  ;;          ("m" . rg-menu)
-  ;;          :map rg-mode-map
-  ;;          ("m" . rg-menu))
-  ;;   :init (setq rg-group-result t
-  ;;               rg-show-columns t)
-  ;;   :config
-  ;;   (cl-pushnew '("tmpl" . "*.tmpl") rg-custom-type-aliases)
+  ;; Fast search tool `ripgrep'
+  (use-package rg
+    :defines projectile-command-map
+    :hook (after-init . rg-enable-default-bindings)
+    :bind (:map rg-global-map
+                ("c" . rg-dwim-current-dir)
+                ("f" . rg-dwim-current-file)
+                ("m" . rg-menu)
+                :map rg-mode-map
+                ("m" . rg-menu))
+    :init (setq rg-group-result t
+                rg-show-columns t)
+    :config
+    (cl-pushnew '("tmpl" . "*.tmpl") rg-custom-type-aliases)
 
-  ;;   (with-eval-after-load 'projectile
-  ;;     (defalias 'projectile-ripgrep #'rg-project)
-  ;;     (bind-key "s R" #'rg-project projectile-command-map))
+    (with-eval-after-load 'projectile
+      (defalias 'projectile-ripgrep #'rg-project)
+      (bind-key "s R" #'rg-project projectile-command-map))
 
-  ;;   (with-eval-after-load 'counsel
-  ;;     (bind-keys
-  ;;      :map rg-global-map
-  ;;      ("R" . counsel-rg)
-  ;;      ("F" . counsel-fzf))))
+    (with-eval-after-load 'counsel
+      (bind-keys
+       :map rg-global-map
+       ("R" . counsel-rg)
+       ("F" . counsel-fzf))))
 
 #+end_src
 
@@ -3376,13 +3376,13 @@ Walk through git revisions of a file
 	
 #+end_src
 
-** Git related modes
+** COMMENT Git related modes
 
 #+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
 
-  ;; (use-package gitattributes-mode)
-  ;; (use-package gitconfig-mode)
-  ;; (use-package gitignore-mode)
+  (use-package gitattributes-mode)
+  (use-package gitconfig-mode)
+  (use-package gitignore-mode)
 
 #+end_src
 

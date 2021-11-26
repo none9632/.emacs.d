@@ -1,24 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-(use-package pdf-tools
-  :mode (("\\.pdf\\'" . pdf-view-mode))
-  :bind (:map pdf-view-mode-map
-              ;; ("SPC" . nil)
-              ;; ("SPC h v" . 'counsel-describe-variable-function)
-              ("j"       . pdf-view-next-line-or-next-page)
-              ("k"       . pdf-view-previous-line-or-previous-page)
-              ("J"       . pdf-view-next-page)
-              ("K"       . pdf-view-previous-page)
-              )
-  :hook (pdf-view-mode . solaire-mode)
-  :config
-  (pdf-tools-install :no-query)
-
-  (pdf-view-themed-minor-mode)
-
-  ;; (setq-default pdf-view-display-size 'fit-page)
-  (setq pdf-view-resize-factor 1.1))
-
 (use-package auctex
   :hook ((LaTeX-mode . display-line-numbers-mode)
          (LaTeX-mode . TeX-fold-mode)
@@ -45,9 +26,6 @@
   (setq-default TeX-master nil)
 
   (bind-key "SPC p d" #'preview-document LaTeX-mode-map))
-
-;; (use-package evil-tex
-;;   :hook (LaTeX-mode . evil-tex-mode))
 
 (use-package cdlatex
   :after yasnippet

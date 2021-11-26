@@ -27,8 +27,4 @@
                            (when (bound-and-true-p git-timemachine-mode)
                              (user-error "Cannot revert the timemachine buffer")))))
 
-;; (use-package gitattributes-mode)
-;; (use-package gitconfig-mode)
-;; (use-package gitignore-mode)
-
 (provide 'init-vcs)

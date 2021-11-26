@@ -25,16 +25,6 @@
 (set-selection-coding-system   'utf-8)
 (modify-coding-system-alist    'process "*" 'utf-8)
 
-;; (when sys/linux-x-p
-;;   (use-package exec-path-from-shell
-;;     :init
-;;     (setq exec-path-from-shell-check-startup-files nil
-;;           exec-path-from-shell-variables '("PATH" "MANPATH")
-;;           exec-path-from-shell-arguments '("-l"))
-;;     (exec-path-from-shell-initialize)))
-
-;; (server-start)
-
 (shell-command "rm -f ~/.emacs.d/session.*")
 (shell-command "rm -f ~/.emacs.d/org-src-*.txt")
 
