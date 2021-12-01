@@ -154,11 +154,11 @@
                     "..."   "\\ldots "
                     "->"    "\\to "
                     "=="    "&="
-                    "=>"    "\\Rightarrow "
-                    "=<"    "\\Leftarrow "
+                    "=>"    "\\Ra "
+                    "=<"    "\\La "
                     ">>"    "\\gg "
                     "<<"    "\\ll "
-                    "<>"    "\\Leftrightarrow "
+                    "<>"    "\\Lra "
                     "<="    "\\leq "
                     ">="    "\\geq "
                     ";="    "\\neq "
@@ -234,16 +234,16 @@
                     "md"    "\\mathrm{d} "
                     "eq"    "\\equiv "
                     "ds"    "\\ds "
-                    "uua"   "\\upuparrows "
-                    "uda"   "\\updownarrows "
+                    "uua"   "\\uua "
+                    "uda"   "\\uda "
                     "AA"    "\\forall "
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
-                    "NN"    "\\mathbb{N}"
-                    "ZZ"    "\\mathbb{Z}"
-                    "QQ"    "\\mathbb{Q}"
-                    "RR"    "\\mathbb{R}"
-                    "CC"    "\\mathbb{C}"
+                    "NN"    "\\N"
+                    "ZZ"    "\\Z"
+                    "QQ"    "\\Q"
+                    "RR"    "\\R"
+                    "CC"    "\\C"
                     "sr"    "^2"
                     "cb"    "^3"
                     "inv"   "^{-1}"
@@ -276,27 +276,21 @@
                               (yas-expand-snippet "\\bar{$1}$0"))
                     "oln"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\overline{$1}$0"))
-                    "uln"   (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\overline{$1}$0"))
+                              (yas-expand-snippet "\\oline{$1}$0"))
                     "obr"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\overbrace{$1}^{$2}$0"))
+                              (yas-expand-snippet "\\obr{$1}^{$2}$0"))
                     "ubr"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\underbrace{$1}_{$2}$0"))
+                              (yas-expand-snippet "\\ubr{$1}_{$2}$0"))
                     ";T"    (lambda ()
                               (interactive)
                               (shell-command-to-string "xkb-switch -n")
-                              (yas-expand-snippet "\\T{$1}$0")
+                              (yas-expand-snippet "\\text{$1}$0")
                               (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
                     "vc"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\vec{$1}$0"))
-                    "ora"   (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\ora{$1}$0"))
                     "box"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\boxed{$1}$0"))

@@ -22,7 +22,7 @@
 #+LATEX_HEADER: \usepackage{mdframed}      % Boxed theorem
 #+LATEX_HEADER: \usepackage{mathtools}     % for \explain and \explainup
 #+LATEX_HEADER: \usepackage{xparse}        % for \sqrt
-#+LATEX_HEADER: %\usepackage{mathabx}       % for \updownarrows etc.
+#+LATEX_HEADER: \usepackage[b]{esvect}     % for better \vec
 
 #+LATEX_HEADER: \usepackage{siunitx}       % Required for alignment (S in tabular)
 #+LATEX_HEADER: \usepackage{multirow}      % Required for multirows
@@ -51,39 +51,58 @@
 #+LATEX_HEADER: }%
 #+LATEX_HEADER: }
 
+#+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+#+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
+#+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
+#+LATEX_HEADER: \newcommand{\oline}[1]{\overline{#1}}
+#+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
+#+LATEX_HEADER: \newcommand{\obr}[1]{\overbrace{#1}}
+#+LATEX_HEADER: \newcommand{\ubr}[1]{\underbrace{#1}}
+#+LATEX_HEADER: \newcommand{\uua}{\uparrow\uparrow}
+#+LATEX_HEADER: \newcommand{\uda}{\uparrow\mathrel{\mspace{-1mu}}\downarrow}
+#+LATEX_HEADER: \newcommand{\Ra}{\Rightarrow}
+#+LATEX_HEADER: \newcommand{\La}{\Leftarrow}
+#+LATEX_HEADER: \newcommand{\Lra}{\Leftrightarrow}
+#+LATEX_HEADER: \newcommand{\N}{\mathbb{N}}
+#+LATEX_HEADER: \newcommand{\Z}{\mathbb{Z}}
+#+LATEX_HEADER: \newcommand{\Q}{\mathbb{Q}}
+#+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
+#+LATEX_HEADER: \newcommand{\explain}[2]{\underset{\mathclap{\overset{\uparrow}{\textrm{#2}}}}{#1}}
+#+LATEX_HEADER: \newcommand{\explainup}[2]{\overset{\mathclap{\underset{\downarrow}{\textrm{#2}}}}{#1}}
+
 #+LATEX_HEADER: \let\oldDelta\Delta
 #+LATEX_HEADER: \renewcommand\Delta{{\scriptstyle\oldDelta}}
 #+LATEX_HEADER: \renewcommand\varepsilon{\mathcal{E}}
 #+LATEX_HEADER: \renewcommand\emptyset{\varnothing}
-
+#+LATEX_HEADER: \renewcommand\vec[1]{\vv{#1}}
+#+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
+#+LATEX_HEADER: \let\oldtext\text
+#+LATEX_HEADER: \renewcommand{\text}[1]{\oldtext{ #1 }}
 #+LATEX_HEADER: \let\oldbigcup\bigcup
 #+LATEX_HEADER: \renewcommand\bigcup{{\textstyle\oldbigcup}}
 #+LATEX_HEADER: \let\oldbigcap\bigcap
 #+LATEX_HEADER: \renewcommand\bigcap{{\textstyle\oldbigcap}}
-
 #+LATEX_HEADER: \let\oldsum\sum
 #+LATEX_HEADER: \renewcommand\sum{\displaystyle\oldsum}
 #+LATEX_HEADER: \let\oldprod\prod
 #+LATEX_HEADER: \renewcommand\prod{\displaystyle\oldprod}
 #+LATEX_HEADER: \let\oldcoprod\coprod
 #+LATEX_HEADER: \renewcommand\coprod{\displaystyle\oldcoprod}
-
 #+LATEX_HEADER: \let\oldint\int
 #+LATEX_HEADER: \renewcommand\int{\oldint\limits}
-
-#+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
-#+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
-#+LATEX_HEADER: \newcommand{\T}[1]{\text{ #1 }}
-#+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
-#+LATEX_HEADER: \newcommand{\ora}[1]{\overrightarrow{#1}}
-#+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
-#+LATEX_HEADER: \newcommand{\explain}[2]{\underset{\mathclap{\overset{\uparrow}{\textrm{#2}}}}{#1}}
-#+LATEX_HEADER: \newcommand{\explainup}[2]{\overset{\mathclap{\underset{\downarrow}{\textrm{#2}}}}{#1}}
 
 #+LATEX_HEADER: \makeatletter
 #+LATEX_HEADER: \newcases{scases}{\quad}{%
 #+LATEX_HEADER: $\m@th\displaystyle##$\hfil}{$\m@th\displaystyle##$\hfil}{\lbrack}{.}
 #+LATEX_HEADER: \makeatother
+
+#+LATEX_HEADER: \makeatletter
+#+LATEX_HEADER: \def\widebreve#1{\mathop{\vbox{\m@th\ialign{##\crcr\noalign{\kern\p@}%
+#+LATEX_HEADER: \brevefill\crcr\noalign{\kern0.1\p@\nointerlineskip}%
+#+LATEX_HEADER: $\hfil\displaystyle{#1}\hfil$\crcr}}}\limits}
+#+LATEX_HEADER: \def\brevefill{$\m@th \setbox\z@\hbox{}%
+#+LATEX_HEADER: \hfill\scalebox{0.7}{\rotatebox[origin=c]{90}{(}} \kern4pt $}
+#+LATEX_HEADER: \makeatletter
 
 #+LATEX_HEADER: \newenvironment{theorem}[2][]%
 #+LATEX_HEADER: {%
