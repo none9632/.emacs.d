@@ -313,19 +313,6 @@ Better defaults configurations.
 
 #+end_src
 
-*** time
-
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
-	
-  (use-package time
-    :ensure nil
-    :unless (display-graphic-p)
-    :hook (after-init . display-time-mode)
-    :init (setq display-time-24hr-format t
-                display-time-day-and-date t))
-
-#+end_src
-
 *** so-long
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
@@ -1171,6 +1158,7 @@ Open files as another user
       (push '("\\mathbb{C}"    . ?ℂ) prettify-symbols-alist)
       (push '("\\not\\in"      . ?∉) prettify-symbols-alist)
       (push '("\\updownarrows" . ?⇅) prettify-symbols-alist)
+      (push '("\\degree"       . ?⚬) prettify-symbols-alist)
       (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 #+end_src
@@ -2376,8 +2364,6 @@ Org configurations.
   (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
         org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
 
-  ;; (setq org-latex-create-formula-image-program 'imagemagick)
-
   (with-eval-after-load 'ox-latex
     (add-to-list 'org-latex-classes
                  '("org-plain-latex"
@@ -2431,8 +2417,7 @@ Org configurations.
     (insert (concat "[[" img-file-path "]]"))
     (if (not (equal org-inline-image-overlays nil))
         (org-toggle-inline-images))
-    (org-toggle-inline-images)
-    )
+    (org-toggle-inline-images))
 
   (defun my/inkscape-figures-edit (line-str)
     (interactive)
@@ -2701,7 +2686,9 @@ Org configurations.
                 ("["     . nil)
                 ("{"     . nil)
                 ("|"     . nil)
-                ("_"     . nil))
+                ("_"     . nil)
+                ("'"     . nil)
+                ("`"     . nil))
     :config
     (defun my/cdlatex-in-yas-field ()
       ;; Check if we're at the end of the Yas field
@@ -3879,7 +3866,7 @@ Snippets configurations.
                       "csec"  "\\cosec "
                       "exp"   "\\exp"
                       "ln"    "\\ln "
-                      "perp"  "\\perp"
+                      "per"   "\\perp "
                       "min"   "\\min "
                       "max"   "\\max "
                       "sgn"   "\\sgn "

@@ -71,13 +71,6 @@
     (setq show-trailing-whitespace t)
     (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
 
-(use-package time
-  :ensure nil
-  :unless (display-graphic-p)
-  :hook (after-init . display-time-mode)
-  :init (setq display-time-24hr-format t
-              display-time-day-and-date t))
-
 (use-package so-long
     :ensure nil
     :hook (after-init . global-so-long-mode)

@@ -62,8 +62,6 @@
 (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
       org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
 
-;; (setq org-latex-create-formula-image-program 'imagemagick)
-
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("org-plain-latex"
@@ -117,8 +115,7 @@
   (insert (concat "[[" img-file-path "]]"))
   (if (not (equal org-inline-image-overlays nil))
       (org-toggle-inline-images))
-  (org-toggle-inline-images)
-  )
+  (org-toggle-inline-images))
 
 (defun my/inkscape-figures-edit (line-str)
   (interactive)

@@ -215,7 +215,7 @@
                     "csec"  "\\cosec "
                     "exp"   "\\exp"
                     "ln"    "\\ln "
-                    "perp"  "\\perp"
+                    "per"   "\\perp "
                     "min"   "\\min "
                     "max"   "\\max "
                     "sgn"   "\\sgn "

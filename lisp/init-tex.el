@@ -37,7 +37,9 @@
               ("["     . nil)
               ("{"     . nil)
               ("|"     . nil)
-              ("_"     . nil))
+              ("_"     . nil)
+              ("'"     . nil)
+              ("`"     . nil))
   :config
   (defun my/cdlatex-in-yas-field ()
     ;; Check if we're at the end of the Yas field

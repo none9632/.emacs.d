@@ -178,6 +178,7 @@
     (push '("\\mathbb{C}"    . ?ℂ) prettify-symbols-alist)
     (push '("\\not\\in"      . ?∉) prettify-symbols-alist)
     (push '("\\updownarrows" . ?⇅) prettify-symbols-alist)
+    (push '("\\degree"       . ?⚬) prettify-symbols-alist)
     (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 (provide 'init-edit)
