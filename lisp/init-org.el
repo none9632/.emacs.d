@@ -62,6 +62,8 @@
 (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
       org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
 
+(setq org-latex-create-formula-image-program 'imagemagick)
+
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("org-plain-latex"
@@ -155,13 +157,14 @@
   (my/org-load-prettify-symbols)
   (add-hook 'org-pre-cycle-hook
             (lambda (arg)
-              (cond ((eq arg 'subtree)  (org-latex-preview nil))
-                    ((eq arg 'children) (org-latex-preview nil))
-                    ((eq arg 'folded)   (org-clear-latex-preview
-                                         (if (org-before-first-heading-p) (point-min)
-                                           (save-excursion
-                                             (org-with-limited-levels (org-back-to-heading t) (point))))
-                                         (org-with-limited-levels (org-entry-end-position))))))))
+              (cond ((eq arg 'subtree) (org-latex-preview nil))
+                    ((and (eq arg 'folded)
+                          (eq ""  '(replace-regexp-in-string "^\\**[[:ascii:]]*")))
+                     (org-clear-latex-preview
+                      (if (org-before-first-heading-p) (point-min)
+                        (save-excursion
+                          (org-with-limited-levels (org-back-to-heading t) (point))))
+                      (org-with-limited-levels (org-entry-end-position))))))))
 
 (setq org-jump-to-previous-block nil
       org-latex-mode             nil)

@@ -307,7 +307,6 @@
                               (interactive)
                               (if (not (my/current-line-empty-p))
                                   (evil-open-below 1))
-                              ;; (yas-expand-snippet "\\begin{dcases}\n$1\\\\\\\\\n    $2\n\\end{dcases}$0"))
                               (yas-expand-snippet "\\begin{dcases}\n$1\\\\\\\\$2\n\\end{dcases}$0"))
                     "scs"   (lambda ()
                               (interactive)
