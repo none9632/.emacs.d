@@ -236,6 +236,7 @@
                     "ds"    "\\ds "
                     "uua"   "\\uua "
                     "uda"   "\\uda "
+                    "rad"   "\\rad "
                     "AA"    "\\forall "
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
@@ -291,6 +292,9 @@
                     "vc"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\vec{$1}$0"))
+                    "brv"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\autobrv{$1}$0"))
                     "box"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\boxed{$1}$0"))

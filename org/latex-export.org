@@ -30,30 +30,15 @@
 #+LATEX_HEADER: \usepackage{longtable}     % To display tables on several pages
 #+LATEX_HEADER: \usepackage{rotating}      % To display tables in landscape
 
-#+LATEX_HEADER: \DeclareMathOperator{\sgn}{sgn}
-
 #+LATEX_HEADER: \usepackage{xpatch}
 #+LATEX_HEADER: \xpretocmd{\part}{\setcounter{section}{0}}{}{}
 
-#+LATEX_HEADER: \let\oldpart\part
-#+LATEX_HEADER: \renewcommand\part{\newpage\oldpart}
-
-#+LATEX_HEADER: \let\oldparagraph\paragraph
-#+LATEX_HEADER: \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}\\}
-
-#+LATEX_HEADER: \NewDocumentCommand \Sqrt { o m } {%
-#+LATEX_HEADER: \IfNoValueTF{#1}
-#+LATEX_HEADER: {%
-#+LATEX_HEADER: \sqrt{#2}%
-#+LATEX_HEADER: }
-#+LATEX_HEADER: {%
-#+LATEX_HEADER: \!\sqrt[\raisebox{2pt}{$\scriptscriptstyle #1$}]{#2}\,%
-#+LATEX_HEADER: }%
-#+LATEX_HEADER: }
+#+LATEX_HEADER: \DeclareMathOperator{\sgn}{sgn}
 
 #+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
 #+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
 #+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
+#+LATEX_HEADER: \newcommand{\rad}{\oldtext{{\scriptsize рад}}}
 #+LATEX_HEADER: \newcommand{\oline}[1]{\overline{#1}}
 #+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
 #+LATEX_HEADER: \newcommand{\obr}[1]{\overbrace{#1}}
@@ -90,19 +75,53 @@
 #+LATEX_HEADER: \renewcommand\coprod{\displaystyle\oldcoprod}
 #+LATEX_HEADER: \let\oldint\int
 #+LATEX_HEADER: \renewcommand\int{\oldint\limits}
+#+LATEX_HEADER: \let\oldpart\part
+#+LATEX_HEADER: \renewcommand\part{\newpage\oldpart}
+#+LATEX_HEADER: \let\oldparagraph\paragraph
+#+LATEX_HEADER: \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}\\}
+
+#+LATEX_HEADER: \NewDocumentCommand \Sqrt { o m } {%
+#+LATEX_HEADER: \IfNoValueTF{#1}
+#+LATEX_HEADER: {%
+#+LATEX_HEADER: \sqrt{#2}%
+#+LATEX_HEADER: }
+#+LATEX_HEADER: {%
+#+LATEX_HEADER: \!\sqrt[\raisebox{2pt}{$\scriptscriptstyle #1$}]{#2}\,%
+#+LATEX_HEADER: }%
+#+LATEX_HEADER: }
 
 #+LATEX_HEADER: \makeatletter
-#+LATEX_HEADER: \newcases{scases}{\quad}{%
-#+LATEX_HEADER: $\m@th\displaystyle##$\hfil}{$\m@th\displaystyle##$\hfil}{\lbrack}{.}
-#+LATEX_HEADER: \makeatother
 
-#+LATEX_HEADER: \makeatletter
 #+LATEX_HEADER: \def\widebreve#1{\mathop{\vbox{\m@th\ialign{##\crcr\noalign{\kern\p@}%
 #+LATEX_HEADER: \brevefill\crcr\noalign{\kern0.1\p@\nointerlineskip}%
 #+LATEX_HEADER: $\hfil\displaystyle{#1}\hfil$\crcr}}}\limits}
 #+LATEX_HEADER: \def\brevefill{$\m@th \setbox\z@\hbox{}%
 #+LATEX_HEADER: \hfill\scalebox{0.7}{\rotatebox[origin=c]{90}{(}} \kern4pt $}
-#+LATEX_HEADER: \makeatletter
+
+#+LATEX_HEADER: \ExplSyntaxOn
+#+LATEX_HEADER: \int_new:N \l_user_charcount_int
+#+LATEX_HEADER: \cs_new_protected:Npn \user_parsefn:nn #1
+#+LATEX_HEADER: {
+#+LATEX_HEADER: \int_zero:N \l_user_charcount_int
+#+LATEX_HEADER: \tl_map_inline:nn { #1 }
+#+LATEX_HEADER: {
+#+LATEX_HEADER: \bool_if:nT { \token_if_letter_p:N ##1 || \token_if_other_p:N ##1 }
+#+LATEX_HEADER: { \int_incr:N \l_user_charcount_int }
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \int_compare:nTF { \l_user_charcount_int > 1 }
+#+LATEX_HEADER: { \widebreve { #1 } }
+#+LATEX_HEADER: { \breve { #1 } }
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \NewDocumentCommand \autobrv { m }
+#+LATEX_HEADER: {
+#+LATEX_HEADER: \user_parsefn:nn { #1 }
+#+LATEX_HEADER: }
+#+LATEX_HEADER: \ExplSyntaxOff
+
+#+LATEX_HEADER: \newcases{scases}{\quad}{%
+#+LATEX_HEADER: $\m@th\displaystyle##$\hfil}{$\m@th\displaystyle##$\hfil}{\lbrack}{.}
+
+#+LATEX_HEADER: \makeatother
 
 #+LATEX_HEADER: \newenvironment{theorem}[2][]%
 #+LATEX_HEADER: {%
