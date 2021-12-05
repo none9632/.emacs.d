@@ -44,7 +44,7 @@
         dashboard-set-file-icons    t
         dashboard-page-separator    "\n\f\n"
         dashboard-set-heading-icons t
-        dashboard-items             '((recents   . 5)
+        dashboard-items             '((recents   . 6)
                                       (bookmarks . 5)
                                       (projects  . 5))
         dashboard-heading-icons     '((recents   . "file-text")

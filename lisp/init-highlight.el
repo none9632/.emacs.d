@@ -2,7 +2,7 @@
 
 (use-package hl-line
   :ensure nil
-  :hook (after-init   . global-hl-line-mode))
+  :hook (after-init . global-hl-line-mode))
 
 (use-package paren
   :ensure nil
