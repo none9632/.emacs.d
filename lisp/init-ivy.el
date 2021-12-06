@@ -305,10 +305,6 @@ This is for use in `ivy-re-builders-alist'."
   :bind (:map evil-normal-state-map
               ("?"   . swiper)))
 
-(use-package all-the-icons-ivy-rich
-  :if (icons-displayable-p)
-  :hook (ivy-mode . all-the-icons-ivy-rich-mode))
-
 (use-package ivy-rich
   :hook (;; Must load after `counsel-projectile'
          (counsel-projectile-mode . ivy-rich-mode)
@@ -319,5 +315,8 @@ This is for use in `ivy-re-builders-alist'."
   :init
   ;; For better performance
   (setq ivy-rich-parse-remote-buffer nil))
+
+(use-package all-the-icons-ivy-rich
+  :hook (ivy-mode . all-the-icons-ivy-rich-mode))
 
 (provide 'init-ivy)

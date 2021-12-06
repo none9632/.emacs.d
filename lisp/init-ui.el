@@ -19,21 +19,23 @@
 (use-package solaire-mode
   :hook (((change-major-mode
            after-revert
-           ediff-prepare-buffer) . turn-on-solaire-mode)
-         (minibuffer-setup       . solaire-mode-fix-minibuffer))
-  :init
-  (solaire-global-mode 1))
+           ediff-prepare-buffer)  . turn-on-solaire-mode)
+         (server-after-make-frame . solaire-mode-fix-minibuffer))
+  :custom
+  (solaire-global-mode +1))
 
 (use-package doom-themes
   :custom-face (doom-modeline-buffer-file ((t (:inherit (mode-line bold)))))
   :custom (doom-themes-treemacs-theme "doom-colors")
-  :init
-  (load-theme 'doom-one t)
+  :hook (server-after-make-frame . (lambda ()
+                                     (load-theme 'doom-one t)
+                                     (doom-themes-treemacs-config)))
   :config
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
   ;; Enable customized theme
-  (doom-themes-treemacs-config))
+  ;; (doom-themes-treemacs-config)
+  )
 
 (use-package doom-modeline
   :custom

@@ -16,7 +16,6 @@
   :config
   ;; Display icons for buffers
   (use-package all-the-icons-ibuffer
-    :if (icons-displayable-p)
     :init (all-the-icons-ibuffer-mode 1))
 
   (with-eval-after-load 'counsel
@@ -38,15 +37,12 @@
                       (unless (eq ibuffer-sorting-mode 'alphabetic)
                         (ibuffer-do-sort-by-alphabetic)))))
   :config
-  (setq ibuffer-projectile-prefix
-        (if (icons-displayable-p)
-            (concat
-             (all-the-icons-octicon "file-directory"
-                                    :face ibuffer-filter-group-name-face
-                                    :v-adjust 0.0
-                                    :height 1.0)
-             " ")
-          "Project: ")))
+  (setq ibuffer-projectile-prefix (concat
+                                   (all-the-icons-octicon "file-directory"
+                                                          :face ibuffer-filter-group-name-face
+                                                          :v-adjust 0.0
+                                                          :height 1.0)
+                                   " ")))
 
 (leader-key-def
   "l" (lambda ()

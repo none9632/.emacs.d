@@ -1,10 +1,5 @@
 ;; -*- lexical-binding: t -*-
 
-(defcustom centaur-icon (display-graphic-p)
-  "Display icons or not."
-  :group 'centaur
-  :type 'boolean)
-
 ;; Emacs Lisp Package Archive (ELPA)
 (defcustom centaur-package-archives-alist
   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))

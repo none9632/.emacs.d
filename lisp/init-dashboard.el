@@ -1,5 +1,6 @@
 ;; -*- lexical-binding: t -*-
 
+(require 'all-the-icons)
 (require 'init-custom)
 
 (use-package dashboard
@@ -53,21 +54,16 @@
 
         dashboard-set-navigator t
         dashboard-navigator-buttons
-        `(((,(when (icons-displayable-p)
-               (all-the-icons-material "restore" :height 1.35 :v-adjust -0.24))
+        `(((,(all-the-icons-material "restore" :height 1.35 :v-adjust -0.24)
             "Restore" "Restore previous session"
             (lambda (&rest _)))
-           (,(when (icons-displayable-p)
-               (all-the-icons-octicon "tools" :height 1.0 :v-adjust 0.0))
+           (,(all-the-icons-octicon "tools" :height 1.0 :v-adjust 0.0)
             "Settings" "Open org file"
-            (lambda (&rest _) ))
-           (,(when (icons-displayable-p)
-               (all-the-icons-material "update" :height 1.35 :v-adjust -0.24))
+            (lambda (&rest _)))
+           (,(all-the-icons-material "update" :height 1.35 :v-adjust -0.24)
             "Update" "Update Emacs"
             (lambda (&rest _) (update-packages)))
-           (,(if (icons-displayable-p)
-                 (all-the-icons-faicon "question" :height 1.2 :v-adjust -0.1)
-               "?")
+           (,(all-the-icons-faicon "question" :height 1.2 :v-adjust -0.1)
             "" "Help (?/h)"
             (lambda (&rest _) (dashboard-hydra/body))
             font-lock-string-face))))
@@ -126,5 +122,7 @@
                (bound-and-true-p winner-mode))
       (winner-undo)
       (setq dashboard-recover-layout-p nil))))
+
+(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 (provide 'init-dashboard)

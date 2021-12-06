@@ -20,12 +20,6 @@
       (async-byte-recompile-directory package-user-dir)
     (byte-recompile-directory package-user-dir 0 t)))
 
-(defun icons-displayable-p ()
-  "Return non-nil if `all-the-icons' is displayable."
-  (and centaur-icon
-       (display-graphic-p)
-       (require 'all-the-icons nil t)))
-
 (defun centaur-set-variable (variable value &optional no-save)
   "Set the VARIABLE to VALUE, and return VALUE.
 

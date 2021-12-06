@@ -16,25 +16,24 @@
              treemacs-filewatch-mode
              treemacs-git-mode)
   :bind (:map treemacs-mode-map
-         ("d"   . treemacs-delete)
-         ("r"   . treemacs-rename)
-         ("C-n" . treemacs)
-         ("C-/" . treemacs-helpful-hydra)
-         ("C-j" . evil-window-down)
-         :map evil-normal-state-map
-         ("C-n" . my/treemacs-select-window)
-         :map evil-visual-state-map
-         ("C-n" . my/treemacs-select-window)
-         :map evil-insert-state-map
-         ("C-n" . my/treemacs-select-window))
+              ("d"   . treemacs-delete)
+              ("r"   . treemacs-rename)
+              ("C-n" . treemacs)
+              ("C-/" . treemacs-helpful-hydra)
+              ("C-j" . evil-window-down)
+              :map evil-normal-state-map
+              ("C-n" . my/treemacs-select-window)
+              :map evil-visual-state-map
+              ("C-n" . my/treemacs-select-window)
+              :map evil-insert-state-map
+              ("C-n" . my/treemacs-select-window))
   :custom-face (treemacs-git-modified-face ((t (:foreground "#51afef"))))
   :config
   (setq treemacs-collapse-dirs     0
         treemacs-sorting           'alphabetic-asc
         treemacs-follow-after-init t
         treemacs-width             30
-        treemacs-file-event-delay  500
-        treemacs-no-png-images     (not centaur-icon))
+        treemacs-file-event-delay  500)
   :config
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)

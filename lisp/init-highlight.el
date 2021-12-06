@@ -60,32 +60,30 @@
 
 (leader-key-def
   "hr" 'my/hig-restart)
-;; (add-hook 'after-save-hook 'my/hig-restart)
 
-(when (display-graphic-p)
-  (use-package highlight-indent-guides
-    :diminish
-    :hook (prog-mode  . highlight-indent-guides-mode)
-    :config
-    (setq highlight-indent-guides-method     'character
-          highlight-indent-guides-responsive 'top)
+(use-package highlight-indent-guides
+  :diminish
+  :hook (prog-mode  . highlight-indent-guides-mode)
+  :config
+  (setq highlight-indent-guides-method     'character
+        highlight-indent-guides-responsive 'top)
 
-    (with-no-warnings
-      ;; Don't display indentations in `swiper'
-      (with-eval-after-load 'ivy
-        (defun my/ivy-cleanup-indentation (str)
-          "Clean up indentation highlighting in ivy minibuffer."
-          (let ((pos 0)
-                (next 0)
-                (limit (length str))
-                (prop 'highlight-indent-guides-prop))
-            (while (and pos next)
-              (setq next (text-property-not-all pos limit prop nil str))
-              (when next
-                (setq pos (text-property-any next limit prop nil str))
-                (ignore-errors
-                  (remove-text-properties next pos '(display nil face nil) str))))))
-        (advice-add #'ivy-cleanup-string :after #'my/ivy-cleanup-indentation)))))
+  (with-no-warnings
+    ;; Don't display indentations in `swiper'
+    (with-eval-after-load 'ivy
+      (defun my/ivy-cleanup-indentation (str)
+        "Clean up indentation highlighting in ivy minibuffer."
+        (let ((pos 0)
+              (next 0)
+              (limit (length str))
+              (prop 'highlight-indent-guides-prop))
+          (while (and pos next)
+            (setq next (text-property-not-all pos limit prop nil str))
+            (when next
+              (setq pos (text-property-any next limit prop nil str))
+              (ignore-errors
+                (remove-text-properties next pos '(display nil face nil) str))))))
+      (advice-add #'ivy-cleanup-string :after #'my/ivy-cleanup-indentation))))
 
 (use-package rainbow-mode
   :diminish
@@ -145,17 +143,6 @@
         1 8
         '(center t)))
     (setq diff-hl-fringe-bmp-function #'my/diff-hl-fringe-bmp-function)
-
-    (unless (display-graphic-p)
-      (setq diff-hl-margin-symbols-alist
-            '((insert . " ") (delete . " ") (change . " ")
-              (unknown . " ") (ignored . " ")))
-      ;; Fall back to the display margin since the fringe is unavailable in tty
-      (diff-hl-margin-mode 1)
-      ;; Avoid restoring `diff-hl-margin-mode'
-      (with-eval-after-load 'desktop
-        (add-to-list 'desktop-minor-mode-table
-                     '(diff-hl-margin-mode nil))))
 
     ;; Integration with magit
     (with-eval-after-load 'magit

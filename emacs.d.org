@@ -49,11 +49,11 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 
 #+begin_src emacs-lisp :tangle ./init.el
 
-  (defvar centaur-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
+  (defvar centaur-gc-cons-threshold 16000000
     "The default value to use for `gc-cons-threshold'. If you experience freezing,
   decrease this. If you experience stuttering, increase this.")
 
-  (defvar centaur-gc-cons-upper-limit (if (display-graphic-p) 400000000 100000000)
+  (defvar centaur-gc-cons-upper-limit 400000000
     "The temporary value for `gc-cons-threshold' to defer it.")
 
   (defvar centaur-gc-timer (run-with-idle-timer 10 t #'garbage-collect)
@@ -241,14 +241,22 @@ Better defaults configurations.
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
 
-  ;; Set the font face based on platform
-  (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+  (defun my/set-font-faces ()
+    ;; Set the font face based on platform
+    (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
 
-  ;; Set the fixed pitch fac
-  (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+    ;; Set the fixed pitch fac
+    (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
 
-  ;; Set the variable pitch face
-  (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular)
+    ;; Set the variable pitch face
+    (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular))
+
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (with-selected-frame frame
+                    (my/set-font-faces))))
+    (my/set-font-faces))
 
 #+end_src
 
@@ -322,13 +330,13 @@ Scroll one line at a time (less "jumpy" than defaults)
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
 
-  (when (display-graphic-p)
-    (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
-          mouse-wheel-progressive-speed nil))
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
+        mouse-wheel-progressive-speed nil)
+
   (setq scroll-step 1
         scroll-margin 7
         scroll-conservatively 100000)
-	
+
 #+end_src
 
 ** Keybinding
@@ -482,43 +490,42 @@ Better sorting and filtering
     :diminish
     :defines company-box-icons-all-the-icons
     :hook (company-mode . company-box-mode)
-    :init (setq company-box-enable-icon     centaur-icon
+    :init (setq company-box-enable-icon     t
                 company-box-backends-colors nil
                 company-box-doc-enable      nil)
     :config
-    (when (icons-displayable-p)
-      (declare-function all-the-icons-faicon   'all-the-icons)
-      (declare-function all-the-icons-material 'all-the-icons)
-      (declare-function all-the-icons-octicon  'all-the-icons)
-      (setq company-box-icons-all-the-icons
-            `((Unknown       . ,(all-the-icons-material "find_in_page"             :height 0.8  :v-adjust -0.15                             ))
-              (Text          . ,(all-the-icons-faicon   "text-width"               :height 0.8  :v-adjust -0.02                             ))
-              (Method        . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
-              (Function      . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
-              (Constructor   . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
-              (Field         . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
-              (Variable      . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
-              (Class         . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
-              (Interface     . ,(all-the-icons-material "share"                    :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
-              (Module        . ,(all-the-icons-material "view_module"              :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
-              (Property      . ,(all-the-icons-faicon   "wrench"                   :height 0.8  :v-adjust -0.02                             ))
-              (Unit          . ,(all-the-icons-material "settings_system_daydream" :height 0.8  :v-adjust -0.15                             ))
-              (Value         . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
-              (Enum          . ,(all-the-icons-material "storage"                  :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
-              (Keyword       . ,(all-the-icons-material "filter_center_focus"      :height 0.8  :v-adjust -0.15                             ))
-              (Snippet       . ,(all-the-icons-material "format_align_center"      :height 0.8  :v-adjust -0.15                             ))
-              (Color         . ,(all-the-icons-material "palette"                  :height 0.8  :v-adjust -0.15                             ))
-              (File          . ,(all-the-icons-faicon   "file-o"                   :height 0.8  :v-adjust -0.02                             ))
-              (Reference     . ,(all-the-icons-material "collections_bookmark"     :height 0.8  :v-adjust -0.15                             ))
-              (Folder        . ,(all-the-icons-faicon   "folder-open"              :height 0.8  :v-adjust -0.02                             ))
-              (EnumMember    . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15                             ))
-              (Constant      . ,(all-the-icons-faicon   "square-o"                 :height 0.8  :v-adjust -0.1                              ))
-              (Struct        . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
-              (Event         . ,(all-the-icons-octicon  "zap"                      :height 0.8  :v-adjust 0     :face 'all-the-icons-orange ))
-              (Operator      . ,(all-the-icons-material "control_point"            :height 0.8  :v-adjust -0.15                             ))
-              (TypeParameter . ,(all-the-icons-faicon   "arrows"                   :height 0.8  :v-adjust -0.02                             ))
-              (Template      . ,(all-the-icons-material "format_align_left"        :height 0.8  :v-adjust -0.15                             )))
-            company-box-icons-alist 'company-box-icons-all-the-icons)))
+    (declare-function all-the-icons-faicon   'all-the-icons)
+    (declare-function all-the-icons-material 'all-the-icons)
+    (declare-function all-the-icons-octicon  'all-the-icons)
+    (setq company-box-icons-all-the-icons
+          `((Unknown       . ,(all-the-icons-material "find_in_page"             :height 0.8  :v-adjust -0.15                             ))
+            (Text          . ,(all-the-icons-faicon   "text-width"               :height 0.8  :v-adjust -0.02                             ))
+            (Method        . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+            (Function      . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+            (Constructor   . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+            (Field         . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
+            (Variable      . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
+            (Class         . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+            (Interface     . ,(all-the-icons-material "share"                    :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+            (Module        . ,(all-the-icons-material "view_module"              :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+            (Property      . ,(all-the-icons-faicon   "wrench"                   :height 0.8  :v-adjust -0.02                             ))
+            (Unit          . ,(all-the-icons-material "settings_system_daydream" :height 0.8  :v-adjust -0.15                             ))
+            (Value         . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+            (Enum          . ,(all-the-icons-material "storage"                  :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+            (Keyword       . ,(all-the-icons-material "filter_center_focus"      :height 0.8  :v-adjust -0.15                             ))
+            (Snippet       . ,(all-the-icons-material "format_align_center"      :height 0.8  :v-adjust -0.15                             ))
+            (Color         . ,(all-the-icons-material "palette"                  :height 0.8  :v-adjust -0.15                             ))
+            (File          . ,(all-the-icons-faicon   "file-o"                   :height 0.8  :v-adjust -0.02                             ))
+            (Reference     . ,(all-the-icons-material "collections_bookmark"     :height 0.8  :v-adjust -0.15                             ))
+            (Folder        . ,(all-the-icons-faicon   "folder-open"              :height 0.8  :v-adjust -0.02                             ))
+            (EnumMember    . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15                             ))
+            (Constant      . ,(all-the-icons-faicon   "square-o"                 :height 0.8  :v-adjust -0.1                              ))
+            (Struct        . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+            (Event         . ,(all-the-icons-octicon  "zap"                      :height 0.8  :v-adjust 0     :face 'all-the-icons-orange ))
+            (Operator      . ,(all-the-icons-material "control_point"            :height 0.8  :v-adjust -0.15                             ))
+            (TypeParameter . ,(all-the-icons-faicon   "arrows"                   :height 0.8  :v-adjust -0.02                             ))
+            (Template      . ,(all-the-icons-material "format_align_left"        :height 0.8  :v-adjust -0.15                             )))
+          company-box-icons-alist 'company-box-icons-all-the-icons))
 
 #+end_src
 
@@ -545,11 +552,6 @@ Customization.
 ** Custom definitions
 
 #+begin_src emacs-lisp :tangle ./lisp/init-custom.el
-
-  (defcustom centaur-icon (display-graphic-p)
-    "Display icons or not."
-    :group 'centaur
-    :type 'boolean)
 
   ;; Emacs Lisp Package Archive (ELPA)
   (defcustom centaur-package-archives-alist
@@ -625,6 +627,7 @@ Dashboard configurations.
 
   ;; -*- lexical-binding: t -*-
 
+  (require 'all-the-icons)
   (require 'init-custom)
 
 #+end_src
@@ -684,21 +687,16 @@ Dashboard configurations.
 
           dashboard-set-navigator t
           dashboard-navigator-buttons
-          `(((,(when (icons-displayable-p)
-                 (all-the-icons-material "restore" :height 1.35 :v-adjust -0.24))
+          `(((,(all-the-icons-material "restore" :height 1.35 :v-adjust -0.24)
               "Restore" "Restore previous session"
               (lambda (&rest _)))
-             (,(when (icons-displayable-p)
-                 (all-the-icons-octicon "tools" :height 1.0 :v-adjust 0.0))
+             (,(all-the-icons-octicon "tools" :height 1.0 :v-adjust 0.0)
               "Settings" "Open org file"
-              (lambda (&rest _) ))
-             (,(when (icons-displayable-p)
-                 (all-the-icons-material "update" :height 1.35 :v-adjust -0.24))
+              (lambda (&rest _)))
+             (,(all-the-icons-material "update" :height 1.35 :v-adjust -0.24)
               "Update" "Update Emacs"
               (lambda (&rest _) (update-packages)))
-             (,(if (icons-displayable-p)
-                   (all-the-icons-faicon "question" :height 1.2 :v-adjust -0.1)
-                 "?")
+             (,(all-the-icons-faicon "question" :height 1.2 :v-adjust -0.1)
               "" "Help (?/h)"
               (lambda (&rest _) (dashboard-hydra/body))
               font-lock-string-face))))
@@ -760,7 +758,7 @@ Dashboard configurations.
 
 #+end_src
 
-** COMMENT Dashboard in emacsclient
+** Dashboard in emacsclient
 
 Lauches the dashboard in a emacsclient
 
@@ -1416,12 +1414,6 @@ Define functions.
         (async-byte-recompile-directory package-user-dir)
       (byte-recompile-directory package-user-dir 0 t)))
 
-  (defun icons-displayable-p ()
-    "Return non-nil if `all-the-icons' is displayable."
-    (and centaur-icon
-         (display-graphic-p)
-         (require 'all-the-icons nil t)))
-
   (defun centaur-set-variable (variable value &optional no-save)
     "Set the VARIABLE to VALUE, and return VALUE.
 
@@ -1603,32 +1595,30 @@ Highlighting configurations.
 
   (leader-key-def
     "hr" 'my/hig-restart)
-  ;; (add-hook 'after-save-hook 'my/hig-restart)
 
-  (when (display-graphic-p)
-    (use-package highlight-indent-guides
-      :diminish
-      :hook (prog-mode  . highlight-indent-guides-mode)
-      :config
-      (setq highlight-indent-guides-method     'character
-            highlight-indent-guides-responsive 'top)
+  (use-package highlight-indent-guides
+    :diminish
+    :hook (prog-mode  . highlight-indent-guides-mode)
+    :config
+    (setq highlight-indent-guides-method     'character
+          highlight-indent-guides-responsive 'top)
 
-      (with-no-warnings
-        ;; Don't display indentations in `swiper'
-        (with-eval-after-load 'ivy
-          (defun my/ivy-cleanup-indentation (str)
-            "Clean up indentation highlighting in ivy minibuffer."
-            (let ((pos 0)
-                  (next 0)
-                  (limit (length str))
-                  (prop 'highlight-indent-guides-prop))
-              (while (and pos next)
-                (setq next (text-property-not-all pos limit prop nil str))
-                (when next
-                  (setq pos (text-property-any next limit prop nil str))
-                  (ignore-errors
-                    (remove-text-properties next pos '(display nil face nil) str))))))
-          (advice-add #'ivy-cleanup-string :after #'my/ivy-cleanup-indentation)))))
+    (with-no-warnings
+      ;; Don't display indentations in `swiper'
+      (with-eval-after-load 'ivy
+        (defun my/ivy-cleanup-indentation (str)
+          "Clean up indentation highlighting in ivy minibuffer."
+          (let ((pos 0)
+                (next 0)
+                (limit (length str))
+                (prop 'highlight-indent-guides-prop))
+            (while (and pos next)
+              (setq next (text-property-not-all pos limit prop nil str))
+              (when next
+                (setq pos (text-property-any next limit prop nil str))
+                (ignore-errors
+                  (remove-text-properties next pos '(display nil face nil) str))))))
+        (advice-add #'ivy-cleanup-string :after #'my/ivy-cleanup-indentation))))
 
 #+end_src
 
@@ -1706,17 +1696,6 @@ Highlighting configurations.
           1 8
           '(center t)))
       (setq diff-hl-fringe-bmp-function #'my/diff-hl-fringe-bmp-function)
-
-      (unless (display-graphic-p)
-        (setq diff-hl-margin-symbols-alist
-              '((insert . " ") (delete . " ") (change . " ")
-                (unknown . " ") (ignored . " ")))
-        ;; Fall back to the display margin since the fringe is unavailable in tty
-        (diff-hl-margin-mode 1)
-        ;; Avoid restoring `diff-hl-margin-mode'
-        (with-eval-after-load 'desktop
-          (add-to-list 'desktop-minor-mode-table
-                       '(diff-hl-margin-mode nil))))
 
       ;; Integration with magit
       (with-eval-after-load 'magit
@@ -1833,7 +1812,6 @@ IBuffer configurations.
     :config
     ;; Display icons for buffers
     (use-package all-the-icons-ibuffer
-      :if (icons-displayable-p)
       :init (all-the-icons-ibuffer-mode 1))
 
     (with-eval-after-load 'counsel
@@ -1863,15 +1841,12 @@ Group ibuffer's list by project root
                         (unless (eq ibuffer-sorting-mode 'alphabetic)
                           (ibuffer-do-sort-by-alphabetic)))))
     :config
-    (setq ibuffer-projectile-prefix
-          (if (icons-displayable-p)
-              (concat
-               (all-the-icons-octicon "file-directory"
-                                      :face ibuffer-filter-group-name-face
-                                      :v-adjust 0.0
-                                      :height 1.0)
-               " ")
-            "Project: ")))
+    (setq ibuffer-projectile-prefix (concat
+                                     (all-the-icons-octicon "file-directory"
+                                                            :face ibuffer-filter-group-name-face
+                                                            :v-adjust 0.0
+                                                            :height 1.0)
+                                     " ")))
 
 #+end_src
 
@@ -2236,19 +2211,6 @@ Ivy configurations.
 
 #+end_src
 
-** all-the-icons-ivy-rich
-
-Better experience with icons
-Enable it before`ivy-rich-mode' for better performance
-
-#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
-
-  (use-package all-the-icons-ivy-rich
-    :if (icons-displayable-p)
-    :hook (ivy-mode . all-the-icons-ivy-rich-mode))
-
-#+end_src
-
 ** ivy-rich
 
 More friendly display transformer for Ivy
@@ -2266,6 +2228,18 @@ More friendly display transformer for Ivy
     ;; For better performance
     (setq ivy-rich-parse-remote-buffer nil))
 	
+#+end_src
+
+** all-the-icons-ivy-rich
+
+Better experience with icons
+Enable it before`ivy-rich-mode' for better performance
+
+#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+
+  (use-package all-the-icons-ivy-rich
+    :hook (ivy-mode . all-the-icons-ivy-rich-mode))
+
 #+end_src
 
 ** End
@@ -2762,7 +2736,7 @@ Emacs Package management configurations.
   (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
     (setq package-enable-at-startup nil)          ; To prevent initializing twice
     (package-initialize))
-	
+
 #+end_src
 
 ** use-pakcage
@@ -2947,25 +2921,24 @@ Treemacs: A tree layout file explorer.
                treemacs-filewatch-mode
                treemacs-git-mode)
     :bind (:map treemacs-mode-map
-           ("d"   . treemacs-delete)
-           ("r"   . treemacs-rename)
-           ("C-n" . treemacs)
-           ("C-/" . treemacs-helpful-hydra)
-           ("C-j" . evil-window-down)
-           :map evil-normal-state-map
-           ("C-n" . my/treemacs-select-window)
-           :map evil-visual-state-map
-           ("C-n" . my/treemacs-select-window)
-           :map evil-insert-state-map
-           ("C-n" . my/treemacs-select-window))
+                ("d"   . treemacs-delete)
+                ("r"   . treemacs-rename)
+                ("C-n" . treemacs)
+                ("C-/" . treemacs-helpful-hydra)
+                ("C-j" . evil-window-down)
+                :map evil-normal-state-map
+                ("C-n" . my/treemacs-select-window)
+                :map evil-visual-state-map
+                ("C-n" . my/treemacs-select-window)
+                :map evil-insert-state-map
+                ("C-n" . my/treemacs-select-window))
     :custom-face (treemacs-git-modified-face ((t (:foreground "#51afef"))))
     :config
     (setq treemacs-collapse-dirs     0
           treemacs-sorting           'alphabetic-asc
           treemacs-follow-after-init t
           treemacs-width             30
-          treemacs-file-event-delay  500
-          treemacs-no-png-images     (not centaur-icon))
+          treemacs-file-event-delay  500)
     :config
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
@@ -3066,21 +3039,23 @@ Visual (UI) configurations for better lookings and appearances.
   (use-package solaire-mode
     :hook (((change-major-mode
              after-revert
-             ediff-prepare-buffer) . turn-on-solaire-mode)
-           (minibuffer-setup       . solaire-mode-fix-minibuffer))
-    :init
-    (solaire-global-mode 1))
+             ediff-prepare-buffer)  . turn-on-solaire-mode)
+           (server-after-make-frame . solaire-mode-fix-minibuffer))
+    :custom
+    (solaire-global-mode +1))
 
   (use-package doom-themes
     :custom-face (doom-modeline-buffer-file ((t (:inherit (mode-line bold)))))
     :custom (doom-themes-treemacs-theme "doom-colors")
-    :init
-    (load-theme 'doom-one t)
+    :hook (server-after-make-frame . (lambda ()
+                                       (load-theme 'doom-one t)
+                                       (doom-themes-treemacs-config)))
     :config
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
     ;; Enable customized theme
-    (doom-themes-treemacs-config))
+    ;; (doom-themes-treemacs-config)
+    )
 
 #+end_src
 

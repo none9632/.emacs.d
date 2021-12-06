@@ -28,14 +28,22 @@
 (shell-command "rm -f ~/.emacs.d/session.*")
 (shell-command "rm -f ~/.emacs.d/org-src-*.txt")
 
-;; Set the font face based on platform
-(set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+(defun my/set-font-faces ()
+  ;; Set the font face based on platform
+  (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
 
-;; Set the fixed pitch fac
-(set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+  ;; Set the fixed pitch fac
+  (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
 
-;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular)
+  ;; Set the variable pitch face
+  (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (with-selected-frame frame
+                  (my/set-font-faces))))
+  (my/set-font-faces))
 
 (use-package saveplace
   :ensure nil
@@ -76,9 +84,9 @@
     :hook (after-init . global-so-long-mode)
     :config (setq so-long-threshold 400))
 
-(when (display-graphic-p)
-  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
-        mouse-wheel-progressive-speed nil))
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
+      mouse-wheel-progressive-speed nil)
+
 (setq scroll-step 1
       scroll-margin 7
       scroll-conservatively 100000)
