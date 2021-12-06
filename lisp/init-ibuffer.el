@@ -7,16 +7,18 @@
   :after evil avy
   :ensure nil
   :bind (:map ibuffer-mode-map
-         ("j" . evil-next-line)
-         ("k" . evil-previous-line)
-         ("h" . evil-backward-char)
-         ("l" . evil-forward-char)
-         ("/" . avy-goto-char-timer))
+              ("j" . evil-next-line)
+              ("k" . evil-previous-line)
+              ("h" . evil-backward-char)
+              ("l" . evil-forward-char)
+              ("/" . avy-goto-char-timer))
   :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
   :config
   ;; Display icons for buffers
   (use-package all-the-icons-ibuffer
-    :init (all-the-icons-ibuffer-mode 1))
+    :if (display-graphic-p)
+    :init
+    (all-the-icons-ibuffer-mode 1))
 
   (with-eval-after-load 'counsel
     (with-no-warnings
@@ -37,12 +39,15 @@
                       (unless (eq ibuffer-sorting-mode 'alphabetic)
                         (ibuffer-do-sort-by-alphabetic)))))
   :config
-  (setq ibuffer-projectile-prefix (concat
-                                   (all-the-icons-octicon "file-directory"
-                                                          :face ibuffer-filter-group-name-face
-                                                          :v-adjust 0.0
-                                                          :height 1.0)
-                                   " ")))
+  (setq ibuffer-projectile-prefix
+        (if (display-graphic-p)
+            (concat
+             (all-the-icons-octicon "file-directory"
+                                    :face ibuffer-filter-group-name-face
+                                    :v-adjust 0.0
+                                    :height 1.0)
+             " ")
+          "Project: ")))
 
 (leader-key-def
   "l" (lambda ()

@@ -308,15 +308,16 @@ This is for use in `ivy-re-builders-alist'."
 (use-package ivy-rich
   :hook (;; Must load after `counsel-projectile'
          (counsel-projectile-mode . ivy-rich-mode)
-         (ivy-rich-mode . (lambda ()
-                            "Use abbreviate in `ivy-rich-mode'."
-                            (setq ivy-virtual-abbreviate
-                                  (or (and ivy-rich-mode 'abbreviate) 'name)))))
+         (ivy-rich-mode           . (lambda ()
+                                      "Use abbreviate in `ivy-rich-mode'."
+                                      (setq ivy-virtual-abbreviate
+                                            (or (and ivy-rich-mode 'abbreviate) 'name)))))
   :init
   ;; For better performance
   (setq ivy-rich-parse-remote-buffer nil))
 
 (use-package all-the-icons-ivy-rich
+  :if (display-graphic-p)
   :hook (ivy-mode . all-the-icons-ivy-rich-mode))
 
 (provide 'init-ivy)

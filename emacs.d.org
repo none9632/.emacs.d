@@ -49,11 +49,11 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 
 #+begin_src emacs-lisp :tangle ./init.el
 
-  (defvar centaur-gc-cons-threshold 16000000
+  (defvar centaur-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
     "The default value to use for `gc-cons-threshold'. If you experience freezing,
   decrease this. If you experience stuttering, increase this.")
 
-  (defvar centaur-gc-cons-upper-limit 400000000
+  (defvar centaur-gc-cons-upper-limit (if (display-graphic-p) 400000000 100000000)
     "The temporary value for `gc-cons-threshold' to defer it.")
 
   (defvar centaur-gc-timer (run-with-idle-timer 10 t #'garbage-collect)
@@ -252,10 +252,9 @@ Better defaults configurations.
     (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular))
 
   (if (daemonp)
-      (add-hook 'after-make-frame-functions
-                (lambda (frame)
-                  (with-selected-frame frame
-                    (my/set-font-faces))))
+      (add-hook 'after-make-frame-functions (lambda (frame)
+                                              (with-selected-frame frame
+                                                (my/set-font-faces))))
     (my/set-font-faces))
 
 #+end_src
@@ -330,11 +329,12 @@ Scroll one line at a time (less "jumpy" than defaults)
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
 
-  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
-        mouse-wheel-progressive-speed nil)
+  (when (display-graphic-p)
+    (setq mouse-wheel-scroll-amount     '(1 ((shift) . 1))
+          mouse-wheel-progressive-speed nil))
 
-  (setq scroll-step 1
-        scroll-margin 7
+  (setq scroll-step           1
+        scroll-margin         7
         scroll-conservatively 100000)
 
 #+end_src
@@ -494,38 +494,39 @@ Better sorting and filtering
                 company-box-backends-colors nil
                 company-box-doc-enable      nil)
     :config
-    (declare-function all-the-icons-faicon   'all-the-icons)
-    (declare-function all-the-icons-material 'all-the-icons)
-    (declare-function all-the-icons-octicon  'all-the-icons)
-    (setq company-box-icons-all-the-icons
-          `((Unknown       . ,(all-the-icons-material "find_in_page"             :height 0.8  :v-adjust -0.15                             ))
-            (Text          . ,(all-the-icons-faicon   "text-width"               :height 0.8  :v-adjust -0.02                             ))
-            (Method        . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
-            (Function      . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
-            (Constructor   . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
-            (Field         . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
-            (Variable      . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
-            (Class         . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
-            (Interface     . ,(all-the-icons-material "share"                    :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
-            (Module        . ,(all-the-icons-material "view_module"              :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
-            (Property      . ,(all-the-icons-faicon   "wrench"                   :height 0.8  :v-adjust -0.02                             ))
-            (Unit          . ,(all-the-icons-material "settings_system_daydream" :height 0.8  :v-adjust -0.15                             ))
-            (Value         . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
-            (Enum          . ,(all-the-icons-material "storage"                  :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
-            (Keyword       . ,(all-the-icons-material "filter_center_focus"      :height 0.8  :v-adjust -0.15                             ))
-            (Snippet       . ,(all-the-icons-material "format_align_center"      :height 0.8  :v-adjust -0.15                             ))
-            (Color         . ,(all-the-icons-material "palette"                  :height 0.8  :v-adjust -0.15                             ))
-            (File          . ,(all-the-icons-faicon   "file-o"                   :height 0.8  :v-adjust -0.02                             ))
-            (Reference     . ,(all-the-icons-material "collections_bookmark"     :height 0.8  :v-adjust -0.15                             ))
-            (Folder        . ,(all-the-icons-faicon   "folder-open"              :height 0.8  :v-adjust -0.02                             ))
-            (EnumMember    . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15                             ))
-            (Constant      . ,(all-the-icons-faicon   "square-o"                 :height 0.8  :v-adjust -0.1                              ))
-            (Struct        . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
-            (Event         . ,(all-the-icons-octicon  "zap"                      :height 0.8  :v-adjust 0     :face 'all-the-icons-orange ))
-            (Operator      . ,(all-the-icons-material "control_point"            :height 0.8  :v-adjust -0.15                             ))
-            (TypeParameter . ,(all-the-icons-faicon   "arrows"                   :height 0.8  :v-adjust -0.02                             ))
-            (Template      . ,(all-the-icons-material "format_align_left"        :height 0.8  :v-adjust -0.15                             )))
-          company-box-icons-alist 'company-box-icons-all-the-icons))
+    (when (display-graphic-p)
+      (declare-function all-the-icons-faicon   'all-the-icons)
+      (declare-function all-the-icons-material 'all-the-icons)
+      (declare-function all-the-icons-octicon  'all-the-icons)
+      (setq company-box-icons-all-the-icons
+            `((Unknown       . ,(all-the-icons-material "find_in_page"             :height 0.8  :v-adjust -0.15                             ))
+              (Text          . ,(all-the-icons-faicon   "text-width"               :height 0.8  :v-adjust -0.02                             ))
+              (Method        . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+              (Function      . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+              (Constructor   . ,(all-the-icons-faicon   "cube"                     :height 0.8  :v-adjust -0.02 :face 'all-the-icons-purple ))
+              (Field         . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
+              (Variable      . ,(all-the-icons-octicon  "tag"                      :height 0.85 :v-adjust 0     :face 'all-the-icons-lblue  ))
+              (Class         . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+              (Interface     . ,(all-the-icons-material "share"                    :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+              (Module        . ,(all-the-icons-material "view_module"              :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+              (Property      . ,(all-the-icons-faicon   "wrench"                   :height 0.8  :v-adjust -0.02                             ))
+              (Unit          . ,(all-the-icons-material "settings_system_daydream" :height 0.8  :v-adjust -0.15                             ))
+              (Value         . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15 :face 'all-the-icons-lblue  ))
+              (Enum          . ,(all-the-icons-material "storage"                  :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+              (Keyword       . ,(all-the-icons-material "filter_center_focus"      :height 0.8  :v-adjust -0.15                             ))
+              (Snippet       . ,(all-the-icons-material "format_align_center"      :height 0.8  :v-adjust -0.15                             ))
+              (Color         . ,(all-the-icons-material "palette"                  :height 0.8  :v-adjust -0.15                             ))
+              (File          . ,(all-the-icons-faicon   "file-o"                   :height 0.8  :v-adjust -0.02                             ))
+              (Reference     . ,(all-the-icons-material "collections_bookmark"     :height 0.8  :v-adjust -0.15                             ))
+              (Folder        . ,(all-the-icons-faicon   "folder-open"              :height 0.8  :v-adjust -0.02                             ))
+              (EnumMember    . ,(all-the-icons-material "format_align_right"       :height 0.8  :v-adjust -0.15                             ))
+              (Constant      . ,(all-the-icons-faicon   "square-o"                 :height 0.8  :v-adjust -0.1                              ))
+              (Struct        . ,(all-the-icons-material "settings_input_component" :height 0.8  :v-adjust -0.15 :face 'all-the-icons-orange ))
+              (Event         . ,(all-the-icons-octicon  "zap"                      :height 0.8  :v-adjust 0     :face 'all-the-icons-orange ))
+              (Operator      . ,(all-the-icons-material "control_point"            :height 0.8  :v-adjust -0.15                             ))
+              (TypeParameter . ,(all-the-icons-faicon   "arrows"                   :height 0.8  :v-adjust -0.02                             ))
+              (Template      . ,(all-the-icons-material "format_align_left"        :height 0.8  :v-adjust -0.15                             )))
+            company-box-icons-alist 'company-box-icons-all-the-icons)))
 
 #+end_src
 
@@ -652,16 +653,13 @@ Dashboard configurations.
            ("q"    . quit-dashboard)
            ("h"    . dashboard-hydra/body)
            ("?"    . dashboard-hydra/body))
-    :hook (dashboard-mode . (lambda () (setq-local frame-title-format "")))
     :preface
     (defun my/dashboard-banner ()
       (defvar package-count 0)
-
       (when (bound-and-true-p package-alist)
         (setq package-count (length package-activated-list)))
       (when (boundp 'straight--profile-cache)
         (setq package-count (+ (hash-table-size straight--profile-cache) package-count)))
-
       (setq dashboard-init-info
             (format "%d packages loaded in %.3f seconds\n"
                     package-count
@@ -758,7 +756,7 @@ Dashboard configurations.
 
 #+end_src
 
-** Dashboard in emacsclient
+** COMMENT Dashboard in emacsclient
 
 Lauches the dashboard in a emacsclient
 
@@ -1697,6 +1695,17 @@ Highlighting configurations.
           '(center t)))
       (setq diff-hl-fringe-bmp-function #'my/diff-hl-fringe-bmp-function)
 
+      (unless (display-graphic-p)
+        (setq diff-hl-margin-symbols-alist
+              '((insert . " ") (delete . " ") (change . " ")
+                (unknown . " ") (ignored . " ")))
+        ;; Fall back to the display margin since the fringe is unavailable in tty
+        (diff-hl-margin-mode 1)
+        ;; Avoid restoring `diff-hl-margin-mode'
+        (with-eval-after-load 'desktop
+          (add-to-list 'desktop-minor-mode-table
+                       '(diff-hl-margin-mode nil))))
+
       ;; Integration with magit
       (with-eval-after-load 'magit
         (add-hook 'magit-pre-refresh-hook #'diff-hl-magit-pre-refresh)
@@ -1803,16 +1812,18 @@ IBuffer configurations.
     :after evil avy
     :ensure nil
     :bind (:map ibuffer-mode-map
-           ("j" . evil-next-line)
-           ("k" . evil-previous-line)
-           ("h" . evil-backward-char)
-           ("l" . evil-forward-char)
-           ("/" . avy-goto-char-timer))
+                ("j" . evil-next-line)
+                ("k" . evil-previous-line)
+                ("h" . evil-backward-char)
+                ("l" . evil-forward-char)
+                ("/" . avy-goto-char-timer))
     :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold)))
     :config
     ;; Display icons for buffers
     (use-package all-the-icons-ibuffer
-      :init (all-the-icons-ibuffer-mode 1))
+      :if (display-graphic-p)
+      :init
+      (all-the-icons-ibuffer-mode 1))
 
     (with-eval-after-load 'counsel
       (with-no-warnings
@@ -1841,12 +1852,15 @@ Group ibuffer's list by project root
                         (unless (eq ibuffer-sorting-mode 'alphabetic)
                           (ibuffer-do-sort-by-alphabetic)))))
     :config
-    (setq ibuffer-projectile-prefix (concat
-                                     (all-the-icons-octicon "file-directory"
-                                                            :face ibuffer-filter-group-name-face
-                                                            :v-adjust 0.0
-                                                            :height 1.0)
-                                     " ")))
+    (setq ibuffer-projectile-prefix
+          (if (display-graphic-p)
+              (concat
+               (all-the-icons-octicon "file-directory"
+                                      :face ibuffer-filter-group-name-face
+                                      :v-adjust 0.0
+                                      :height 1.0)
+               " ")
+            "Project: ")))
 
 #+end_src
 
@@ -2220,14 +2234,14 @@ More friendly display transformer for Ivy
   (use-package ivy-rich
     :hook (;; Must load after `counsel-projectile'
            (counsel-projectile-mode . ivy-rich-mode)
-           (ivy-rich-mode . (lambda ()
-                              "Use abbreviate in `ivy-rich-mode'."
-                              (setq ivy-virtual-abbreviate
-                                    (or (and ivy-rich-mode 'abbreviate) 'name)))))
+           (ivy-rich-mode           . (lambda ()
+                                        "Use abbreviate in `ivy-rich-mode'."
+                                        (setq ivy-virtual-abbreviate
+                                              (or (and ivy-rich-mode 'abbreviate) 'name)))))
     :init
     ;; For better performance
     (setq ivy-rich-parse-remote-buffer nil))
-	
+
 #+end_src
 
 ** all-the-icons-ivy-rich
@@ -2238,6 +2252,7 @@ Enable it before`ivy-rich-mode' for better performance
 #+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
 
   (use-package all-the-icons-ivy-rich
+    :if (display-graphic-p)
     :hook (ivy-mode . all-the-icons-ivy-rich-mode))
 
 #+end_src
@@ -2556,6 +2571,52 @@ Org configurations.
     (setq org-babel-tangle-async-mode       t
           org-jump-to-previous-block        t
           org-edit-src-auto-save-idle-delay 1))
+
+#+end_src
+
+** COMMENT Org test
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (defun my/org-back-to-top-level-heading ()
+    "Go back to the current top level heading."
+    (interactive)
+    (or (re-search-backward "^\* " nil t)
+        (goto-char (point-min))))
+
+  (defun ded/org-show-next-heading-tidily ()
+    "Show next entry, keeping other entries closed."
+    (interactive)
+    (if (save-excursion (end-of-line) (outline-invisible-p))
+        (progn (org-show-entry) (show-children))
+      (outline-next-heading)
+      (unless (and (bolp) (org-on-heading-p))
+        (org-up-heading-safe)
+        (hide-subtree)
+        (error "Boundary reached"))
+      (org-overview)
+      (org-reveal t)
+      (org-show-entry)
+      (show-children)))
+
+  (defun ded/org-show-previous-heading-tidily ()
+    "Show previous entry, keeping other entries closed."
+    (interactive)
+    (let ((pos (point)))
+      (outline-previous-heading)
+      (unless (and (< (point) pos) (bolp) (org-on-heading-p))
+        (goto-char pos)
+        (hide-subtree)
+        (error "Boundary reached"))
+      (org-overview)
+      (org-reveal t)
+      (org-show-entry)
+      (show-children)))
+
+  (defun org-edit-preview-latex-fragment ()
+    "Write latex fragment from source to parent buffer and preview it."
+    (interactive)
+    (org-src-in-org-buffer (org-preview-latex-fragment)))
 
 #+end_src
 
@@ -3037,25 +3098,25 @@ Visual (UI) configurations for better lookings and appearances.
   ;; Make certain buffers grossly incandescent
   ;; Must before loading the theme
   (use-package solaire-mode
-    :hook (((change-major-mode
-             after-revert
-             ediff-prepare-buffer)  . turn-on-solaire-mode)
+    :hook ((minibuffer-setup        . solaire-mode-fix-minibuffer)
            (server-after-make-frame . solaire-mode-fix-minibuffer))
     :custom
     (solaire-global-mode +1))
 
   (use-package doom-themes
+    :after solaire-mode
+    :hook (server-after-make-frame . (lambda ()
+                                       (load-theme 'doom-one t)))
     :custom-face (doom-modeline-buffer-file ((t (:inherit (mode-line bold)))))
     :custom (doom-themes-treemacs-theme "doom-colors")
-    :hook (server-after-make-frame . (lambda ()
-                                       (load-theme 'doom-one t)
-                                       (doom-themes-treemacs-config)))
+    :init
+    (unless (daemonp)
+      (load-theme 'doom-one t))
     :config
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
     ;; Enable customized theme
-    ;; (doom-themes-treemacs-config)
-    )
+    (doom-themes-treemacs-config))
 
 #+end_src
 

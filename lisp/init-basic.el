@@ -39,10 +39,9 @@
   (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular))
 
 (if (daemonp)
-    (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                (with-selected-frame frame
-                  (my/set-font-faces))))
+    (add-hook 'after-make-frame-functions (lambda (frame)
+                                            (with-selected-frame frame
+                                              (my/set-font-faces))))
   (my/set-font-faces))
 
 (use-package saveplace
@@ -84,11 +83,12 @@
     :hook (after-init . global-so-long-mode)
     :config (setq so-long-threshold 400))
 
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
-      mouse-wheel-progressive-speed nil)
+(when (display-graphic-p)
+  (setq mouse-wheel-scroll-amount     '(1 ((shift) . 1))
+        mouse-wheel-progressive-speed nil))
 
-(setq scroll-step 1
-      scroll-margin 7
+(setq scroll-step           1
+      scroll-margin         7
       scroll-conservatively 100000)
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)

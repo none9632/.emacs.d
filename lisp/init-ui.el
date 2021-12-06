@@ -17,25 +17,25 @@
 ;; Make certain buffers grossly incandescent
 ;; Must before loading the theme
 (use-package solaire-mode
-  :hook (((change-major-mode
-           after-revert
-           ediff-prepare-buffer)  . turn-on-solaire-mode)
+  :hook ((minibuffer-setup        . solaire-mode-fix-minibuffer)
          (server-after-make-frame . solaire-mode-fix-minibuffer))
   :custom
   (solaire-global-mode +1))
 
 (use-package doom-themes
+  :after solaire-mode
+  :hook (server-after-make-frame . (lambda ()
+                                     (load-theme 'doom-one t)))
   :custom-face (doom-modeline-buffer-file ((t (:inherit (mode-line bold)))))
   :custom (doom-themes-treemacs-theme "doom-colors")
-  :hook (server-after-make-frame . (lambda ()
-                                     (load-theme 'doom-one t)
-                                     (doom-themes-treemacs-config)))
+  :init
+  (unless (daemonp)
+    (load-theme 'doom-one t))
   :config
   ;; Enable flashing mode-line on errors
   (doom-themes-visual-bell-config)
   ;; Enable customized theme
-  ;; (doom-themes-treemacs-config)
-  )
+  (doom-themes-treemacs-config))
 
 (use-package doom-modeline
   :custom

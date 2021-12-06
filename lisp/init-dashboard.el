@@ -19,16 +19,13 @@
          ("q"    . quit-dashboard)
          ("h"    . dashboard-hydra/body)
          ("?"    . dashboard-hydra/body))
-  :hook (dashboard-mode . (lambda () (setq-local frame-title-format "")))
   :preface
   (defun my/dashboard-banner ()
     (defvar package-count 0)
-
     (when (bound-and-true-p package-alist)
       (setq package-count (length package-activated-list)))
     (when (boundp 'straight--profile-cache)
       (setq package-count (+ (hash-table-size straight--profile-cache) package-count)))
-
     (setq dashboard-init-info
           (format "%d packages loaded in %.3f seconds\n"
                   package-count
@@ -122,7 +119,5 @@
                (bound-and-true-p winner-mode))
       (winner-undo)
       (setq dashboard-recover-layout-p nil))))
-
-(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 (provide 'init-dashboard)
