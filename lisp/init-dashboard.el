@@ -14,7 +14,6 @@
          :map dashboard-mode-map
          ("R"    . restore-previous-session)
          ("L"    . restore-session)
-         ("S"    . open-org-file)
          ("U"    . update-config-and-packages)
          ("q"    . quit-dashboard)
          ("h"    . dashboard-hydra/body)

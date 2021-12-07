@@ -21,15 +21,6 @@
         company-global-modes             '(not erc-mode message-mode help-mode
                                                gud-mode eshell-mode shell-mode))
   :config
-  ;; (setq company-backends
-  ;;       '((company-files          ; files & directory
-  ;;          company-keywords       ; keywords
-  ;;          company-capf
-  ;;          company-yasnippet
-  ;;          )
-  ;;         (company-abbrev company-dabbrev)
-  ;;         ))
-
   (defun do-yas-expand ()
     (let ((yas/fallback-behavior 'return-nil))
       (yas/expand)))

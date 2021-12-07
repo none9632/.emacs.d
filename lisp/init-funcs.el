@@ -3,9 +3,13 @@
 (require 'cl-lib)
 (require 'init-custom)
 
-(defun open-org-file ()
-  "Open or create `.emacs.d.org'."
-  (interactive))
+(defun my/open-org-file ()
+  "Open `.emacs.d.org'."
+  (interactive)
+  (setq org-file (expand-file-name "emacs.d.org" user-emacs-directory))
+  (message "Opening ~/.emacs.d/.emacs.d.org...")
+  (find-file org-file)
+  (message "Opening ~/.emacs.d/.emacs.d.org...done"))
 
 (defun create-scratch-buffer ()
   "Create a scratch buffer."

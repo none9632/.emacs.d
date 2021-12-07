@@ -39,19 +39,4 @@
                               name)))
                     centaur-package-archives-alist)))
 
-(defcustom centaur-lsp 'lsp-mode
-  "Set language server."
-  :group 'centaur
-  :type '(choice
-          (const :tag "LSP Mode" 'lsp-mode)
-          (const :tag "Eglot" 'eglot)
-          nil))
-
-(defcustom centaur-lsp-format-on-save-ignore-modes '(c-mode c++-mode python-mode)
-  "The modes that don't auto format and organize imports while saving the buffers.
-`prog-mode' means ignoring all derived modes.
-"
-  :group 'centaur
-  :type '(repeat (symbol :tag "Major-Mode")))
-
 (provide 'init-custom)

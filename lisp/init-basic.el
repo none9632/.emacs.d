@@ -116,6 +116,7 @@
   "SPC" 'counsel-find-file
   "q"   'evil-quit
   "a"   'mark-whole-buffer
+  "s"   'my/open-org-file
   "bb"  'counsel-switch-buffer
   "pl"  'counsel-package
   "pr"  'package-refresh-contents)

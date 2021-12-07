@@ -368,6 +368,7 @@ Scroll one line at a time (less "jumpy" than defaults)
     "SPC" 'counsel-find-file
     "q"   'evil-quit
     "a"   'mark-whole-buffer
+    "s"   'my/open-org-file
     "bb"  'counsel-switch-buffer
     "pl"  'counsel-package
     "pr"  'package-refresh-contents)
@@ -445,15 +446,6 @@ Auto-completion configurations.
           company-global-modes             '(not erc-mode message-mode help-mode
                                                  gud-mode eshell-mode shell-mode))
     :config
-    ;; (setq company-backends
-    ;;       '((company-files          ; files & directory
-    ;;          company-keywords       ; keywords
-    ;;          company-capf
-    ;;          company-yasnippet
-    ;;          )
-    ;;         (company-abbrev company-dabbrev)
-    ;;         ))
-
     (defun do-yas-expand ()
       (let ((yas/fallback-behavior 'return-nil))
         (yas/expand)))
@@ -593,21 +585,6 @@ Customization.
                                 name)))
                       centaur-package-archives-alist)))
 
-  (defcustom centaur-lsp 'lsp-mode
-    "Set language server."
-    :group 'centaur
-    :type '(choice
-            (const :tag "LSP Mode" 'lsp-mode)
-            (const :tag "Eglot" 'eglot)
-            nil))
-
-  (defcustom centaur-lsp-format-on-save-ignore-modes '(c-mode c++-mode python-mode)
-    "The modes that don't auto format and organize imports while saving the buffers.
-  `prog-mode' means ignoring all derived modes.
-  "
-    :group 'centaur
-    :type '(repeat (symbol :tag "Major-Mode")))
-
 #+end_src
 
 ** End
@@ -648,7 +625,6 @@ Dashboard configurations.
            :map dashboard-mode-map
            ("R"    . restore-previous-session)
            ("L"    . restore-session)
-           ("S"    . open-org-file)
            ("U"    . update-config-and-packages)
            ("q"    . quit-dashboard)
            ("h"    . dashboard-hydra/body)
@@ -1389,9 +1365,13 @@ Define functions.
 
 #+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
 
-  (defun open-org-file ()
-    "Open or create `.emacs.d.org'."
-    (interactive))
+  (defun my/open-org-file ()
+    "Open `.emacs.d.org'."
+    (interactive)
+    (setq org-file (expand-file-name "emacs.d.org" user-emacs-directory))
+    (message "Opening ~/.emacs.d/.emacs.d.org...")
+    (find-file org-file)
+    (message "Opening ~/.emacs.d/.emacs.d.org...done"))
 
 #+end_src
 
