@@ -234,6 +234,8 @@
                     "md"    "\\mathrm{d} "
                     "eq"    "\\equiv "
                     "ds"    "\\ds "
+                    "ua"    "\\ua "
+                    "da"    "\\da "
                     "uua"   "\\uua "
                     "uda"   "\\uda "
                     "rad"   "\\rad "
@@ -345,7 +347,7 @@
                               (yas-expand-snippet "\\binom{${1:n}}{${2:k}}"))
                     "sum"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\sum_{$1}^{$2}$0"))
+                              (yas-expand-snippet "\\sum_{${1:i=1}}^{${2:n}}$0"))
                     "prod"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\prod_{$1}^{$2}$0"))

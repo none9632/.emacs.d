@@ -43,6 +43,8 @@
 #+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
 #+LATEX_HEADER: \newcommand{\obr}[1]{\overbrace{#1}}
 #+LATEX_HEADER: \newcommand{\ubr}[1]{\underbrace{#1}}
+#+LATEX_HEADER: \newcommand{\ua}{\uparrow}
+#+LATEX_HEADER: \newcommand{\da}{\downarrow}
 #+LATEX_HEADER: \newcommand{\uua}{\uparrow\uparrow}
 #+LATEX_HEADER: \newcommand{\uda}{\uparrow\mathrel{\mspace{-1mu}}\downarrow}
 #+LATEX_HEADER: \newcommand{\Ra}{\Rightarrow}
