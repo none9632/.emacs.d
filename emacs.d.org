@@ -2407,11 +2407,10 @@ Org configurations.
     (interactive)
     (setq tex-file-name (org-latex-export-to-latex))
     (shell-command-to-string (concat
-                              "sed -i -e '/\\\\begin{latex}/d; /\\\\end{latex}/d' ./" tex-file-name ";"
-                              "sed -i 's/^\\\\begin{theorem}/\\\\begin{boxtheorem}/' ./" tex-file-name ";"
-                              "sed -i 's/^\\\\end{theorem}/\\\\end{boxtheorem}/' ./" tex-file-name ";"
-                              "sed -i 's/^\\\\begin{lemma}/\\\\begin{boxlemma}/' ./" tex-file-name ";"
-                              "sed -i 's/^\\\\end{lemma}/\\\\end{boxlemma}/' ./" tex-file-name))
+                              "sd '^\\\\begin\\{theorem\\}' '\\\\begin{boxtheorem}' ./" tex-file-name ";"
+                              "sd '^\\\\end\\{theorem\\}' '\\\\end{boxtheorem}' ./" tex-file-name ";"
+                              "sd '^\\\\begin\\{lemma\\}' '\\\\begin{boxlemma}' ./" tex-file-name ";"
+                              "sd '^\\\\end\\{lemma\\}' '\\\\end{boxlemma}' ./" tex-file-name ";"))
     (setq pdf-file-name (org-latex-compile tex-file-name))
     (async-shell-command (concat "zathura " pdf-file-name) nil nil))
 
