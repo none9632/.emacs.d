@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: config template
+# key: ctemp
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (save-buffer) (revert-buffer t t nil))))
+# --
+# -*- eval: (my/org-config-mode) -*-
+
+#+TITILE: $1
+#+STARTUP: fold
+

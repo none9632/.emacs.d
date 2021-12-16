@@ -19,11 +19,11 @@
 
 (use-package avy
   :bind (:map evil-normal-state-map
-         ("/" . avy-goto-char-timer)
-         :map evil-visual-state-map
-         ("/" . avy-goto-char-timer)
-         :map evil-motion-state-map
-         ("/" . avy-goto-char-timer))
+              ("/" . avy-goto-char-timer)
+              :map evil-visual-state-map
+              ("/" . avy-goto-char-timer)
+              :map evil-motion-state-map
+              ("/" . avy-goto-char-timer))
   :config
   (setq avy-all-windows     nil
         avy-timeout-seconds 0.4))
