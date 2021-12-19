@@ -235,6 +235,13 @@
 
 (setq org-babel-tangle-async-mode nil)
 
+(defun my/org-babel-tangle-async-mode (&optional arg)
+  (interactive)
+  (if (eq arg nil)
+      (cond (org-babel-tangle-async-mode (setq org-babel-tangle-async-mode nil))
+            (t                           (setq org-babel-tangle-async-mode t)))
+    (setq org-babel-tangle-async-mode arg)))
+
 (defun my/org-babel-tangle-async (file)
   "Invoke `org-babel-tangle-file' asynchronously."
   (message "Tangling %s..." (buffer-file-name))
