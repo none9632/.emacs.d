@@ -2878,8 +2878,14 @@ Jump to definition
 #+begin_src emacs-lisp :tangle ./lisp/init-prog.el
 
   (use-package yaml-mode)
-    ;; :config
-    ;; (setq line-number-mode t))
+
+#+end_src
+
+** vimrc-mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (use-package vimrc-mode)
 
 #+end_src
 

@@ -15,7 +15,7 @@
         dumb-jump-selector        'ivy))
 
 (use-package yaml-mode)
-  ;; :config
-  ;; (setq line-number-mode t))
+
+(use-package vimrc-mode)
 
 (provide 'init-prog)
