@@ -66,7 +66,9 @@
 
 (use-package display-line-numbers
   :ensure nil
-  :hook (prog-mode . display-line-numbers-mode))
+  :hook ((prog-mode . display-line-numbers-mode)
+         (conf-mode . display-line-numbers-mode)
+         (yaml-mode . display-line-numbers-mode)))
 
 (setq use-file-dialog                   nil
       use-dialog-box                    nil

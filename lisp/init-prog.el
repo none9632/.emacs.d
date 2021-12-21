@@ -14,4 +14,8 @@
   (setq dumb-jump-prefer-searcher 'rg
         dumb-jump-selector        'ivy))
 
+(use-package yaml-mode)
+  ;; :config
+  ;; (setq line-number-mode t))
+
 (provide 'init-prog)

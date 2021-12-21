@@ -839,14 +839,14 @@ Click to browse URL or to send to e-mail address
 Jump to things in Emacs tree-style
 
 #+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-	
+
   (use-package avy
     :bind (:map evil-normal-state-map
-           ("/" . avy-goto-char-timer)
-           :map evil-visual-state-map
-           ("/" . avy-goto-char-timer)
-           :map evil-motion-state-map
-           ("/" . avy-goto-char-timer))
+                ("/" . avy-goto-char-timer)
+                :map evil-visual-state-map
+                ("/" . avy-goto-char-timer)
+                :map evil-motion-state-map
+                ("/" . avy-goto-char-timer))
     :config
     (setq avy-all-windows     nil
           avy-timeout-seconds 0.4))
@@ -2873,6 +2873,16 @@ Jump to definition
 
 #+end_src
 
+** yaml-mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (use-package yaml-mode)
+    ;; :config
+    ;; (setq line-number-mode t))
+
+#+end_src
+
 ** End
 
 #+begin_src emacs-lisp :tangle ./lisp/init-prog.el
@@ -3168,8 +3178,10 @@ Show native line numbers
 
   (use-package display-line-numbers
     :ensure nil
-    :hook (prog-mode . display-line-numbers-mode))
-	
+    :hook ((prog-mode . display-line-numbers-mode)
+           (conf-mode . display-line-numbers-mode)
+           (yaml-mode . display-line-numbers-mode)))
+
 #+end_src
 
 ** Suppress GUI features
