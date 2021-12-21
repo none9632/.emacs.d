@@ -68,7 +68,10 @@
   :ensure nil
   :hook ((prog-mode . display-line-numbers-mode)
          (conf-mode . display-line-numbers-mode)
-         (yaml-mode . display-line-numbers-mode)))
+         (yaml-mode . display-line-numbers-mode)
+         (text-mode . display-line-numbers-mode)
+         (org-mode  . (lambda ()
+                        (display-line-numbers-mode 0)))))
 
 (setq use-file-dialog                   nil
       use-dialog-box                    nil
