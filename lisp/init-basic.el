@@ -121,11 +121,19 @@
   "pl"  'counsel-package
   "pr"  'package-refresh-contents)
 
+(setq-default tab-width 4)
+(setq indent-tabs-mode nil)
+
+(defun disable-tabs ()
+  (setq indent-tabs-mode nil))
+
+(defun enable-tabs  ()
+  (local-set-key (kbd "TAB") 'tab-to-tab-stop)
+  (setq indent-tabs-mode t))
+
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq-default major-mode       'text-mode
-              tab-width        4
-              fill-column      100
-              indent-tabs-mode nil)       ; Permanently indent with spaces, never with TABs
+              fill-column      100)
 
 (setq visible-bell                   t
       inhibit-compacting-font-caches t    ; Don’t compact font caches during GC.
