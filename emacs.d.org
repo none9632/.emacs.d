@@ -1620,7 +1620,11 @@ Highlighting configurations.
 
   (use-package rainbow-mode
     :diminish
-    :hook (find-file . rainbow-mode)
+    :hook ((css-mode  . rainbow-mode)
+           (sh-mode   . rainbow-mode)
+           (fish-mode . rainbow-mode)
+           (yaml-mode . rainbow-mode)
+           (conf-mode . rainbow-mode))
     :config
     (with-no-warnings
       ;; HACK: Use overlay instead of text properties to override `hl-line' faces.
@@ -2900,6 +2904,35 @@ Jump to definition
 #+begin_src emacs-lisp :tangle ./lisp/init-prog.el
 
   (use-package vimrc-mode)
+
+#+end_src
+
+** fish-mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (use-package fish-mode)
+
+#+end_src
+
+** css-mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (use-package css-mode
+    :ensure nil
+    :config
+    (setq css-fontify-colors nil))
+
+#+end_src
+
+** makefile-mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (use-package makefile-mode
+    :ensure nil
+    :hook (makefile-mode . enable-tabs))
 
 #+end_src
 

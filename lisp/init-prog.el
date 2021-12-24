@@ -18,4 +18,15 @@
 
 (use-package vimrc-mode)
 
+(use-package fish-mode)
+
+(use-package css-mode
+  :ensure nil
+  :config
+  (setq css-fontify-colors nil))
+
+(use-package makefile-mode
+  :ensure nil
+  :hook (makefile-mode . enable-tabs))
+
 (provide 'init-prog)

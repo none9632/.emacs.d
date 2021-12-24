@@ -87,7 +87,11 @@
 
 (use-package rainbow-mode
   :diminish
-  :hook (find-file . rainbow-mode)
+  :hook ((css-mode  . rainbow-mode)
+         (sh-mode   . rainbow-mode)
+         (fish-mode . rainbow-mode)
+         (yaml-mode . rainbow-mode)
+         (conf-mode . rainbow-mode))
   :config
   (with-no-warnings
     ;; HACK: Use overlay instead of text properties to override `hl-line' faces.
