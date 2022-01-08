@@ -74,14 +74,6 @@
                             (interactive)
                             (yas-expand-snippet (yas-lookup-snippet "display math"))
                             (my/delete-one-blank-line))
-                    "gr"  (lambda ()
-                            (interactive)
-                            (yas-expand-snippet (yas-lookup-snippet "gather"))
-                            (my/delete-one-blank-line))
-                    "пк"  (lambda ()
-                            (interactive)
-                            (yas-expand-snippet (yas-lookup-snippet "gather"))
-                            (my/delete-one-blank-line))
                     ";fn" (lambda ()
                             (interactive)
                             (yas-expand-snippet "[fn::$1]$0"))
@@ -136,12 +128,6 @@
                             (shell-command-to-string "xdotool key Mode_switch")
                             (yas-expand-snippet (yas-lookup-snippet "gather"))
                             (my/delete-one-blank-line))
-                    "("   (lambda ()
-                            (interactive)
-                            (yas-expand-snippet "($1)$0"))
-                    "["   (lambda ()
-                            (interactive)
-                            (yas-expand-snippet "[$1]$0"))
                     "\\{" (lambda ()
                             (interactive)
                             (yas-expand-snippet "\\\\{$1\\\\}$0")))
@@ -216,6 +202,9 @@
                     "exp"   "\\exp"
                     "ln"    "\\ln "
                     "per"   "\\perp "
+                    "par"   "\\parallel "
+                    "tri"   "\\triangle "
+                    "ang"   "\\angle "
                     "min"   "\\min "
                     "max"   "\\max "
                     "sgn"   "\\sgn "
