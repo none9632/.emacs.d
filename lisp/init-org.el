@@ -157,13 +157,7 @@
   (add-hook 'org-pre-cycle-hook
             (lambda (arg)
               (cond ((eq arg 'subtree) (org-latex-preview nil))
-                    ((and (eq arg 'folded)
-                          (eq ""  '(replace-regexp-in-string "^\\**[[:ascii:]]*")))
-                     (org-clear-latex-preview
-                      (if (org-before-first-heading-p) (point-min)
-                        (save-excursion
-                          (org-with-limited-levels (org-back-to-heading t) (point))))
-                      (org-with-limited-levels (org-entry-end-position))))))))
+                    ((eq arg 'folded) (org-latex-preview '(4)))))))
 
 (setq org-jump-to-previous-block nil
       org-latex-mode             nil)
