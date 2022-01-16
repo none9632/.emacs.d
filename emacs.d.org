@@ -1412,6 +1412,11 @@ Define functions.
   Save to `custom-file' if NO-SAVE is nil."
     (customize-set-variable variable value))
 
+  (defun my/line-looking-at (regexp)
+    (save-excursion
+      (beginning-of-line)
+      (looking-at-p regexp)))
+
   (defun my/current-line-empty-p ()
     (save-excursion
       (beginning-of-line)
@@ -1419,7 +1424,8 @@ Define functions.
 
   ;; (defun my/test ()
   ;;   (interactive)
-  ;;   (my/inkscape-figures-create (test)))
+  ;;   (if (my/line-looking-at "^\\*+[[:ascii:]]*")
+  ;; 	  (message "test")))
 
 #+end_src
 

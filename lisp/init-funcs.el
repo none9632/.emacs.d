@@ -30,6 +30,11 @@
 Save to `custom-file' if NO-SAVE is nil."
   (customize-set-variable variable value))
 
+(defun my/line-looking-at (regexp)
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p regexp)))
+
 (defun my/current-line-empty-p ()
   (save-excursion
     (beginning-of-line)
@@ -37,7 +42,8 @@ Save to `custom-file' if NO-SAVE is nil."
 
 ;; (defun my/test ()
 ;;   (interactive)
-;;   (my/inkscape-figures-create (test)))
+;;   (if (my/line-looking-at "^\\*+[[:ascii:]]*")
+;; 	  (message "test")))
 
 (defun set-package-archives (archives &optional refresh async no-save)
   "Set the package archives (ELPA).
