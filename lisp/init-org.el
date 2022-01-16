@@ -156,8 +156,14 @@
   (my/org-load-prettify-symbols)
   (add-hook 'org-pre-cycle-hook
             (lambda (arg)
-              (cond ((eq arg 'subtree) (org-latex-preview nil))
-                    ((eq arg 'folded) (org-latex-preview '(4)))))))
+              (cond ((eq arg 'subtree)  (org-latex-preview nil))
+                    ((eq arg 'children) (org-latex-preview nil))
+                    ((eq arg 'folded)   (progn
+                                          (setq processed-line-str (save-excursion
+                                                                     (beginning-of-line)
+                                                                     (looking-at-p "^\\*+[[:ascii:]]*")))
+                                          (if processed-line-str
+                                              (org-latex-preview '(4)))))))))
 
 (setq org-jump-to-previous-block nil
       org-latex-mode             nil)
