@@ -6,7 +6,7 @@
 (use-package company
   :diminish
   :bind (:map company-active-map
-              ("<tab>"     . expand-snippet-or-complete-selection)
+              ("<tab>"     . company-complete-common-or-cycle)
               ("<backtab>" . company-select-previous))
   :hook ((after-init . global-company-mode))
   :init
@@ -17,21 +17,7 @@
         company-box-scrollbar             nil
         company-require-match             nil
         company-dabbrev-ignore-case       nil
-        company-dabbrev-downcase          nil
-        company-global-modes             '(not erc-mode message-mode help-mode
-                                               gud-mode eshell-mode shell-mode))
-  :config
-  (defun do-yas-expand ()
-    (let ((yas/fallback-behavior 'return-nil))
-      (yas/expand)))
-
-  (defun expand-snippet-or-complete-selection ()
-    (interactive)
-    (if (or (not yas/minor-mode)
-            (null (do-yas-expand))
-            (company-abort))
-        ;; (not (org-try-cdlatex-tab)))
-        (company-complete-common-or-cycle))))
+        company-dabbrev-downcase          nil))
 
 (use-package company-prescient
   :after company
