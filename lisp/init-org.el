@@ -111,8 +111,9 @@
   (interactive)
   (setq old-default-directory default-directory
         default-directory     "~/Pictures/screenshots/"
-        selected-file         (ivy-read "Choose file: " #'read-file-name-internal))
-  (setq default-directory     old-default-directory
+        selected-file         (ivy-read "Choose file: " #'read-file-name-internal
+                                        :unwind (lambda ()
+                                                  (setq default-directory old-default-directory)))
         img-file-path         (shell-command-to-string (concat "inkscape-figures move " selected-file)))
   (insert (concat "[[" img-file-path "]]"))
   (if (not (equal org-inline-image-overlays nil))
