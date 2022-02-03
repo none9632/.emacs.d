@@ -13,7 +13,8 @@
                       (diff-hl-mode 0)))
   :bind (:map org-mode-map
               ("M-k" . org-metaup)
-              ("M-j" . org-metadown))
+              ("M-j" . org-metadown)
+              ("<tab>" . nil))
   :config
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
   (setq org-ellipsis                      " ▾ "

@@ -1270,10 +1270,7 @@ Evil configuration.
                  ("S-M-h"   . evil-window-increase-width)
                  ("S-M-l"   . evil-window-decrease-width)
                  ("S-M-k"   . evil-window-increase-height)
-                 ("S-M-j"   . evil-window-decrease-height)
-                 ("TAB"     . (lambda ()
-                                (interactive)
-                                (insert "\t"))))
+                 ("S-M-j"   . evil-window-decrease-height))
            (:map evil-visual-state-map
                  ("H"       . left-word)
                  ("L"       . right-word)
@@ -2285,7 +2282,8 @@ Org configurations.
                         (diff-hl-mode 0)))
     :bind (:map org-mode-map
                 ("M-k" . org-metaup)
-                ("M-j" . org-metadown))
+                ("M-j" . org-metadown)
+                ("<tab>" . nil))
     :config
     (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
     (setq org-ellipsis                      " ▾ "
@@ -2677,17 +2675,22 @@ Org configurations.
 
   (use-package cdlatex
     :after yasnippet
-    :hook ((LaTeX-mode  . turn-on-cdlatex)
+    :hook ((org-mode    . turn-on-cdlatex)
+           (LaTeX-mode  . turn-on-cdlatex)
            (cdlatex-tab . my/cdlatex-in-yas-field))
-    :bind (:map cdlatex-mode-map
-                ("<"     . nil)
-                ("("     . nil)
-                ("["     . nil)
-                ("{"     . nil)
-                ("|"     . nil)
-                ("_"     . nil)
-                ("'"     . nil)
-                ("`"     . nil))
+    :bind ((:map cdlatex-mode-map
+                 ("<"     . nil)
+                 ("("     . nil)
+                 ("["     . nil)
+                 ("{"     . nil)
+                 ("|"     . nil)
+                 ("_"     . nil)
+                 ("'"     . nil)
+                 ("`"     . nil))
+           (:map evil-insert-state-map
+                 ("<tab>" . cdlatex-tab))
+           (:map evil-normal-state-map
+                 ("<tab>" . org-cycle)))
     :config
     (defun my/cdlatex-in-yas-field ()
       ;; Check if we're at the end of the Yas field

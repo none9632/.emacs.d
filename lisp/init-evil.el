@@ -19,10 +19,7 @@
                ("S-M-h"   . evil-window-increase-width)
                ("S-M-l"   . evil-window-decrease-width)
                ("S-M-k"   . evil-window-increase-height)
-               ("S-M-j"   . evil-window-decrease-height)
-               ("TAB"     . (lambda ()
-                              (interactive)
-                              (insert "\t"))))
+               ("S-M-j"   . evil-window-decrease-height))
          (:map evil-visual-state-map
                ("H"       . left-word)
                ("L"       . right-word)

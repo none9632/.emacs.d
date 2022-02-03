@@ -24,17 +24,22 @@
 
 (use-package cdlatex
   :after yasnippet
-  :hook ((LaTeX-mode  . turn-on-cdlatex)
+  :hook ((org-mode    . turn-on-cdlatex)
+         (LaTeX-mode  . turn-on-cdlatex)
          (cdlatex-tab . my/cdlatex-in-yas-field))
-  :bind (:map cdlatex-mode-map
-              ("<"     . nil)
-              ("("     . nil)
-              ("["     . nil)
-              ("{"     . nil)
-              ("|"     . nil)
-              ("_"     . nil)
-              ("'"     . nil)
-              ("`"     . nil))
+  :bind ((:map cdlatex-mode-map
+               ("<"     . nil)
+               ("("     . nil)
+               ("["     . nil)
+               ("{"     . nil)
+               ("|"     . nil)
+               ("_"     . nil)
+               ("'"     . nil)
+               ("`"     . nil))
+         (:map evil-insert-state-map
+               ("<tab>" . cdlatex-tab))
+         (:map evil-normal-state-map
+               ("<tab>" . org-cycle)))
   :config
   (defun my/cdlatex-in-yas-field ()
     ;; Check if we're at the end of the Yas field
