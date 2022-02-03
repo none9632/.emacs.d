@@ -65,22 +65,6 @@
               (org-comment-dwim-2)
             (comment-dwim-2)))))
 
-(use-package drag-stuff
-  :diminish
-  :after evil
-  :hook (after-init . drag-stuff-global-mode)
-  :bind ((:map evil-visual-state-map
-               ("C-M-k" . drag-stuff-up)
-               ("C-M-j" . drag-stuff-down))
-         (:map evil-normal-state-map
-               ("M-k"   . drag-stuff-up)
-               ("M-j"   . drag-stuff-down))
-         (:map evil-insert-state-map
-               ("M-k"   . drag-stuff-up)
-               ("M-j"   . drag-stuff-down)))
-  :config
-  (add-to-list 'drag-stuff-except-modes 'org-mode))
-
 (use-package ediff
   :ensure nil
   :hook(;; show org ediffs unfolded

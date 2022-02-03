@@ -914,30 +914,6 @@ An all-in-one comment command to rule them all
 
 #+end_src
 
-** drag-stuff
-
-Drag stuff (lines, words, region, etc...) around
-
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-
-  (use-package drag-stuff
-    :diminish
-    :after evil
-    :hook (after-init . drag-stuff-global-mode)
-    :bind ((:map evil-visual-state-map
-                 ("C-M-k" . drag-stuff-up)
-                 ("C-M-j" . drag-stuff-down))
-           (:map evil-normal-state-map
-                 ("M-k"   . drag-stuff-up)
-                 ("M-j"   . drag-stuff-down))
-           (:map evil-insert-state-map
-                 ("M-k"   . drag-stuff-up)
-                 ("M-j"   . drag-stuff-down)))
-    :config
-    (add-to-list 'drag-stuff-except-modes 'org-mode))
-
-#+end_src
-
 ** ediff
 
 A comprehensive visual interface to diff & patch
@@ -1267,10 +1243,10 @@ Evil configuration.
                  ("K"       . backward-paragraph)
                  ("U"       . evil-redo)
                  ("SPC TAB" . evil-close-folds)
-                 ("S-M-h"   . evil-window-increase-width)
-                 ("S-M-l"   . evil-window-decrease-width)
-                 ("S-M-k"   . evil-window-increase-height)
-                 ("S-M-j"   . evil-window-decrease-height))
+                 ("M-h"     . evil-window-increase-width)
+                 ("M-l"     . evil-window-decrease-width)
+                 ("M-k"     . evil-window-increase-height)
+                 ("M-j"     . evil-window-decrease-height))
            (:map evil-visual-state-map
                  ("H"       . left-word)
                  ("L"       . right-word)
