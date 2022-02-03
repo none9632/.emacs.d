@@ -1127,6 +1127,7 @@ Open files as another user
       (push '("\\La"           . ?⇐) prettify-symbols-alist)
       (push '("\\Ra"           . ?⇒) prettify-symbols-alist)
       (push '("\\degree"       . ?⚬) prettify-symbols-alist)
+      (push '("\\triangle"     . ?Δ) prettify-symbols-alist)
       (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 #+end_src
@@ -3849,15 +3850,6 @@ Snippets configurations.
                               (shell-command-to-string "xdotool key Mode_switch")
                               (yas-expand-snippet (yas-lookup-snippet "align"))
                               (my/delete-one-blank-line))
-                      "gr"  (lambda ()
-                              (interactive)
-                              (yas-expand-snippet (yas-lookup-snippet "gather"))
-                              (my/delete-one-blank-line))
-                      "пк"  (lambda ()
-                              (interactive)
-                              (shell-command-to-string "xdotool key Mode_switch")
-                              (yas-expand-snippet (yas-lookup-snippet "gather"))
-                              (my/delete-one-blank-line))
                       "\\{" (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\\\{$1\\\\}$0")))
@@ -3865,6 +3857,7 @@ Snippets configurations.
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
                       "*"     "\\cdot "
+                      "%"     "\\%"
                       "  "    "\\ "
                       "xx"    "\\times "
                       "..."   "\\ldots "
@@ -3933,7 +3926,6 @@ Snippets configurations.
                       "ln"    "\\ln "
                       "per"   "\\perp "
                       "par"   "\\parallel "
-                      "tri"   "\\triangle "
                       "ang"   "\\angle "
                       "min"   "\\min "
                       "max"   "\\max "
@@ -4028,6 +4020,9 @@ Snippets configurations.
                       "log"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\log_{$1}$0"))
+                      "tri"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\triangle ${1:ABC}$0"))
                       "cas"   (lambda ()
                                 (interactive)
                                 (if (not (my/current-line-empty-p))

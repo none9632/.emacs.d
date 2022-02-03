@@ -183,6 +183,7 @@
     (push '("\\La"           . ?⇐) prettify-symbols-alist)
     (push '("\\Ra"           . ?⇒) prettify-symbols-alist)
     (push '("\\degree"       . ?⚬) prettify-symbols-alist)
+    (push '("\\triangle"     . ?Δ) prettify-symbols-alist)
     (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 (provide 'init-edit)

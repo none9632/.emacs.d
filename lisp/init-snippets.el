@@ -119,15 +119,6 @@
                             (shell-command-to-string "xdotool key Mode_switch")
                             (yas-expand-snippet (yas-lookup-snippet "align"))
                             (my/delete-one-blank-line))
-                    "gr"  (lambda ()
-                            (interactive)
-                            (yas-expand-snippet (yas-lookup-snippet "gather"))
-                            (my/delete-one-blank-line))
-                    "пк"  (lambda ()
-                            (interactive)
-                            (shell-command-to-string "xdotool key Mode_switch")
-                            (yas-expand-snippet (yas-lookup-snippet "gather"))
-                            (my/delete-one-blank-line))
                     "\\{" (lambda ()
                             (interactive)
                             (yas-expand-snippet "\\\\{$1\\\\}$0")))
@@ -135,6 +126,7 @@
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
                     "*"     "\\cdot "
+                    "%"     "\\%"
                     "  "    "\\ "
                     "xx"    "\\times "
                     "..."   "\\ldots "
@@ -203,7 +195,6 @@
                     "ln"    "\\ln "
                     "per"   "\\perp "
                     "par"   "\\parallel "
-                    "tri"   "\\triangle "
                     "ang"   "\\angle "
                     "min"   "\\min "
                     "max"   "\\max "
@@ -298,6 +289,9 @@
                     "log"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\log_{$1}$0"))
+                    "tri"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\triangle ${1:ABC}$0"))
                     "cas"   (lambda ()
                               (interactive)
                               (if (not (my/current-line-empty-p))
