@@ -18,14 +18,9 @@
   (TeX-file-line-error               t)
   (TeX-fold-auto                     t)
   (TeX-source-correlate-start-server t)
-  (TeX-view-program-selection        '((output-pdf "pdf-tools"))
-                                     TeX-source-correlate-start-server t)
-  (TeX-view-program-list             '(("pdf-tools" "TeX-pdf-tools-sync-view")))
   (preview-auto-cache-preamble       t)
   :config
-  (setq-default TeX-master nil)
-
-  (bind-key "SPC p d" #'preview-document LaTeX-mode-map))
+  (setq-default TeX-master nil))
 
 (use-package cdlatex
   :after yasnippet

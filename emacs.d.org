@@ -2634,31 +2634,6 @@ Org configurations.
 	
 #+end_src
 
-** COMMENT pdf-tools
-
-#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
-
-  (use-package pdf-tools
-    :mode (("\\.pdf\\'" . pdf-view-mode))
-    :bind (:map pdf-view-mode-map
-                ;; ("SPC" . nil)
-                ;; ("SPC h v" . 'counsel-describe-variable-function)
-                ("j"       . pdf-view-next-line-or-next-page)
-                ("k"       . pdf-view-previous-line-or-previous-page)
-                ("J"       . pdf-view-next-page)
-                ("K"       . pdf-view-previous-page)
-                )
-    :hook (pdf-view-mode . solaire-mode)
-    :config
-    (pdf-tools-install :no-query)
-
-    (pdf-view-themed-minor-mode)
-
-    ;; (setq-default pdf-view-display-size 'fit-page)
-    (setq pdf-view-resize-factor 1.1))
-
-#+end_src
-
 ** Auctex
 
 #+begin_src emacs-lisp :tangle ./lisp/init-tex.el
@@ -2681,14 +2656,9 @@ Org configurations.
     (TeX-file-line-error               t)
     (TeX-fold-auto                     t)
     (TeX-source-correlate-start-server t)
-    (TeX-view-program-selection        '((output-pdf "pdf-tools"))
-                                       TeX-source-correlate-start-server t)
-    (TeX-view-program-list             '(("pdf-tools" "TeX-pdf-tools-sync-view")))
     (preview-auto-cache-preamble       t)
     :config
-    (setq-default TeX-master nil)
-
-    (bind-key "SPC p d" #'preview-document LaTeX-mode-map))
+    (setq-default TeX-master nil))
 
 #+end_src
 
