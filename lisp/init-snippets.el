@@ -22,14 +22,6 @@
   :hook (LaTeX-mode . aas-activate-for-major-mode)
   :config
   (aas-set-snippets 'org-mode
-                    ";lb" (lambda ()
-                            (interactive)
-                            (yas-expand-snippet (yas-lookup-snippet "latex block"))
-                            (my/delete-one-blank-line))
-                    "жди" (lambda ()
-                            (interactive)
-                            (yas-expand-snippet (yas-lookup-snippet "latex block"))
-                            (my/delete-one-blank-line))
                     "tm"  (lambda ()
                             (interactive)
                             (yas-expand-snippet (yas-lookup-snippet "theorem"))

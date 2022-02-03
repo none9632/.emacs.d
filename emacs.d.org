@@ -1331,8 +1331,7 @@ Evil configuration.
          ((and (integerp evt) (char-equal evt ?о))
           (delete-char -1)
           (evil-normal-state))
-         (t (insert evt)))))
-    )
+         (t (insert evt))))))
 
 #+end_src
 
@@ -3726,14 +3725,6 @@ Snippets configurations.
     :hook (LaTeX-mode . aas-activate-for-major-mode)
     :config
     (aas-set-snippets 'org-mode
-                      ";lb" (lambda ()
-                              (interactive)
-                              (yas-expand-snippet (yas-lookup-snippet "latex block"))
-                              (my/delete-one-blank-line))
-                      "жди" (lambda ()
-                              (interactive)
-                              (yas-expand-snippet (yas-lookup-snippet "latex block"))
-                              (my/delete-one-blank-line))
                       "tm"  (lambda ()
                               (interactive)
                               (yas-expand-snippet (yas-lookup-snippet "theorem"))

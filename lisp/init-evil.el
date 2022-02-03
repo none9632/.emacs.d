@@ -68,7 +68,6 @@
        ((and (integerp evt) (char-equal evt ?о))
         (delete-char -1)
         (evil-normal-state))
-       (t (insert evt)))))
-  )
+       (t (insert evt))))))
 
 (provide 'init-evil)
