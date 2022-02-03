@@ -3819,6 +3819,28 @@ Snippets configurations.
                       "\\{" (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\\\{$1\\\\}$0")))
+    (aas-set-snippets 'latex-mode
+                      :cond #'texmathp
+                      "'kg"     "кг"
+                      "'g"      "г"
+                      "'m"      "м"
+                      "'cm"     "см"
+                      "'N"      "Н"
+                      "'Pa"     "Па"
+                      "'J"      "Дж"
+                      "'Hz"     "Гц"
+                      "'s"      "с"
+                      "'K"      "К"
+                      "'rad"    "рад"
+                      "'mol"    "моль"
+                      "'A"      "А"
+                      "'V"      "В"
+                      "'Om"     "Ом"
+                      "'С"      "Кл"
+                      "'W"      "Вт"
+                      "'T"      "Тл"
+                      "'F"      "Ф"
+                      "'Wb"     "Вб")
 
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
