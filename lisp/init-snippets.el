@@ -82,13 +82,6 @@
                     "жшь" (lambda ()
                             (interactive)
                             (my/insert-image))
-                    ";cp" (lambda ()
-                            (interactive)
-                            (yas-expand-snippet "#+caption: $0")
-                            (shell-command-to-string "xkb-switch -n"))
-                    "жсз" (lambda ()
-                            (interactive)
-                            (yas-expand-snippet "#+caption: $0"))
                     "\\\\" (lambda ()
                              (interactive)
                              (yas-expand-snippet " \\\\\\\\")))
@@ -114,6 +107,7 @@
                     "\\{" (lambda ()
                             (interactive)
                             (yas-expand-snippet "\\\\{$1\\\\}$0")))
+
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
                     "'kg"     "кг"
@@ -127,15 +121,15 @@
                     "'s"      "с"
                     "'K"      "К"
                     "'rad"    "рад"
-                    "'mol"    "моль"
+                    "'Mol"    "моль"
                     "'A"      "А"
                     "'V"      "В"
                     "'Om"     "Ом"
-                    "'С"      "Кл"
+                    "'C"      "Кл"
                     "'W"      "Вт"
                     "'T"      "Тл"
                     "'F"      "Ф"
-                    "'Wb"     "Вб")
+                    "'wb"     "Вб")
 
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
