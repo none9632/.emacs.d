@@ -1246,12 +1246,16 @@ Evil configuration.
                  ("M-h"     . evil-window-increase-width)
                  ("M-l"     . evil-window-decrease-width)
                  ("M-k"     . evil-window-increase-height)
-                 ("M-j"     . evil-window-decrease-height))
+                 ("M-j"     . evil-window-decrease-height)
+                 ("C-p"     . my/paste-from-clipboard)
+                 ("y"       . my/copy-to-clipboard))
            (:map evil-visual-state-map
                  ("H"       . left-word)
                  ("L"       . right-word)
                  ("J"       . forward-paragraph)
-                 ("K"       . backward-paragraph))
+                 ("K"       . backward-paragraph)
+                 ("p"       . my/paste-from-clipboard)
+                 ("y"       . my/copy-to-clipboard))
            (:map evil-insert-state-map
                  ("M-k"     . nil)))
     :custom (evil-want-keybinding nil)
@@ -1268,10 +1272,27 @@ Evil configuration.
 
     (use-package undo-fu)
 
-    (setq evil-whan-fine-undo t
+    (setq evil-want-fine-undo t
           evil-undo-system    'undo-fu
           evil-undo-function  'undo-fu-only-undo
-          evil-redo-function  'undo-fu-only-redo))
+          evil-redo-function  'undo-fu-only-redo)
+
+    (defun my/paste-from-clipboard ()
+      (interactive)
+      (if (eq evil-visual-state-minor-mode t)
+          (kill-region (region-beginning) (region-end)))
+      (if (and (not (looking-at-p "$"))
+               (not (eq evil-visual-state-minor-mode t)))
+          (evil-forward-char))
+      (x-clipboard-yank))
+
+    (defun my/copy-to-clipboard ()
+      (interactive)
+      (setq x-select-enable-clipboard t)
+      (call-interactively 'evil-yank)
+      (setq x-select-enable-clipboard nil))
+
+    (setq x-select-enable-clipboard nil))
 
 #+end_src
 
