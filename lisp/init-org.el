@@ -152,8 +152,7 @@
 (defun my/org-latex-mode ()
   (interactive)
   (setq org-src-window-setup      'split-window-below
-        company-box-enable-icon   nil
-        my/enable-refresh-markers t)
+        company-box-enable-icon   nil)
   (aas-activate-for-major-mode)
   (my/update-theorem-and-lemma-counts)
   (my/org-load-prettify-symbols)

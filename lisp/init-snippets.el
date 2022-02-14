@@ -178,6 +178,7 @@
                     ";d"    "\\delta "
                     ";D"    "\\Delta "
                     ";e"    "\\varepsilon "
+                    ";E"    "\\Varepsilon "
                     ";z"    "\\zeta "
                     ";h"    "\\eta "
                     ";q"    "\\theta "

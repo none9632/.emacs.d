@@ -59,7 +59,8 @@
 
 #+LATEX_HEADER: \let\oldDelta\Delta
 #+LATEX_HEADER: \renewcommand\Delta{{\scriptstyle\oldDelta}}
-#+LATEX_HEADER: \renewcommand\varepsilon{\mathcal{E}}
+#+LATEX_HEADER: \renewcommand\varepsilon{{\scriptstyle\mathcal{E}}}
+#+LATEX_HEADER: \renewcommand\Varepsilon{\mathcal{E}}
 #+LATEX_HEADER: \renewcommand\emptyset{\varnothing}
 #+LATEX_HEADER: \renewcommand\vec[1]{\vv{#1}}
 #+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
