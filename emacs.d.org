@@ -2394,6 +2394,21 @@ Org configurations.
         (org-toggle-inline-images))
     (org-toggle-inline-images))
 
+  (defun my/remove-images ()
+    (interactive)
+    (message "Removing unused images...")
+    (setq used-file-names-str "unused_name")
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^\\[\\[.+\\]\\]$" nil t)
+        (setq used-file-names-str (concat used-file-names-str
+                                          "\\|"
+                                          (replace-regexp-in-string "\\[\\|\\]\\|\n\\|./images/"
+                                                                    ""
+                                                                    (thing-at-point 'line nil))))))
+    (shell-command-to-string (concat "find ./images/ -type f | grep -v \"" used-file-names-str "\" | xargs rm"))
+    (message "Removing unused images...done"))
+
   (defun my/inkscape-figures-edit (line-str)
     (interactive)
     (setq file-name (replace-regexp-in-string "\\[\\|\\]" "" line-str))
