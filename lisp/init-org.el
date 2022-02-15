@@ -127,12 +127,12 @@
   (setq used-file-names-str "unused_name")
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "^\\[\\[.+\\]\\]$" nil t)
+    (while (re-search-forward "\\[\\[\\./images/.+\\]\\]" nil t)
       (setq used-file-names-str (concat used-file-names-str
                                         "\\|"
-                                        (replace-regexp-in-string "\\[\\|\\]\\|\n\\|./images/"
+                                        (replace-regexp-in-string "\\[\\|\\]"
                                                                   ""
-                                                                  (thing-at-point 'line nil))))))
+                                                                  (match-string-no-properties 0))))))
   (shell-command-to-string (concat "find ./images/ -type f | grep -v \"" used-file-names-str "\" | xargs rm"))
   (message "Removing unused images...done"))
 
