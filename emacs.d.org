@@ -2507,11 +2507,17 @@ Org configurations.
                                         (my/isearch-line-forward "\\)")
                                         (org-latex-preview)))))
 
+  (defun my/org-insert-item-or-heading ()
+    (interactive)
+    (if (org-in-item-p)
+        (org-insert-item)
+      (org-insert-heading)))
+
   (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
   (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'evil-window-down)
   (evil-define-key '(normal visual)        org-mode-map (kbd "J")   'org-next-visible-heading)
   (evil-define-key '(normal visual)        org-mode-map (kbd "K")   'org-previous-visible-heading)
-  (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'org-insert-item)
+  (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
 
   (leader-key-def
     "bt" 'org-babel-tangle
