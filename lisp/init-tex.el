@@ -7,7 +7,7 @@
                          (interactive)
                          (define-key LaTeX-mode-map "\C-j" 'nil)
                          (company-mode -1)
-                         (electric-pair-local-mode -1))))
+                         (my/latex-load-prettify-symbols))))
   :custom
   (TeX-auto-save                     t)
   (TeX-parse-self                    t)
