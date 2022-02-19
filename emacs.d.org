@@ -843,10 +843,13 @@ Jump to things in Emacs tree-style
   (use-package avy
     :bind (:map evil-normal-state-map
                 ("/" . avy-goto-char-timer)
+                ("." . avy-goto-char-timer)
                 :map evil-visual-state-map
                 ("/" . avy-goto-char-timer)
+                ("." . avy-goto-char-timer)
                 :map evil-motion-state-map
-                ("/" . avy-goto-char-timer))
+                ("/" . avy-goto-char-timer)
+                ("." . avy-goto-char-timer))
     :config
     (setq avy-all-windows     nil
           avy-timeout-seconds 0.4))
@@ -1239,8 +1242,8 @@ Evil configuration.
            (:map evil-normal-state-map
                  ("H"       . left-word)
                  ("L"       . right-word)
-                 ("J"       . forward-paragraph)
-                 ("K"       . backward-paragraph)
+                 ("J"       . evil-forward-paragraph)
+                 ("K"       . evil-backward-paragraph)
                  ("U"       . evil-redo)
                  ("SPC TAB" . evil-close-folds)
                  ("M-h"     . evil-window-increase-width)
@@ -1252,8 +1255,8 @@ Evil configuration.
            (:map evil-visual-state-map
                  ("H"       . left-word)
                  ("L"       . right-word)
-                 ("J"       . forward-paragraph)
-                 ("K"       . backward-paragraph)
+                 ("J"       . evil-forward-paragraph)
+                 ("K"       . evil-backward-paragraph)
                  ("p"       . my/paste-from-clipboard)
                  ("y"       . my/copy-to-clipboard))
            (:map evil-insert-state-map
@@ -3951,7 +3954,7 @@ Snippets configurations.
                       "notin" "\\not\\in "
                       "cc"    "\\subset "
                       "dg"    "\\degree "
-                      "vd"    "\\ \\vdots\\ "
+                      "vd"    "\\vdots "
                       "vv"    "\\vee "
                       "nvv"   "\\wedge "
                       "qq"    "\\quad "

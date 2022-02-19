@@ -12,8 +12,8 @@
          (:map evil-normal-state-map
                ("H"       . left-word)
                ("L"       . right-word)
-               ("J"       . forward-paragraph)
-               ("K"       . backward-paragraph)
+               ("J"       . evil-forward-paragraph)
+               ("K"       . evil-backward-paragraph)
                ("U"       . evil-redo)
                ("SPC TAB" . evil-close-folds)
                ("M-h"     . evil-window-increase-width)
@@ -25,8 +25,8 @@
          (:map evil-visual-state-map
                ("H"       . left-word)
                ("L"       . right-word)
-               ("J"       . forward-paragraph)
-               ("K"       . backward-paragraph)
+               ("J"       . evil-forward-paragraph)
+               ("K"       . evil-backward-paragraph)
                ("p"       . my/paste-from-clipboard)
                ("y"       . my/copy-to-clipboard))
          (:map evil-insert-state-map

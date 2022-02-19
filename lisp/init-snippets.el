@@ -231,7 +231,7 @@
                     "notin" "\\not\\in "
                     "cc"    "\\subset "
                     "dg"    "\\degree "
-                    "vd"    "\\ \\vdots\\ "
+                    "vd"    "\\vdots "
                     "vv"    "\\vee "
                     "nvv"   "\\wedge "
                     "qq"    "\\quad "
