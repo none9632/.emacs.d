@@ -236,17 +236,19 @@
 
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'evil-window-down)
+(evil-define-key '(normal insert)        org-mode-map (kbd "M-f") 'org-footnote-action)
 (evil-define-key '(normal visual)        org-mode-map (kbd "J")   'org-next-visible-heading)
 (evil-define-key '(normal visual)        org-mode-map (kbd "K")   'org-previous-visible-heading)
 (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
 
 (leader-key-def
-  "bt" 'org-babel-tangle
   "i"  'my/org-edit-special
+  "m"  'org-mark-ring-goto
   "q"  (lambda ()
          (interactive)
          (cond (org-latex-mode (my/org-edit-src-exit))
                (t              (evil-quit))))
+  "bt" 'org-babel-tangle
   "op" 'org-latex-preview
   "el" 'my/org-latex-export
   "ce" 'my/change-environment
