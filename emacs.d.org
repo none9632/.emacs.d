@@ -2206,8 +2206,8 @@ Ivy configurations.
 
   (use-package swiper
     :after evil
-    :bind (:map evil-normal-state-map
-                ("?"   . swiper)))
+    :config
+    (leader-key-def "f" 'swiper))
 
 #+end_src
 

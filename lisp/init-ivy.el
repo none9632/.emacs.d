@@ -302,8 +302,8 @@ This is for use in `ivy-re-builders-alist'."
 
 (use-package swiper
   :after evil
-  :bind (:map evil-normal-state-map
-              ("?"   . swiper)))
+  :config
+  (leader-key-def "f" 'swiper))
 
 (use-package ivy-rich
   :hook (;; Must load after `counsel-projectile'
