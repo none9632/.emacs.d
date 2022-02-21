@@ -173,10 +173,20 @@
   (my/org-load-prettify-symbols)
   (add-hook 'org-pre-cycle-hook
             (lambda (arg)
-              (cond ((eq arg 'subtree)  (org-latex-preview nil))
-                    ((eq arg 'children) (org-latex-preview nil))
+              (cond ((eq arg 'children) (org-latex-preview nil))
+                    ((eq arg 'subtree)  (progn
+                                          (org-narrow-to-subtree)
+                                          (save-excursion
+                                            (while (re-search-forward "^\\*+" nil t)
+                                              (org-latex-preview nil)))
+                                          (widen)))
                     ((eq arg 'folded)   (if (my/line-looking-at "^\\*+[[:ascii:]]*")
-                                            (org-latex-preview '(4))))))))
+                                            (progn
+                                              (org-narrow-to-subtree)
+                                              (save-excursion
+                                                (while (re-search-forward "^\\*+" nil t)
+                                                  (org-latex-preview '(4))))
+                                              (widen))))))))
 
 (setq org-jump-to-previous-block nil
       org-latex-mode             nil)
