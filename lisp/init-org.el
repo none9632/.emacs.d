@@ -177,6 +177,7 @@
                     ((eq arg 'subtree)  (progn
                                           (org-narrow-to-subtree)
                                           (save-excursion
+                                            (goto-char (point-min))
                                             (while (re-search-forward "^\\*+" nil t)
                                               (org-latex-preview nil)))
                                           (widen)))
@@ -184,6 +185,7 @@
                                             (progn
                                               (org-narrow-to-subtree)
                                               (save-excursion
+                                                (goto-char (point-min))
                                                 (while (re-search-forward "^\\*+" nil t)
                                                   (org-latex-preview '(4))))
                                               (widen))))))))
