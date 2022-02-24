@@ -2940,6 +2940,14 @@ Jump to definition
 
 #+end_src
 
+** lua-mode
+
+#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+
+  (use-package lua-mode)
+
+#+end_src
+
 ** End
 
 #+begin_src emacs-lisp :tangle ./lisp/init-prog.el

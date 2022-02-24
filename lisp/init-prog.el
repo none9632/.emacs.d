@@ -29,4 +29,6 @@
   :ensure nil
   :hook (makefile-mode . enable-tabs))
 
+(use-package lua-mode)
+
 (provide 'init-prog)
