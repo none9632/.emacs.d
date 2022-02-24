@@ -2325,6 +2325,14 @@ Org configurations.
       (setq-default visual-fill-column-width       110
                     visual-fill-column-center-text t))
 
+    (use-package worf
+      :after evil
+      :bind ((:map evil-normal-state-map
+                   ("SPC t"           . worf-goto))
+             (:map worf-mode-map
+                   ("<S-iso-lefttab>" . nil)))
+      :hook (org-mode . worf-mode))
+
 #+end_src
 
 ** LaTeX

@@ -58,6 +58,14 @@
     (setq-default visual-fill-column-width       110
                   visual-fill-column-center-text t))
 
+  (use-package worf
+    :after evil
+    :bind ((:map evil-normal-state-map
+                 ("SPC t"           . worf-goto))
+           (:map worf-mode-map
+                 ("<S-iso-lefttab>" . nil)))
+    :hook (org-mode . worf-mode))
+
 (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
       org-format-latex-options (plist-put org-format-latex-options :scale 1.6)
       org-latex-create-formula-image-program 'imagemagick)
