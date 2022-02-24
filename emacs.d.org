@@ -2527,20 +2527,24 @@ Org configurations.
   (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
   (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'evil-window-down)
   (evil-define-key '(normal insert)        org-mode-map (kbd "M-f") 'org-footnote-action)
-  (evil-define-key '(normal visual)        org-mode-map (kbd "J")   'org-next-visible-heading)
-  (evil-define-key '(normal visual)        org-mode-map (kbd "K")   'org-previous-visible-heading)
   (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
 
   (leader-key-def
     "i"  'my/org-edit-special
     "m"  'org-mark-ring-goto
+    "u"  (lambda ()
+           (interactive)
+           (if (org-at-heading-p)
+               (outline-up-heading 1)
+             (org-previous-visible-heading 1)))
+    "d"  'org-next-visible-heading
     "q"  (lambda ()
            (interactive)
            (cond (org-latex-mode (my/org-edit-src-exit))
                  (t              (evil-quit))))
-    "bt" 'org-babel-tangle
+    "ob" 'org-babel-tangle
     "op" 'org-latex-preview
-    "el" 'my/org-latex-export
+    "oe" 'my/org-latex-export
     "ce" 'my/change-environment
     "rc" 'my/update-theorem-and-lemma-counts)
 
