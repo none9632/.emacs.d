@@ -12,8 +12,6 @@
                       (visual-line-mode t)
                       (diff-hl-mode 0)))
   :bind (:map org-mode-map
-              ("M-k" . org-metaup)
-              ("M-j" . org-metadown)
               ("<tab>" . nil))
   :config
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -61,9 +59,8 @@
                   visual-fill-column-center-text t))
 
 (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
-      org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
-
-(setq org-latex-create-formula-image-program 'imagemagick)
+      org-format-latex-options (plist-put org-format-latex-options :scale 1.6)
+      org-latex-create-formula-image-program 'imagemagick)
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
@@ -240,16 +237,14 @@
                                       (my/isearch-line-forward "\\)")
                                       (org-latex-preview)))))
 
-(defun my/org-insert-item-or-heading ()
-  (interactive)
-  (if (org-in-item-p)
-      (org-insert-item)
-    (org-insert-heading)))
-
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'evil-window-down)
 (evil-define-key '(normal insert)        org-mode-map (kbd "M-f") 'org-footnote-action)
-(evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
+(evil-define-key '(insert)               org-mode-map (kbd "C-i") (lambda ()
+                                                                    (interactive)
+                                                                    (if (org-in-item-p)
+                                                                        (org-insert-item)
+                                                                      (org-insert-heading))))
 
 (leader-key-def
   "i"  'my/org-edit-special
