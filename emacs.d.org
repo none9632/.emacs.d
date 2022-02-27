@@ -3884,7 +3884,8 @@ Snippets configurations.
                       "'N"    "Н"
                       "'P"    "Па"
                       "'J"    "Дж"
-                      "'H"    "Гц"
+                      "'h"    "Гц"
+                      "'H"    "Гн"
                       "'s"    "с"
                       "'K"    "К"
                       "'r"    "рад"
@@ -3894,9 +3895,9 @@ Snippets configurations.
                       "'O"    "Ом"
                       "'C"    "Кл"
                       "'W"    "Вт"
+                      "'w"    "Вб"
                       "'T"    "Тл"
-                      "'F"    "Ф"
-                      "'w"    "Вб")
+                      "'F"    "Ф")
 
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
