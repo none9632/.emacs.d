@@ -245,14 +245,16 @@
                                       (my/isearch-line-forward "\\)")
                                       (org-latex-preview)))))
 
+(defun my/org-insert-item-or-heading ()
+  (interactive)
+  (if (org-in-item-p)
+      (org-insert-item)
+    (org-insert-heading)))
+
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'evil-window-down)
 (evil-define-key '(normal insert)        org-mode-map (kbd "M-f") 'org-footnote-action)
-(evil-define-key '(insert)               org-mode-map (kbd "C-i") (lambda ()
-                                                                    (interactive)
-                                                                    (if (org-in-item-p)
-                                                                        (org-insert-item)
-                                                                      (org-insert-heading))))
+(evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
 
 (leader-key-def
   "i"  'my/org-edit-special

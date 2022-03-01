@@ -238,7 +238,6 @@
                     "qq"    "\\quad "
                     "md"    "\\mathrm{d} "
                     "eq"    "\\equiv "
-                    "ds"    "\\ds "
                     "ua"    "\\ua "
                     "da"    "\\da "
                     "uua"   "\\uua "
@@ -355,19 +354,19 @@
                               (yas-expand-snippet "\\binom{${1:n}}{${2:k}}"))
                     "sum"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\sum_{${1:i=1}}^{${2:n}}$0"))
+                              (yas-expand-snippet "\\sum^{${1:n}}_{${2:i=1}}$0"))
                     "prod"  (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\prod_{$1}^{$2}$0"))
+                              (yas-expand-snippet "\\prod^{$1}_{$2}$0"))
                     "cprod" (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\coprod_{$1}^{$2}$0"))
+                              (yas-expand-snippet "\\coprod^{$1}_{$2}$0"))
                     "lim"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
                     "int"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
+                              (yas-expand-snippet "\\int^{${1:\\infty}}_{${2:-\\infty}}$0"))
                     "ing"   (lambda ()
                               (interactive)
                               (yas-expand-snippet (yas-lookup-snippet "integ"))
