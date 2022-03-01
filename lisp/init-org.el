@@ -251,6 +251,20 @@
       (org-insert-item)
     (org-insert-heading)))
 
+(defun my/org-previous-visible-heading ()
+  (interactive)
+  (if (org-at-heading-p)
+      (progn
+        (save-excursion
+          (previous-line)
+          (if (org-at-heading-p)
+              (setq prev-heading-folded t)
+            (setq prev-heading-folded nil)))
+        (if prev-heading-folded
+            (outline-up-heading 1)
+          (org-previous-visible-heading 1)))
+    (org-previous-visible-heading 1)))
+
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-j") 'evil-window-down)
 (evil-define-key '(normal insert)        org-mode-map (kbd "M-f") 'org-footnote-action)
@@ -259,11 +273,7 @@
 (leader-key-def
   "i"  'my/org-edit-special
   "m"  'org-mark-ring-goto
-  "u"  (lambda ()
-         (interactive)
-         (if (org-at-heading-p)
-             (outline-up-heading 1)
-           (org-previous-visible-heading 1)))
+  "u"  'my/org-previous-visible-heading
   "d"  'org-next-visible-heading
   "q"  (lambda ()
          (interactive)
