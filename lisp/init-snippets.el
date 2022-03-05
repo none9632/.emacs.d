@@ -246,6 +246,7 @@
                     "AA"    "\\forall "
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
+                    "div"   "\\div "
                     "NN"    "\\N"
                     "ZZ"    "\\Z"
                     "QQ"    "\\Q"
