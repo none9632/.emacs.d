@@ -1104,6 +1104,7 @@ Open files as another user
       (push '("\\Ra"           . ?⇒) prettify-symbols-alist)
       (push '("\\degree"       . ?⚬) prettify-symbols-alist)
       (push '("\\triangle"     . ?Δ) prettify-symbols-alist)
+      (push '("\\Varepsilon"   . ?Ɛ) prettify-symbols-alist)
       (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 #+end_src
@@ -2397,8 +2398,7 @@ Org configurations.
     (setq old-default-directory default-directory
           default-directory     "~/Pictures/screenshots/"
           selected-file         (ivy-read "Choose file: " #'read-file-name-internal
-                                          :unwind (lambda ()
-                                                    (setq default-directory old-default-directory)))
+                                          :unwind (lambda () (setq default-directory old-default-directory)))
           img-file-path         (shell-command-to-string (concat "inkscape-figures move " selected-file)))
     (insert (concat "[[" img-file-path "]]"))
     (if (not (equal org-inline-image-overlays nil))
@@ -2455,6 +2455,7 @@ Org configurations.
     (aas-activate-for-major-mode)
     (my/update-theorem-and-lemma-counts)
     (my/org-load-prettify-symbols)
+    (my/remove-images)
     (add-hook 'org-pre-cycle-hook
               (lambda (arg)
                 (cond ((eq arg 'children) (org-latex-preview nil))
