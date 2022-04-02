@@ -186,7 +186,7 @@
                     ";l"    "\\lambda "
                     ";L"    "\\Lambda "
                     ";m"    "\\mu "
-                    ";n"    "\\nu "
+                    ";v"    "\\nu "
                     ";x"    "\\xi "
                     ";X"    "\\Xi "
                     ";p"    "\\pi "
@@ -264,10 +264,19 @@
                     "_"     (lambda ()
                               (interactive)
                               (yas-expand-snippet "_{$1}$0"))
+                    "dt"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\dot{$1}$0"))
+                    "ddt"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\ddot{$1}$0"))
+                    "dddt"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\dddot{$1}$0"))
                     "//"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{$1}{$2}$0"))
-                    "dd"    (lambda ()
+                    "/dd"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{\\mathrm{d} $1}{\\mathrm{d} ${2:t}}$0"))
                     "prt"   (lambda ()
@@ -400,13 +409,22 @@
                     ";;"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\left($1\\right)$0"))
+                    ";)"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\right)$0"))
                     ";["    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\left[$1\\right]$0")
                               (delete-char))
+                    ";]"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\right]$0"))
                     ";{"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\left\\\\{$1\\right\\\\}$0"))
+                    ";}"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\right\\\\}$0"))
                     ";|"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\left|$1\\right|$0")

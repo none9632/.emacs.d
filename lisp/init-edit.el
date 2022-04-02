@@ -50,7 +50,7 @@
   ;; Disable in some commands
   (add-to-list 'aggressive-indent-protected-commands #'delete-trailing-whitespace t)
 
-  ;; Be slightly less aggressive in C/C++/C#/Java/Go/Swift
+  ;; Be slightly less aggressive in C/C++/Java/lua
   (add-to-list 'aggressive-indent-dont-indent-if
                '(and (derived-mode-p 'c-mode 'c++-mode 'java-mode)
                      (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
