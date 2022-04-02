@@ -115,15 +115,16 @@
 
 (defun my/insert-image ()
   (interactive)
-  (setq old-default-directory default-directory
-        default-directory     "~/Pictures/screenshots/"
-        selected-file         (ivy-read "Choose file: " #'read-file-name-internal
-                                        :unwind (lambda () (setq default-directory old-default-directory)))
-        img-file-path         (shell-command-to-string (concat "inkscape-figures move " selected-file)))
-  (insert (concat "[[" img-file-path "]]"))
-  (if (not (equal org-inline-image-overlays nil))
-      (org-toggle-inline-images))
-  (org-toggle-inline-images))
+  (shell-command-to-string (concat "echo -n \"\" > ~/.cache/emacs/img-path;"
+                                   "awesome-client 'create_emacs_fm()';"
+                                   "while ! [ -s ~/.cache/emacs/img-path ]; do sleep 0.1; done"))
+  (setq old-file-path (shell-command-to-string "cat ~/.cache/emacs/img-path"))
+  (unless (equal old-file-path "cancel")
+    (setq new-file-path (shell-command-to-string (concat "inkscape-figures move " old-file-path)))
+    (insert (concat "[[" new-file-path "]]"))
+    (if (not (equal org-inline-image-overlays nil))
+        (org-toggle-inline-images))
+    (org-toggle-inline-images)))
 
 (defun my/remove-images ()
   (interactive)
