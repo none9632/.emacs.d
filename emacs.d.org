@@ -214,20 +214,6 @@ Better defaults configurations.
 
 #+end_src
 
-** COMMENT Environment
-
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
-
-  (when sys/linux-x-p
-    (use-package exec-path-from-shell
-      :init
-      (setq exec-path-from-shell-check-startup-files nil
-            exec-path-from-shell-variables '("PATH" "MANPATH")
-            exec-path-from-shell-arguments '("-l"))
-      (exec-path-from-shell-initialize)))
-
-#+end_src
-
 ** Keep Folders Clean
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
@@ -2396,10 +2382,10 @@ Org configurations.
   (defun my/insert-image ()
     (interactive)
     (shell-command-to-string (concat "[ ! -d ~/.cache/emacs/ ] && mkdir -p ~/.cache/emacs;"
-                                     "echo -n \"\" > ~/.cache/emacs/img-path;"
-                                     "awesome-client 'create_emacs_fm()';"
-                                     "while ! [ -s ~/.cache/emacs/img-path ]; do sleep 0.1; done"))
-    (setq old-file-path (shell-command-to-string "cat ~/.cache/emacs/img-path"))
+                                     "echo -n \"\" > ~/.cache/emacs/path;"
+                                     "awesome-client 'create_emacs_fm(\"~/Pictures/screenshots\")';"
+                                     "while ! [ -s ~/.cache/emacs/path ]; do sleep 0.1; done"))
+    (setq old-file-path (shell-command-to-string "cat ~/.cache/emacs/path"))
     (unless (equal old-file-path "cancel")
       (setq new-file-path (shell-command-to-string (concat "inkscape-figures move " old-file-path)))
       (insert (concat "[[" new-file-path "]]"))

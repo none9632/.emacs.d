@@ -116,10 +116,10 @@
 (defun my/insert-image ()
   (interactive)
   (shell-command-to-string (concat "[ ! -d ~/.cache/emacs/ ] && mkdir -p ~/.cache/emacs;"
-                                   "echo -n \"\" > ~/.cache/emacs/img-path;"
-                                   "awesome-client 'create_emacs_fm()';"
-                                   "while ! [ -s ~/.cache/emacs/img-path ]; do sleep 0.1; done"))
-  (setq old-file-path (shell-command-to-string "cat ~/.cache/emacs/img-path"))
+                                   "echo -n \"\" > ~/.cache/emacs/path;"
+                                   "awesome-client 'create_emacs_fm(\"~/Pictures/screenshots\")';"
+                                   "while ! [ -s ~/.cache/emacs/path ]; do sleep 0.1; done"))
+  (setq old-file-path (shell-command-to-string "cat ~/.cache/emacs/path"))
   (unless (equal old-file-path "cancel")
     (setq new-file-path (shell-command-to-string (concat "inkscape-figures move " old-file-path)))
     (insert (concat "[[" new-file-path "]]"))
