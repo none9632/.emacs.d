@@ -30,7 +30,8 @@
                ("p"       . my/paste-from-clipboard)
                ("y"       . my/copy-to-clipboard))
          (:map evil-insert-state-map
-               ("M-k"     . nil)))
+               ("M-k"     . nil)
+               ("C-p"     . my/paste-from-clipboard)))
   :custom (evil-want-keybinding nil)
   :config
   (global-set-key (kbd "C-l") 'evil-window-right)
@@ -54,9 +55,6 @@
     (interactive)
     (if (eq evil-visual-state-minor-mode t)
         (kill-region (region-beginning) (region-end)))
-    (if (and (not (looking-at-p "$"))
-             (not (eq evil-visual-state-minor-mode t)))
-        (evil-forward-char))
     (x-clipboard-yank))
 
   (defun my/copy-to-clipboard ()
