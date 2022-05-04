@@ -1,30 +1,49 @@
 ;; -*- lexical-binding: t -*-
 
 (use-package magit
-  :bind (:map magit-status-mode-map
-              ("j" . evil-next-line)
-              ("k" . evil-previous-line))
+  :bind ((:map magit-status-mode-map
+               ("j" . magit-next-line)
+               ("k" . magit-previous-line)
+               ("J" . magit-section-forward)
+               ("K" . magit-section-backward)
+               ("v" . evil-visual-line))
+         (:map magit-log-mode-map
+               ("j" . magit-next-line)
+               ("k" . magit-previous-line))
+         (:map magit-revision-mode-map
+               ("j" . magit-next-line)
+               ("k" . magit-previous-line)
+               ("J" . magit-section-forward)
+               ("K" . magit-section-backward))
+         (:map magit-diff-mode-map
+               ("j" . magit-next-line)
+               ("k" . magit-previous-line)
+               ("J" . magit-section-forward)
+               ("K" . magit-section-backward))
+         (:map transient-base-map
+               ("<escape>" . transient-quit-one)))
+  :init
+  (leader-key-def "g" 'magit-status)
   :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-(leader-key-def
-  "g"  'magit-status
-  "ef" 'with-editor-finish)
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  :config
+  (leader-key-def
+    :keymaps 'magit-status-mode-map
+    "u"   'magit-section-up
+    "q"   'magit-mode-bury-buffer
+    "TAB" 'magit-section-show-level-2-all)
+  (leader-key-def
+    :keymaps 'magit-log-mode-map
+    "q"   'magit-log-bury-buffer)
+  (leader-key-def
+    :keymaps 'with-editor-mode-map
+    "RET" 'with-editor-finish
+    "q"   'with-editor-cancel))
 
 (use-package magit-todos
   :after magit
   :init
   (setq magit-todos-nice (if (executable-find "nice") t nil))
   (magit-todos-mode 1))
-
-(use-package git-timemachine
-  :custom-face
-  (git-timemachine-minibuffer-author-face ((t (:inherit success))))
-  (git-timemachine-minibuffer-detail-face ((t (:inherit warning))))
-  :bind (:map vc-prefix-map
-         ("t" . git-timemachine))
-  :hook (before-revert . (lambda ()
-                           (when (bound-and-true-p git-timemachine-mode)
-                             (user-error "Cannot revert the timemachine buffer")))))
 
 (provide 'init-vcs)

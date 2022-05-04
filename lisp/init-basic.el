@@ -98,7 +98,12 @@
 (use-package general
   :config
   (general-create-definer leader-key-def
-    :keymaps '(normal insert visual emacs)
+    :keymaps '(normal
+               insert
+               visual
+               emacs
+               magit-status-mode-map
+               magit-log-mode-map)
     :prefix "SPC"
     :global-prefix "C-SPC"))
 

@@ -336,7 +336,12 @@ Scroll one line at a time (less "jumpy" than defaults)
   (use-package general
     :config
     (general-create-definer leader-key-def
-      :keymaps '(normal insert visual emacs)
+      :keymaps '(normal
+                 insert
+                 visual
+                 emacs
+                 magit-status-mode-map
+                 magit-log-mode-map)
       :prefix "SPC"
       :global-prefix "C-SPC"))
 
@@ -1229,7 +1234,6 @@ Evil configuration.
                  ("J"       . evil-forward-paragraph)
                  ("K"       . evil-backward-paragraph)
                  ("U"       . evil-redo)
-                 ("SPC TAB" . evil-close-folds)
                  ("M-h"     . evil-window-increase-width)
                  ("M-l"     . evil-window-decrease-width)
                  ("M-k"     . evil-window-increase-height)
@@ -2542,19 +2546,21 @@ Org configurations.
   (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
 
   (leader-key-def
-    "i"  'my/org-edit-special
-    "m"  'org-mark-ring-goto
-    "u"  'my/org-previous-visible-heading
-    "d"  'org-next-visible-heading
-    "q"  (lambda ()
-           (interactive)
-           (cond (org-latex-mode (my/org-edit-src-exit))
-                 (t              (evil-quit))))
-    "ob" 'org-babel-tangle
-    "op" 'org-latex-preview
-    "oe" 'my/org-latex-export
-    "ce" 'my/change-environment
-    "rc" 'my/update-theorem-and-lemma-counts)
+    :keymaps 'org-mode-map
+    "i"   'my/org-edit-special
+    "m"   'org-mark-ring-goto
+    "u"   'my/org-previous-visible-heading
+    "d"   'org-next-visible-heading
+    "q"   (lambda ()
+            (interactive)
+            (cond (org-latex-mode (my/org-edit-src-exit))
+                  (t              (evil-quit))))
+    "ob"  'org-babel-tangle
+    "op"  'org-latex-preview
+    "oe"  'my/org-latex-export
+    "ce"  'my/change-environment
+    "rc"  'my/update-theorem-and-lemma-counts
+    "TAB" 'evil-close-folds)
 
 #+end_src
 
@@ -3422,15 +3428,44 @@ Version control systems.
 #+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
 
   (use-package magit
-    :bind (:map magit-status-mode-map
-                ("j" . evil-next-line)
-                ("k" . evil-previous-line))
+    :bind ((:map magit-status-mode-map
+                 ("j" . magit-next-line)
+                 ("k" . magit-previous-line)
+                 ("J" . magit-section-forward)
+                 ("K" . magit-section-backward)
+                 ("v" . evil-visual-line))
+           (:map magit-log-mode-map
+                 ("j" . magit-next-line)
+                 ("k" . magit-previous-line))
+           (:map magit-revision-mode-map
+                 ("j" . magit-next-line)
+                 ("k" . magit-previous-line)
+                 ("J" . magit-section-forward)
+                 ("K" . magit-section-backward))
+           (:map magit-diff-mode-map
+                 ("j" . magit-next-line)
+                 ("k" . magit-previous-line)
+                 ("J" . magit-section-forward)
+                 ("K" . magit-section-backward))
+           (:map transient-base-map
+                 ("<escape>" . transient-quit-one)))
+    :init
+    (leader-key-def "g" 'magit-status)
     :custom
-    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-  (leader-key-def
-    "g"  'magit-status
-    "ef" 'with-editor-finish)
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+    :config
+    (leader-key-def
+      :keymaps 'magit-status-mode-map
+      "u"   'magit-section-up
+      "q"   'magit-mode-bury-buffer
+      "TAB" 'magit-section-show-level-2-all)
+    (leader-key-def
+      :keymaps 'magit-log-mode-map
+      "q"   'magit-log-bury-buffer)
+    (leader-key-def
+      :keymaps 'with-editor-mode-map
+      "RET" 'with-editor-finish
+      "q"   'with-editor-cancel))
 
 #+end_src
 
@@ -3448,7 +3483,7 @@ Show TODOs in magit
 
 #+end_src
 
-** git-timemachine
+** COMMENT git-timemachine
 
 Walk through git revisions of a file
 

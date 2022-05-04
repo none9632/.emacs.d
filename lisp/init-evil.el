@@ -15,7 +15,6 @@
                ("J"       . evil-forward-paragraph)
                ("K"       . evil-backward-paragraph)
                ("U"       . evil-redo)
-               ("SPC TAB" . evil-close-folds)
                ("M-h"     . evil-window-increase-width)
                ("M-l"     . evil-window-decrease-width)
                ("M-k"     . evil-window-increase-height)
