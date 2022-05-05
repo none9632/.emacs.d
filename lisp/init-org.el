@@ -9,7 +9,6 @@
   :hook (org-mode . (lambda ()
                       (turn-on-auto-fill)
                       (variable-pitch-mode 1)
-                      (visual-line-mode t)
                       (diff-hl-mode 0)))
   :bind (:map org-mode-map
               ("<tab>" . nil))
@@ -175,6 +174,7 @@
   (setq org-src-window-setup    'split-window-below
         company-box-enable-icon nil)
   (aas-activate-for-major-mode)
+  (visual-line-mode t)
   (my/update-theorem-and-lemma-counts)
   (my/org-load-prettify-symbols)
   (my/remove-images)
@@ -228,6 +228,7 @@
       (my/inkscape-figures-edit line-str)
     (progn
       (org-edit-special)
+      (toggle-truncate-lines)
       (setq-local org-latex-mode t)
       (if (equal current-layout "ru\n")
           (setq change-lang t)

@@ -140,14 +140,13 @@
 (setq-default major-mode       'text-mode
               fill-column      100)
 
-(setq visible-bell                   t
-      inhibit-compacting-font-caches t    ; Don’t compact font caches during GC.
-      delete-by-moving-to-trash      t    ; Deleting files go to OS's trash folder
-      make-backup-files              nil  ; Forbide to make backup files
-      auto-save-default              nil  ; Disable auto save
-      confirm-kill-processes         nil  ; Disable confirm killing processes on exit
-      enable-local-variables         :all ; Disable confirm to set local variables
-
+(setq visible-bell                    t
+      inhibit-compacting-font-caches  t    ; Don’t compact font caches during GC.
+      delete-by-moving-to-trash       t    ; Deleting files go to OS's trash folder
+      make-backup-files               nil  ; Forbide to make backup files
+      auto-save-default               nil  ; Disable auto save
+      confirm-kill-processes          nil  ; Disable confirm killing processes on exit
+      enable-local-variables          :all ; Disable confirm to set local variables
       uniquify-buffer-name-style      'post-forward-angle-brackets ; Show path if names are same
       adaptive-fill-regexp            "[ t]+|[ t]*([0-9]+.|*+)[ t]*"
       adaptive-fill-first-line-regexp "^* *$"

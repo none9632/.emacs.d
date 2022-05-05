@@ -1,5 +1,16 @@
 ;; -*- lexical-binding: t -*-
 
+(use-package zoom
+  :init
+  (custom-set-variables
+   '(zoom-size '(0.618 . 0.618))
+   '(zoom-mode t)
+   '(zoom-ignored-buffer-names '("COMMIT_EDITMSG"
+                                 " *command-log*"))
+   '(zoom-ignored-buffer-name-regexps '("^magit-diff"))))
+
+(advice-add 'balance-windows :override (lambda () nil))
+
 (use-package windmove
   :ensure nil
   :hook (after-init . windmove-default-keybindings))

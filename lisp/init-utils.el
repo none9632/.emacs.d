@@ -3,8 +3,9 @@
 (use-package which-key
   :diminish
   :hook (after-init . which-key-mode)
-  :init (setq which-key-max-description-length 30
-              which-key-show-remaining-keys t))
+  :init
+  (setq which-key-max-description-length 30
+        which-key-show-remaining-keys    t))
 
 (use-package real-auto-save
   :hook (find-file . real-auto-save-mode)

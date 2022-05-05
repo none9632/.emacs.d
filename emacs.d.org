@@ -390,14 +390,13 @@ Scroll one line at a time (less "jumpy" than defaults)
   (setq-default major-mode       'text-mode
                 fill-column      100)
 
-  (setq visible-bell                   t
-        inhibit-compacting-font-caches t    ; Don’t compact font caches during GC.
-        delete-by-moving-to-trash      t    ; Deleting files go to OS's trash folder
-        make-backup-files              nil  ; Forbide to make backup files
-        auto-save-default              nil  ; Disable auto save
-        confirm-kill-processes         nil  ; Disable confirm killing processes on exit
-        enable-local-variables         :all ; Disable confirm to set local variables
-
+  (setq visible-bell                    t
+        inhibit-compacting-font-caches  t    ; Don’t compact font caches during GC.
+        delete-by-moving-to-trash       t    ; Deleting files go to OS's trash folder
+        make-backup-files               nil  ; Forbide to make backup files
+        auto-save-default               nil  ; Disable auto save
+        confirm-kill-processes          nil  ; Disable confirm killing processes on exit
+        enable-local-variables          :all ; Disable confirm to set local variables
         uniquify-buffer-name-style      'post-forward-angle-brackets ; Show path if names are same
         adaptive-fill-regexp            "[ t]+|[ t]*([0-9]+.|*+)[ t]*"
         adaptive-fill-first-line-regexp "^* *$"
@@ -2265,7 +2264,6 @@ Org configurations.
     :hook (org-mode . (lambda ()
                         (turn-on-auto-fill)
                         (variable-pitch-mode 1)
-                        (visual-line-mode t)
                         (diff-hl-mode 0)))
     :bind (:map org-mode-map
                 ("<tab>" . nil))
@@ -2443,6 +2441,7 @@ Org configurations.
     (setq org-src-window-setup    'split-window-below
           company-box-enable-icon nil)
     (aas-activate-for-major-mode)
+    (visual-line-mode t)
     (my/update-theorem-and-lemma-counts)
     (my/org-load-prettify-symbols)
     (my/remove-images)
@@ -2501,6 +2500,7 @@ Org configurations.
         (my/inkscape-figures-edit line-str)
       (progn
         (org-edit-special)
+        (toggle-truncate-lines)
         (setq-local org-latex-mode t)
         (if (equal current-layout "ru\n")
             (setq change-lang t)
@@ -3324,8 +3324,9 @@ Display available keybindings in popup
   (use-package which-key
     :diminish
     :hook (after-init . which-key-mode)
-    :init (setq which-key-max-description-length 30
-                which-key-show-remaining-keys t))
+    :init
+    (setq which-key-max-description-length 30
+          which-key-show-remaining-keys    t))
 
 #+end_src
 
@@ -3528,6 +3529,23 @@ Window configurations.
 #+begin_src emacs-lisp :tangle ./lisp/init-window.el
 
   ;; -*- lexical-binding: t -*-
+
+#+end_src
+
+** zoom
+
+#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+
+  (use-package zoom
+    :init
+    (custom-set-variables
+     '(zoom-size '(0.618 . 0.618))
+     '(zoom-mode t)
+     '(zoom-ignored-buffer-names '("COMMIT_EDITMSG"
+                                   " *command-log*"))
+     '(zoom-ignored-buffer-name-regexps '("^magit-diff"))))
+
+  (advice-add 'balance-windows :override (lambda () nil))
 
 #+end_src
 
