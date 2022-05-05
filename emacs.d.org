@@ -138,7 +138,6 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
   (require 'init-snippets)
 
   (require 'init-dashboard)
-  ;; (require 'init-dired)
   (require 'init-highlight)
   (require 'init-ibuffer)
   (require 'init-window)
@@ -160,8 +159,6 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
   (require 'init-prog)
   (require 'init-elisp)
   (require 'init-tex)
-  ;; (require 'init-c)
-  ;; (require 'init-python)
 
 #+end_src
 
@@ -1228,32 +1225,32 @@ Evil configuration.
   (use-package evil
     :hook (prog-mode . evil-mode)
     :bind ((:map evil-motion-state-map
-                 ("RET"     . nil)
-                 ("M-k"     . nil)
-                 ("SPC"     . nil)
-                 ("DEL"     . nil))
+                 ("RET" . nil)
+                 ("M-k" . nil)
+                 ("SPC" . nil)
+                 ("DEL" . nil))
            (:map evil-normal-state-map
-                 ("H"       . left-word)
-                 ("L"       . right-word)
-                 ("J"       . evil-forward-paragraph)
-                 ("K"       . evil-backward-paragraph)
-                 ("U"       . evil-redo)
-                 ("M-h"     . evil-window-increase-width)
-                 ("M-l"     . evil-window-decrease-width)
-                 ("M-k"     . evil-window-increase-height)
-                 ("M-j"     . evil-window-decrease-height)
-                 ("C-p"     . my/paste-from-clipboard)
-                 ("y"       . my/copy-to-clipboard))
+                 ("H"   . left-word)
+                 ("L"   . right-word)
+                 ("J"   . evil-forward-paragraph)
+                 ("K"   . evil-backward-paragraph)
+                 ("U"   . evil-redo)
+                 ("M-h" . evil-window-increase-width)
+                 ("M-l" . evil-window-decrease-width)
+                 ("M-k" . evil-window-increase-height)
+                 ("M-j" . evil-window-decrease-height)
+                 ("C-p" . my/paste-from-clipboard)
+                 ("y"   . my/copy-to-clipboard))
            (:map evil-visual-state-map
-                 ("H"       . left-word)
-                 ("L"       . right-word)
-                 ("J"       . evil-forward-paragraph)
-                 ("K"       . evil-backward-paragraph)
-                 ("p"       . my/paste-from-clipboard)
-                 ("y"       . my/copy-to-clipboard))
+                 ("H"   . left-word)
+                 ("L"   . right-word)
+                 ("J"   . evil-forward-paragraph)
+                 ("K"   . evil-backward-paragraph)
+                 ("p"   . my/paste-from-clipboard)
+                 ("y"   . my/copy-to-clipboard))
            (:map evil-insert-state-map
-                 ("M-k"     . nil)
-                 ("C-p"     . my/paste-from-clipboard)))
+                 ("M-k" . nil)
+                 ("C-p" . my/paste-from-clipboard)))
     :custom (evil-want-keybinding nil)
     :config
     (global-set-key (kbd "C-l") 'evil-window-right)
@@ -3500,16 +3497,6 @@ Walk through git revisions of a file
 	
 #+end_src
 
-** COMMENT Git related modes
-
-#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
-
-  (use-package gitattributes-mode)
-  (use-package gitconfig-mode)
-  (use-package gitignore-mode)
-
-#+end_src
-
 ** End
 
 #+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
@@ -3547,41 +3534,6 @@ Window configurations.
 
 #+end_src
 
-** windmove
-
-Directional window-selection routines
-
-#+begin_src emacs-lisp :tangle ./lisp/init-window.el
-
-  (use-package windmove
-    :ensure nil
-    :hook (after-init . windmove-default-keybindings))
-
-#+end_src
-
-** winner
-
-Restore old window configurations
-
-#+begin_src emacs-lisp :tangle ./lisp/init-window.el
-
-  (use-package winner
-    :ensure nil
-    :commands (winner-undo winner-redo)
-    :hook (after-init . winner-mode)
-    :init (setq winner-boring-buffers '("*Completions*"
-                                        "*Compile-Log*"
-                                        "*inferior-lisp*"
-                                        "*Fuzzy Completions*"
-                                        "*Apropos*"
-                                        "*Help*"
-                                        "*cvs*"
-                                        "*Buffer List*"
-                                        "*Ibuffer*"
-                                        "*esh command on file*")))
-	
-#+end_src
-
 ** ace-window
 
 Quickly switch windows
@@ -3590,63 +3542,33 @@ Quickly switch windows
 
   (use-package ace-window
     :custom-face
-    ;; (aw-leading-char-face ((t (:inherit font-lock-keyword-face :bold t :height 3.0))))
-    ;; (aw-minibuffer-leading-char-face ((t (:inherit font-lock-keyword-face :bold t :height 2.0))))
-    ;; (aw-mode-line-face ((t (:inherit mode-line-emphasis :bold t))))
-    :bind (([remap other-window] . ace-window)
-           ("C-c w" . ace-window-hydra/body))
     :hook (emacs-startup . ace-window-display-mode)
     :config
-    (defun toggle-window-split ()
-      (interactive)
-      (if (= (count-windows) 2)
-          (let* ((this-win-buffer (window-buffer))
-                 (next-win-buffer (window-buffer (next-window)))
-                 (this-win-edges (window-edges (selected-window)))
-                 (next-win-edges (window-edges (next-window)))
-                 (this-win-2nd (not (and (<= (car this-win-edges)
-                                             (car next-win-edges))
-                                         (<= (cadr this-win-edges)
-                                             (cadr next-win-edges)))))
-                 (splitter
-                  (if (= (car this-win-edges)
-                         (car (window-edges (next-window))))
-                      'split-window-horizontally
-                    'split-window-vertically)))
-            (delete-other-windows)
-            (let ((first-win (selected-window)))
-              (funcall splitter)
-              (if this-win-2nd (other-window 1))
-              (set-window-buffer (selected-window) this-win-buffer)
-              (set-window-buffer (next-window) next-win-buffer)
-              (select-window first-win)
-              (if this-win-2nd (other-window 1))))
-        (user-error "`toggle-window-split' only supports two windows")))
-
-    ;; Bind hydra to dispatch list
-    (add-to-list 'aw-dispatch-alist '(?w ace-window-hydra/body) t)
-
-    ;; Select widnow via `M-1'...`M-9'
     (defun aw--select-window (number)
       "Slecet the specified window."
       (when (numberp number)
         (let ((found nil))
           (dolist (win (aw-window-list))
             (when (and (window-live-p win)
-                       (eq number (string-to-number (window-parameter win 'ace-window-path))))
+                       (eq number
+                           (string-to-number
+                            (window-parameter win 'ace-window-path))))
               (setq found t)
               (aw-switch-to-window win)))
           (unless found
             (message "No specified window: %d" number)))))
+
     (dotimes (n 9)
       (bind-key (format "M-%d" (1+ n))
                 (lambda ()
                   (interactive)
-                  (aw--select-window (1+ n))))))
+                  (aw--select-window (1+ n)))))
 
+    (leader-key-def
+      "wd" 'ace-delete-other-windows))
 #+end_src
 
-** shackle
+** COMMENT shackle
 
 Enforce rules for popups
 
