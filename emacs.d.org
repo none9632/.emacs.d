@@ -357,7 +357,12 @@ Scroll one line at a time (less "jumpy" than defaults)
             (command-log-mode t)
             (clm/toggle-command-log-buffer))
     "SPC" 'counsel-find-file
-    "q"   'evil-quit
+    "q" (lambda ()
+          (interactive)
+          (cond ((and (boundp 'org-latex-mode)
+                      (eq org-latex-mode t))   (my/org-edit-src-exit))
+                (with-editor-mode              (with-editor-cancel t))
+                (t                             (evil-quit))))
     "a"   'mark-whole-buffer
     "s"   'my/open-org-file
     "bb"  'counsel-switch-buffer
@@ -2546,15 +2551,10 @@ Org configurations.
   (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
 
   (leader-key-def
-    :keymaps 'org-mode-map
     "i"   'my/org-edit-special
     "m"   'org-mark-ring-goto
     "u"   'my/org-previous-visible-heading
     "d"   'org-next-visible-heading
-    "q"   (lambda ()
-            (interactive)
-            (cond (org-latex-mode (my/org-edit-src-exit))
-                  (t              (evil-quit))))
     "ob"  'org-babel-tangle
     "op"  'org-latex-preview
     "oe"  'my/org-latex-export
@@ -3464,9 +3464,7 @@ Version control systems.
       :keymaps 'magit-log-mode-map
       "q"   'magit-log-bury-buffer)
     (leader-key-def
-      :keymaps 'with-editor-mode-map
-      "RET" 'with-editor-finish
-      "q"   'with-editor-cancel))
+      "ef" 'with-editor-finish))
 
 #+end_src
 

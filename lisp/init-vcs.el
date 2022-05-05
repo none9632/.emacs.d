@@ -36,9 +36,7 @@
     :keymaps 'magit-log-mode-map
     "q"   'magit-log-bury-buffer)
   (leader-key-def
-    :keymaps 'with-editor-mode-map
-    "RET" 'with-editor-finish
-    "q"   'with-editor-cancel))
+    "ef" 'with-editor-finish))
 
 (use-package magit-todos
   :after magit

@@ -274,15 +274,10 @@
 (evil-define-key '(insert)               org-mode-map (kbd "C-i") 'my/org-insert-item-or-heading)
 
 (leader-key-def
-  :keymaps 'org-mode-map
   "i"   'my/org-edit-special
   "m"   'org-mark-ring-goto
   "u"   'my/org-previous-visible-heading
   "d"   'org-next-visible-heading
-  "q"   (lambda ()
-          (interactive)
-          (cond (org-latex-mode (my/org-edit-src-exit))
-                (t              (evil-quit))))
   "ob"  'org-babel-tangle
   "op"  'org-latex-preview
   "oe"  'my/org-latex-export
