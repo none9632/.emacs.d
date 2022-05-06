@@ -43,6 +43,11 @@
   (add-hook 'evil-visual-state-entry-hook (lambda () (prettify-symbols-mode -1)))
   (add-hook 'evil-visual-state-exit-hook  (lambda () (prettify-symbols-mode 1)))
 
+  (evil-define-key '(normal insert visual)
+    dashboard-mode-map (kbd "r") 'dashboard-jump-to-recent-files)
+  (evil-define-key '(normal insert visual)
+    dashboard-mode-map (kbd "p") 'dashboard-jump-to-projects)
+
   (use-package undo-fu)
 
   (setq evil-want-fine-undo t

@@ -352,11 +352,9 @@ Scroll one line at a time (less "jumpy" than defaults)
     "SPC" 'counsel-find-file
     "q" (lambda ()
           (interactive)
-          (cond ((and (boundp 'org-latex-mode)
-                      (eq org-latex-mode t))     (my/org-edit-src-exit))
-                ((and (boundp 'with-editor-mode)
-                      (eq with-editor-mode))     (with-editor-cancel t))
-                (t                               (evil-quit))))
+          (cond ((bound-and-true-p org-latex-mode)   (my/org-edit-src-exit))
+                ((bound-and-true-p with-editor-mode) (with-editor-cancel t))
+                (t                                   (evil-quit))))
     "a"   'mark-whole-buffer
     "s"   'my/open-org-file
     "bb"  'counsel-switch-buffer
@@ -607,7 +605,6 @@ Dashboard configurations.
     :diminish (dashboard-mode)
     :functions (all-the-icons-faicon
                 all-the-icons-material
-                winner-undo
                 widget-forward)
     :custom-face (dashboard-heading ((t (:inherit (font-lock-string-face bold)))))
     :bind (("<f2>" . open-dashboard)
@@ -615,9 +612,7 @@ Dashboard configurations.
            ("R"    . restore-previous-session)
            ("L"    . restore-session)
            ("U"    . update-config-and-packages)
-           ("q"    . quit-dashboard)
-           ("h"    . dashboard-hydra/body)
-           ("?"    . dashboard-hydra/body))
+           ("q"    . quit-dashboard))
     :preface
     (defun my/dashboard-banner ()
       (defvar package-count 0)
@@ -630,62 +625,30 @@ Dashboard configurations.
                     package-count
                     (float-time (time-subtract after-init-time before-init-time)))))
     :init
-    (add-hook 'after-init-hook     'dashboard-refresh-buffer)
-    (add-hook 'dashboard-mode-hook 'my/dashboard-banner)
+    (add-hook 'after-init-hook                 'dashboard-refresh-buffer)
+    (add-hook 'dashboard-mode-hook             'my/dashboard-banner)
+    (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-recent-files)
 
     (setq dashboard-startup-banner    'logo
           dashboard-center-content    t
           dashboard-show-shortcuts    nil
-          dashboard-set-footer        t
+          dashboard-set-footer        nil
           dashboard-set-init-info     t
           dashboard-set-file-icons    t
-          dashboard-page-separator    "\n\f\n"
           dashboard-set-heading-icons t
-          dashboard-items             '((recents   . 6)
-                                        (bookmarks . 5)
-                                        (projects  . 5))
+          dashboard-set-navigator     nil
+          dashboard-page-separator    "\n\f\n"
+          dashboard-items             '((recents   . 8)
+                                        (projects  . 5)
+                                        (bookmarks . 5))
           dashboard-heading-icons     '((recents   . "file-text")
                                         (bookmarks . "bookmark")
-                                        (projects  . "briefcase"))
-
-          dashboard-set-navigator t
-          dashboard-navigator-buttons
-          `(((,(all-the-icons-material "restore" :height 1.35 :v-adjust -0.24)
-              "Restore" "Restore previous session"
-              (lambda (&rest _)))
-             (,(all-the-icons-octicon "tools" :height 1.0 :v-adjust 0.0)
-              "Settings" "Open org file"
-              (lambda (&rest _)))
-             (,(all-the-icons-material "update" :height 1.35 :v-adjust -0.24)
-              "Update" "Update Emacs"
-              (lambda (&rest _) (update-packages)))
-             (,(all-the-icons-faicon "question" :height 1.2 :v-adjust -0.1)
-              "" "Help (?/h)"
-              (lambda (&rest _) (dashboard-hydra/body))
-              font-lock-string-face))))
+                                        (projects  . "briefcase")))
 
     (dashboard-setup-startup-hook)
     :config
     (defvar dashboard-recover-layout-p nil
       "Wether recovers the layout.")
-
-    (defun dashboard-goto-recent-files ()
-      "Go to recent files."
-      (interactive)
-      (let ((func (local-key-binding "r")))
-        (and func (funcall func))))
-
-    (defun dashboard-goto-projects ()
-      "Go to projects."
-      (interactive)
-      (let ((func (local-key-binding "p")))
-        (and func (funcall func))))
-
-    (defun dashboard-goto-bookmarks ()
-      "Go to bookmarks."
-      (interactive)
-      (let ((func (local-key-binding "m")))
-        (and func (funcall func))))
 
     (defun open-dashboard ()
       "Open the *dashboard* buffer and jump to the first widget."
@@ -698,17 +661,32 @@ Dashboard configurations.
                  2
                1))
           (setq dashboard-recover-layout-p t))
-
       (delete-other-windows)
-
       ;; Refresh dashboard buffer
       (when (get-buffer dashboard-buffer-name)
         (kill-buffer dashboard-buffer-name))
       (dashboard-insert-startupify-lists)
       (switch-to-buffer dashboard-buffer-name)
-
       ;; Jump to the first section
-      (dashboard-goto-recent-files))
+      (dashboard-jump-to-recent-files))
+
+    (defun restore-previous-session ()
+      "Restore the previous session."
+      (interactive)
+      (when (bound-and-true-p persp-mode)
+        (restore-session persp-auto-save-fname)))
+
+    (defun restore-session (fname)
+      "Restore the specified session."
+      (interactive (list (read-file-name "Load perspectives from a file: "
+                                         persp-save-dir)))
+      (when (bound-and-true-p persp-mode)
+        (message "Restoring session...")
+        (quit-window t)
+        (condition-case-unless-debug err
+            (persp-load-state-from-file fname)
+          (error "Error: Unable to restore session -- %s" err))
+        (message "Restoring session...done")))
 
     (defun quit-dashboard ()
       "Quit dashboard window."
@@ -1231,6 +1209,11 @@ Evil configuration.
 
     (add-hook 'evil-visual-state-entry-hook (lambda () (prettify-symbols-mode -1)))
     (add-hook 'evil-visual-state-exit-hook  (lambda () (prettify-symbols-mode 1)))
+
+    (evil-define-key '(normal insert visual)
+      dashboard-mode-map (kbd "r") 'dashboard-jump-to-recent-files)
+    (evil-define-key '(normal insert visual)
+      dashboard-mode-map (kbd "p") 'dashboard-jump-to-projects)
 
     (use-package undo-fu)
 
@@ -3573,10 +3556,11 @@ Quickly switch windows
                   (aw--select-window (1+ n)))))
 
     (leader-key-def
-      "wd" 'ace-delete-other-windows))
+      "w" 'ace-delete-other-windows))
+
 #+end_src
 
-** COMMENT shackle
+** shackle
 
 Enforce rules for popups
 

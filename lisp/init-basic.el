@@ -117,11 +117,9 @@
   "SPC" 'counsel-find-file
   "q" (lambda ()
         (interactive)
-        (cond ((and (boundp 'org-latex-mode)
-                    (eq org-latex-mode t))     (my/org-edit-src-exit))
-              ((and (boundp 'with-editor-mode)
-                    (eq with-editor-mode))     (with-editor-cancel t))
-              (t                               (evil-quit))))
+        (cond ((bound-and-true-p org-latex-mode)   (my/org-edit-src-exit))
+              ((bound-and-true-p with-editor-mode) (with-editor-cancel t))
+              (t                                   (evil-quit))))
   "a"   'mark-whole-buffer
   "s"   'my/open-org-file
   "bb"  'counsel-switch-buffer
