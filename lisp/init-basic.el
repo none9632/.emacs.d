@@ -114,10 +114,6 @@
   "hF"  'counsel-describe-face
   "hs"  'counsel-describe-symbol
   "ch"  'counsel-command-history
-  "cl"  (lambda ()
-          (interactive)
-          (command-log-mode t)
-          (clm/toggle-command-log-buffer))
   "SPC" 'counsel-find-file
   "q" (lambda ()
         (interactive)

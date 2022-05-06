@@ -65,17 +65,6 @@
               (org-comment-dwim-2)
             (comment-dwim-2)))))
 
-(use-package ediff
-  :ensure nil
-  :hook(;; show org ediffs unfolded
-        ;; (ediff-prepare-buffer . outline-show-all)
-        ;; restore window layout when done
-        (ediff-quit . winner-undo))
-  :config
-  (setq ediff-window-setup-function       'ediff-setup-windows-plain)
-  (setq ediff-split-window-function       'split-window-horizontally)
-  (setq ediff-merge-split-window-function 'split-window-horizontally))
-
 (use-package electric-pair
   :ensure nil
   :hook (after-init . electric-pair-mode)
@@ -110,9 +99,6 @@
   :diminish
   :bind ("C-M-," . goto-last-point)
   :hook (after-init . goto-last-point-mode))
-
-(use-package goto-line-preview
-  :bind ([remap goto-line] . goto-line-preview))
 
 (use-package subword
   :ensure nil
