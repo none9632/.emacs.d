@@ -39,6 +39,7 @@
              :height 7
              :min-width 40
              :min-height 7
+             :background-color "#21242b"
              :internal-border-width 2
              :internal-border-color "#32424b"
              :override-parameters '((parent-frame . nil)))))))

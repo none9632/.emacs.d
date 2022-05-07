@@ -3321,6 +3321,7 @@ Display available keybindings in popup
                :height 7
                :min-width 40
                :min-height 7
+               :background-color "#21242b"
                :internal-border-width 2
                :internal-border-color "#32424b"
                :override-parameters '((parent-frame . nil)))))))
@@ -3515,13 +3516,12 @@ Window configurations.
   (use-package zoom
     :init
     (custom-set-variables
-     '(zoom-size '(0.618 . 0.618))
-     '(zoom-mode t)
-     '(zoom-ignored-buffer-names '("COMMIT_EDITMSG"
-                                   " *command-log*"))
-     '(zoom-ignored-buffer-name-regexps '("^magit-diff"))))
+     '(zoom-size                        '(0.618 . 0.618))
+     '(zoom-mode                        t)
+     '(zoom-ignored-buffer-names        '("COMMIT_EDITMSG" " *command-log*"))
+     '(zoom-ignored-buffer-name-regexps '("^magit-diff" ".*LaTeX environment")))
 
-  (advice-add 'balance-windows :override (lambda () nil))
+    (advice-add 'balance-windows :override (lambda () nil)))
 
 #+end_src
 
