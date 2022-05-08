@@ -6,7 +6,9 @@
    '(zoom-size                        '(0.618 . 0.618))
    '(zoom-mode                        t)
    '(zoom-ignored-buffer-names        '("COMMIT_EDITMSG" " *command-log*"))
-   '(zoom-ignored-buffer-name-regexps '("^magit-diff" ".*LaTeX environment")))
+   '(zoom-ignored-buffer-name-regexps '("^magit-diff"
+                                        ".*LaTeX environment"
+                                        ".*LaTeX fragment")))
 
   (advice-add 'balance-windows :override (lambda () nil)))
 

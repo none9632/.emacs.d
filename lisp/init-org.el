@@ -25,7 +25,8 @@
         org-src-window-setup              'current-window
         org-edit-src-persistent-message   nil
         org-return-follows-link           t
-        org-startup-indented              t)
+        org-startup-indented              t
+        org-startup-with-inline-images    nil)
 
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -180,9 +181,16 @@
   (my/remove-images)
   (add-hook 'org-pre-cycle-hook
             (lambda (arg)
-              (cond ((eq arg 'children) (org-latex-preview nil))
+              (cond ((eq arg 'children) (progn
+                                          (org-narrow-to-subtree)
+                                          (save-excursion
+                                            (goto-char (point-min))
+                                            (search-forward-regexp "^\*+" nil t 2)
+                                            (org-display-inline-images nil t (point-min) (point)))
+                                          (widen)))
                     ((eq arg 'subtree)  (progn
                                           (org-narrow-to-subtree)
+                                          (org-display-inline-images nil t (point-min) (point-max))
                                           (save-excursion
                                             (goto-char (point-min))
                                             (while (re-search-forward "^\\*+" nil t)
@@ -195,6 +203,7 @@
                                                 (goto-char (point-min))
                                                 (while (re-search-forward "^\\*+" nil t)
                                                   (org-latex-preview '(4))))
+                                              (mapc #'delete-overlay (overlays-in (point-min) (point-max)))
                                               (widen))))))))
 
 (setq org-jump-to-previous-block nil

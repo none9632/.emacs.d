@@ -3,7 +3,6 @@
 #+OPTIONS: toc:t
 #+OPTIONS: H:5
 #+STARTUP: fold
-#+STARTUP: inlineimages
 
 #+LATEX_HEADER: \usepackage{hyperref}                % For adding links
 #+LATEX_HEADER: \usepackage{mathtext}
