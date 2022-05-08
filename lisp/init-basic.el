@@ -124,7 +124,8 @@
   "s"   'my/open-org-file
   "bb"  'counsel-switch-buffer
   "pl"  'counsel-package
-  "pr"  'package-refresh-contents)
+  "pr"  'package-refresh-contents
+  "wd"  'delete-other-windows)
 
 (setq-default tab-width 4)
 (setq indent-tabs-mode nil)

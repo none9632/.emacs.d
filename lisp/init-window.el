@@ -13,7 +13,6 @@
   (advice-add 'balance-windows :override (lambda () nil)))
 
 (use-package ace-window
-  :custom-face
   :hook (emacs-startup . ace-window-display-mode)
   :config
   (defun aw--select-window (number)
@@ -34,10 +33,7 @@
     (bind-key (format "M-%d" (1+ n))
               (lambda ()
                 (interactive)
-                (aw--select-window (1+ n)))))
-
-  (leader-key-def
-    "w" 'ace-delete-other-windows))
+                (aw--select-window (1+ n))))))
 
 (use-package shackle
   :functions org-switch-to-buffer-other-window
