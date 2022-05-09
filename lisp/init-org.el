@@ -123,9 +123,7 @@
   (unless (equal old-file-path "cancel")
     (setq new-file-path (shell-command-to-string (concat "inkscape-figures move " old-file-path)))
     (insert (concat "[[" new-file-path "]]"))
-    (if (not (equal org-inline-image-overlays nil))
-        (org-toggle-inline-images))
-    (org-toggle-inline-images)))
+    (org-display-inline-images nil t (point-at-bol) (point-at-eol))))
 
 (defun my/remove-images ()
   (interactive)

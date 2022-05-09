@@ -20,7 +20,12 @@
                ("M-k" . evil-window-increase-height)
                ("M-j" . evil-window-decrease-height)
                ("C-p" . my/paste-from-clipboard)
-               ("y"   . my/copy-to-clipboard))
+               ("y"   . my/copy-to-clipboard)
+               ("p"   . (lambda ()
+                          (interactive)
+                          (evil-paste-after 1)
+                          (if (eq major-mode 'org-mode)
+                              (org-display-inline-images nil t (point) (mark t))))))
          (:map evil-visual-state-map
                ("H"   . left-word)
                ("L"   . right-word)
@@ -48,18 +53,19 @@
   (evil-define-key '(normal insert visual)
     dashboard-mode-map (kbd "p") 'dashboard-jump-to-projects)
 
-  (use-package undo-fu)
-
-  (setq evil-want-fine-undo t
-        evil-undo-system    'undo-fu
-        evil-undo-function  'undo-fu-only-undo
-        evil-redo-function  'undo-fu-only-redo)
+  (use-package undo-fu
+    :custom
+    (evil-want-fine-undo  t)
+    (evil-undo-system     'undo-fu)
+    (evil-undo-function   'undo-fu-only-undo)
+    (evil-redo-function   'undo-fu-only-redo))
 
   (defun my/paste-from-clipboard ()
     (interactive)
     (if (eq evil-visual-state-minor-mode t)
         (kill-region (region-beginning) (region-end)))
-    (x-clipboard-yank))
+    (x-clipboard-yank)
+    (goto-char (mark t)))
 
   (defun my/copy-to-clipboard ()
     (interactive)
