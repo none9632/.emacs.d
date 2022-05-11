@@ -25,7 +25,10 @@
                           (interactive)
                           (evil-paste-after 1)
                           (if (eq major-mode 'org-mode)
-                              (org-display-inline-images nil t (point) (mark t))))))
+                              (let ((end-point   (mark t))
+                                    (start-point (point)))
+                                (org-display-inline-images nil t start-point end-point)
+                                (org--latex-preview-region start-point end-point))))))
          (:map evil-visual-state-map
                ("H"   . left-word)
                ("L"   . right-word)
@@ -69,11 +72,9 @@
 
   (defun my/copy-to-clipboard ()
     (interactive)
-    (setq x-select-enable-clipboard t)
+    (setq select-enable-clipboard t)
     (call-interactively 'evil-yank)
-    (setq x-select-enable-clipboard nil))
-
-  (setq x-select-enable-clipboard nil))
+    (setq select-enable-clipboard nil)))
 
 (use-package evil-collection
   :after evil

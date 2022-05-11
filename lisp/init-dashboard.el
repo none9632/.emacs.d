@@ -3,7 +3,12 @@
 (require 'all-the-icons)
 (require 'init-custom)
 
+(use-package page-break-lines
+  :ensure t
+  :demand t)
+
 (use-package dashboard
+  :after page-break-lines
   :diminish (dashboard-mode)
   :functions (all-the-icons-faicon
               all-the-icons-material
@@ -29,9 +34,10 @@
   :init
   (add-hook 'after-init-hook                 'dashboard-refresh-buffer)
   (add-hook 'dashboard-mode-hook             'my/dashboard-banner)
-  (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-recent-files)
+  (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-recents)
 
   (setq dashboard-startup-banner    'logo
+        dashboard-page-separator    "\n\f\n"
         dashboard-center-content    t
         dashboard-show-shortcuts    nil
         dashboard-set-footer        nil
@@ -39,7 +45,6 @@
         dashboard-set-file-icons    t
         dashboard-set-heading-icons t
         dashboard-set-navigator     nil
-        dashboard-page-separator    "\n\f\n"
         dashboard-items             '((recents   . 8)
                                       (projects  . 5)
                                       (bookmarks . 5))

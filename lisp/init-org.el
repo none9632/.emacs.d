@@ -184,7 +184,8 @@
                                           (save-excursion
                                             (goto-char (point-min))
                                             (search-forward-regexp "^\*+" nil t 2)
-                                            (org-display-inline-images nil t (point-min) (point)))
+                                            (org-display-inline-images nil t (point-min) (point))
+                                            (org--latex-preview-region (point-min) (point)))
                                           (widen)))
                     ((eq arg 'subtree)  (progn
                                           (org-narrow-to-subtree)

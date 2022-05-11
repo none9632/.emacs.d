@@ -598,11 +598,22 @@ Dashboard configurations.
 
 #+end_src
 
+** page-break-lines
+
+#+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
+
+  (use-package page-break-lines
+    :ensure t
+    :demand t)
+
+#+end_src
+
 ** Dashboard
 
 #+begin_src emacs-lisp :tangle ./lisp/init-dashboard.el
 
   (use-package dashboard
+    :after page-break-lines
     :diminish (dashboard-mode)
     :functions (all-the-icons-faicon
                 all-the-icons-material
@@ -628,9 +639,10 @@ Dashboard configurations.
     :init
     (add-hook 'after-init-hook                 'dashboard-refresh-buffer)
     (add-hook 'dashboard-mode-hook             'my/dashboard-banner)
-    (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-recent-files)
+    (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-recents)
 
     (setq dashboard-startup-banner    'logo
+          dashboard-page-separator    "\n\f\n"
           dashboard-center-content    t
           dashboard-show-shortcuts    nil
           dashboard-set-footer        nil
@@ -638,7 +650,6 @@ Dashboard configurations.
           dashboard-set-file-icons    t
           dashboard-set-heading-icons t
           dashboard-set-navigator     nil
-          dashboard-page-separator    "\n\f\n"
           dashboard-items             '((recents   . 8)
                                         (projects  . 5)
                                         (bookmarks . 5))
@@ -1193,7 +1204,10 @@ Evil configuration.
                             (interactive)
                             (evil-paste-after 1)
                             (if (eq major-mode 'org-mode)
-                                (org-display-inline-images nil t (point) (mark t))))))
+                                (let ((end-point   (mark t))
+                                      (start-point (point)))
+                                  (org-display-inline-images nil t start-point end-point)
+                                  (org--latex-preview-region start-point end-point))))))
            (:map evil-visual-state-map
                  ("H"   . left-word)
                  ("L"   . right-word)
@@ -1237,11 +1251,9 @@ Evil configuration.
 
     (defun my/copy-to-clipboard ()
       (interactive)
-      (setq x-select-enable-clipboard t)
+      (setq select-enable-clipboard t)
       (call-interactively 'evil-yank)
-      (setq x-select-enable-clipboard nil))
-
-    (setq x-select-enable-clipboard nil))
+      (setq select-enable-clipboard nil)))
 
 #+end_src
 
@@ -2412,7 +2424,8 @@ Org configurations.
                                             (save-excursion
                                               (goto-char (point-min))
                                               (search-forward-regexp "^\*+" nil t 2)
-                                              (org-display-inline-images nil t (point-min) (point)))
+                                              (org-display-inline-images nil t (point-min) (point))
+                                              (org--latex-preview-region (point-min) (point)))
                                             (widen)))
                       ((eq arg 'subtree)  (progn
                                             (org-narrow-to-subtree)
