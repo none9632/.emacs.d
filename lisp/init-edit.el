@@ -18,6 +18,7 @@
          (prog-mode . goto-address-prog-mode)))
 
 (use-package avy
+  :after evil
   :bind (:map evil-normal-state-map
               ("/" . avy-goto-char-timer)
               :map evil-visual-state-map

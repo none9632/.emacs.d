@@ -52,7 +52,7 @@
   (add-hook 'evil-visual-state-exit-hook  (lambda () (prettify-symbols-mode 1)))
 
   (evil-define-key '(normal insert visual)
-    dashboard-mode-map (kbd "r") 'dashboard-jump-to-recent-files)
+    dashboard-mode-map (kbd "r") 'dashboard-jump-to-recents)
   (evil-define-key '(normal insert visual)
     dashboard-mode-map (kbd "p") 'dashboard-jump-to-projects)
 
