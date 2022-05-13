@@ -4,12 +4,6 @@
 (require 'init-evil)
 (require 'init-vcs)
 
-(defun my/treemacs-select-window ()
-  (interactive)
-  (if (equal major-mode 'treemacs-mode)
-      (treemacs)
-    (treemacs-select-window)))
-
 (use-package treemacs
   :after evil
   :commands (treemacs-follow-mode
@@ -34,12 +28,19 @@
         treemacs-follow-after-init t
         treemacs-width             30
         treemacs-file-event-delay  500)
-  :config
+
+  (defun my/treemacs-select-window ()
+    (interactive)
+    (if (equal major-mode 'treemacs-mode)
+        (treemacs)
+      (treemacs-select-window)))
+
   (treemacs-follow-mode t)
   (treemacs-filewatch-mode t)
   (treemacs-git-mode 'deferred)
 
   (add-hook 'treemacs-mode-hook (lambda ()
+                                  (setq-local evil-normal-state-cursor '(nil))
                                   (set (make-variable-buffer-local 'scroll-margin) 0))))
 
 (use-package treemacs-evil

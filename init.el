@@ -70,7 +70,6 @@ decrease this. If you experience stuttering, increase this.")
 (require 'init-completion)
 (require 'init-snippets)
 
-(require 'init-dashboard)
 (require 'init-highlight)
 (require 'init-ibuffer)
 (require 'init-window)
