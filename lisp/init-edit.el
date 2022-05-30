@@ -75,8 +75,8 @@
 (use-package expand-region
   :after evil
   :bind (:map evil-visual-state-map
-              ("M-k" . er/expand-region)
-              ("M-j" . er/contract-region)))
+              ("<tab>"     . er/expand-region)
+              ("<backtab>" . er/contract-region)))
 
 (use-package multiple-cursors
   :bind (("C-S-c C-S-c"   . mc/edit-lines)
@@ -94,12 +94,10 @@
   :hook (after-init . smart-region-on))
 
 (use-package goto-chg
-  :bind ("C-," . goto-last-change))
-
-(use-package goto-last-point
-  :diminish
-  :bind ("C-M-," . goto-last-point)
-  :hook (after-init . goto-last-point-mode))
+  :init
+  (leader-key-def
+    ";" 'goto-last-change
+    "," 'goto-last-change-reverse))
 
 (use-package subword
   :ensure nil
@@ -155,7 +153,9 @@
     (push '("\\Ra"           . ?⇒) prettify-symbols-alist)
     (push '("\\degree"       . ?⚬) prettify-symbols-alist)
     (push '("\\triangle"     . ?Δ) prettify-symbols-alist)
-    (push '("\\Varepsilon"   . ?Ɛ) prettify-symbols-alist)
+    (push '("\\vepsilon"     . ?ε) prettify-symbols-alist)
+    (push '("\\Vepsilon"     . ?Ɛ) prettify-symbols-alist)
+    (push '("\\vphi"         . ?φ) prettify-symbols-alist)
     (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 (provide 'init-edit)

@@ -276,8 +276,8 @@ Better defaults configurations.
 
   (use-package simple
     :ensure nil
-    :hook ((after-init                          . size-indication-mode)
-           ((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace))
+    :hook ((after-init            . size-indication-mode)
+           ((prog-mode conf-mode) . enable-trailing-whitespace))
     :init
     (setq column-number-mode          t
           line-number-mode            t
@@ -297,11 +297,11 @@ Better defaults configurations.
 *** so-long
 
 #+begin_src emacs-lisp :tangle ./lisp/init-basic.el
-	
+
   (use-package so-long
-      :ensure nil
-      :hook (after-init . global-so-long-mode)
-      :config (setq so-long-threshold 400))
+    :ensure nil
+    :hook (after-init . global-so-long-mode)
+    :config (setq so-long-threshold 400))
 
 #+end_src
 
@@ -770,8 +770,8 @@ Increase selected region by semantic units
   (use-package expand-region
     :after evil
     :bind (:map evil-visual-state-map
-                ("M-k" . er/expand-region)
-                ("M-j" . er/contract-region)))
+                ("<tab>"     . er/expand-region)
+                ("<backtab>" . er/contract-region)))
 
 #+end_src
 
@@ -804,26 +804,15 @@ Smartly select region, rectangle, multi cursors
 
 #+end_src
 
-** Goto
-*** Goto last change
+** Goto last change
 
 #+begin_src emacs-lisp :tangle ./lisp/init-edit.el
 
   (use-package goto-chg
-    :bind ("C-," . goto-last-change))
-
-#+end_src
-
-*** goto-last-point
-
-Record and jump to the last point in the buffer
-
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-	
-  (use-package goto-last-point
-    :diminish
-    :bind ("C-M-," . goto-last-point)
-    :hook (after-init . goto-last-point-mode))
+    :init
+    (leader-key-def
+      ";" 'goto-last-change
+      "," 'goto-last-change-reverse))
 
 #+end_src
 
@@ -909,7 +898,9 @@ Open files as another user
       (push '("\\Ra"           . ?⇒) prettify-symbols-alist)
       (push '("\\degree"       . ?⚬) prettify-symbols-alist)
       (push '("\\triangle"     . ?Δ) prettify-symbols-alist)
-      (push '("\\Varepsilon"   . ?Ɛ) prettify-symbols-alist)
+      (push '("\\vepsilon"     . ?ε) prettify-symbols-alist)
+      (push '("\\Vepsilon"     . ?Ɛ) prettify-symbols-alist)
+      (push '("\\vphi"         . ?φ) prettify-symbols-alist)
       (push '("\\\\"           . ?↵) prettify-symbols-alist)))
 
 #+end_src
@@ -1117,7 +1108,7 @@ Evil configuration.
 
   (use-package evil-collection
     :after evil
-    :config
+    :init
     (evil-collection-init))
 
 #+end_src
@@ -2092,8 +2083,6 @@ Org configurations.
                         (turn-on-auto-fill)
                         (variable-pitch-mode 1)
                         (diff-hl-mode 0)))
-    :bind (:map org-mode-map
-                ("<tab>" . nil))
     :config
     (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
     (setq org-ellipsis                      " ▾ "
@@ -2567,9 +2556,7 @@ Org configurations.
                  ("'"     . nil)
                  ("`"     . nil))
            (:map evil-insert-state-map
-                 ("<tab>" . cdlatex-tab))
-           (:map evil-normal-state-map
-                 ("<tab>" . org-cycle)))
+                 ("<tab>" . cdlatex-tab)))
     :config
     (defun my/cdlatex-in-yas-field ()
       ;; Check if we're at the end of the Yas field
@@ -3883,8 +3870,8 @@ Snippets configurations.
                       ";G"    "\\Gamma "
                       ";d"    "\\delta "
                       ";D"    "\\Delta "
-                      ";e"    "\\varepsilon "
-                      ";E"    "\\Varepsilon "
+                      ";e"    "\\vepsilon "
+                      ";E"    "\\Vepsilon "
                       ";z"    "\\zeta "
                       ";h"    "\\eta "
                       ";q"    "\\theta "
@@ -3905,7 +3892,7 @@ Snippets configurations.
                       ";t"    "\\tau "
                       ";u"    "\\upsilon "
                       ";U"    "\\Upsilon "
-                      ";f"    "\\varphi "
+                      ";f"    "\\vphi "
                       ";F"    "\\Phi "
                       ";o"    "\\chi "
                       ";y"    "\\psi "
@@ -3986,7 +3973,7 @@ Snippets configurations.
                                 (yas-expand-snippet "\\frac{$1}{$2}$0"))
                       "/dd"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\frac{\\mathrm{d} $1}{\\mathrm{d} ${2:t}}$0"))
+                                (yas-expand-snippet "\\frac{d $1}{d ${2:t}}$0"))
                       "prt"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\frac{\\partial $1}{\\partial ${2:x}}$0"))
@@ -4015,7 +4002,7 @@ Snippets configurations.
                                 (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
                       "vc"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\vec{$1}$0"))
+                                (yas-expand-snippet "\\v{$1}$0"))
                       "brv"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\autobrv{$1}$0"))
@@ -4081,7 +4068,7 @@ Snippets configurations.
                                 (yas-expand-snippet "\\coprod^{$1}_{$2}$0"))
                       "lim"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
+                                (yas-expand-snippet "\\lim_{${1:n} \\to ${2:0}}$0"))
                       "int"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\int^{${1:\\infty}}_{${2:-\\infty}}$0"))
@@ -4093,12 +4080,6 @@ Snippets configurations.
                                 (interactive)
                                 (yas-expand-snippet (yas-lookup-snippet "matrix"))
                                 (my/delete-one-blank-line))
-                      "uex"   (lambda ()
-                                (interactive)
-                                (yas-expand-snippet "\\explain{$1}{$2}$0"))
-                      "oex"   (lambda ()
-                                (interactive)
-                                (yas-expand-snippet "\\explainup{$1}{$2}$0"))
                       "sin"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\sin ${1:\\alpha}"))

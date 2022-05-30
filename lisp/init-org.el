@@ -10,8 +10,6 @@
                       (turn-on-auto-fill)
                       (variable-pitch-mode 1)
                       (diff-hl-mode 0)))
-  :bind (:map org-mode-map
-              ("<tab>" . nil))
   :config
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
   (setq org-ellipsis                      " ▾ "

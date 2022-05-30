@@ -175,8 +175,8 @@
                     ";G"    "\\Gamma "
                     ";d"    "\\delta "
                     ";D"    "\\Delta "
-                    ";e"    "\\varepsilon "
-                    ";E"    "\\Varepsilon "
+                    ";e"    "\\vepsilon "
+                    ";E"    "\\Vepsilon "
                     ";z"    "\\zeta "
                     ";h"    "\\eta "
                     ";q"    "\\theta "
@@ -197,7 +197,7 @@
                     ";t"    "\\tau "
                     ";u"    "\\upsilon "
                     ";U"    "\\Upsilon "
-                    ";f"    "\\varphi "
+                    ";f"    "\\vphi "
                     ";F"    "\\Phi "
                     ";o"    "\\chi "
                     ";y"    "\\psi "
@@ -278,7 +278,7 @@
                               (yas-expand-snippet "\\frac{$1}{$2}$0"))
                     "/dd"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\frac{\\mathrm{d} $1}{\\mathrm{d} ${2:t}}$0"))
+                              (yas-expand-snippet "\\frac{d $1}{d ${2:t}}$0"))
                     "prt"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{\\partial $1}{\\partial ${2:x}}$0"))
@@ -307,7 +307,7 @@
                               (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
                     "vc"    (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\vec{$1}$0"))
+                              (yas-expand-snippet "\\v{$1}$0"))
                     "brv"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\autobrv{$1}$0"))
@@ -373,7 +373,7 @@
                               (yas-expand-snippet "\\coprod^{$1}_{$2}$0"))
                     "lim"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
+                              (yas-expand-snippet "\\lim_{${1:n} \\to ${2:0}}$0"))
                     "int"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\int^{${1:\\infty}}_{${2:-\\infty}}$0"))
@@ -385,12 +385,6 @@
                               (interactive)
                               (yas-expand-snippet (yas-lookup-snippet "matrix"))
                               (my/delete-one-blank-line))
-                    "uex"   (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\explain{$1}{$2}$0"))
-                    "oex"   (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\explainup{$1}{$2}$0"))
                     "sin"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\sin ${1:\\alpha}"))

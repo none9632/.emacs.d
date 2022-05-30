@@ -78,7 +78,7 @@
 
 (use-package evil-collection
   :after evil
-  :config
+  :init
   (evil-collection-init))
 
 (use-package key-chord

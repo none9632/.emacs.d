@@ -33,9 +33,7 @@
                ("'"     . nil)
                ("`"     . nil))
          (:map evil-insert-state-map
-               ("<tab>" . cdlatex-tab))
-         (:map evil-normal-state-map
-               ("<tab>" . org-cycle)))
+               ("<tab>" . cdlatex-tab)))
   :config
   (defun my/cdlatex-in-yas-field ()
     ;; Check if we're at the end of the Yas field

@@ -62,8 +62,8 @@
 
 (use-package simple
   :ensure nil
-  :hook ((after-init                          . size-indication-mode)
-         ((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace))
+  :hook ((after-init            . size-indication-mode)
+         ((prog-mode conf-mode) . enable-trailing-whitespace))
   :init
   (setq column-number-mode          t
         line-number-mode            t
@@ -79,9 +79,9 @@
     (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)))
 
 (use-package so-long
-    :ensure nil
-    :hook (after-init . global-so-long-mode)
-    :config (setq so-long-threshold 400))
+  :ensure nil
+  :hook (after-init . global-so-long-mode)
+  :config (setq so-long-threshold 400))
 
 (when (display-graphic-p)
   (setq mouse-wheel-scroll-amount     '(1 ((shift) . 1))

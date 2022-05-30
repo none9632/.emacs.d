@@ -4,7 +4,7 @@
 #+OPTIONS: H:5
 #+STARTUP: fold
 
-#+LATEX_HEADER: \usepackage{hyperref}                % For adding links
+#+LATEX_HEADER: \usepackage{hyperref}      % For adding links
 #+LATEX_HEADER: \usepackage{mathtext}
 #+LATEX_HEADER: \usepackage[T2A]{fontenc}
 #+LATEX_HEADER: \usepackage[utf8x]{inputenc}
@@ -37,7 +37,6 @@
 #+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
 #+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
 #+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
-#+LATEX_HEADER: \newcommand{\rad}{\oldtext{{\scriptsize рад}}}
 #+LATEX_HEADER: \newcommand{\oline}[1]{\overline{#1}}
 #+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
 #+LATEX_HEADER: \newcommand{\obr}[1]{\overbrace{#1}}
@@ -53,15 +52,14 @@
 #+LATEX_HEADER: \newcommand{\Z}{\mathbb{Z}}
 #+LATEX_HEADER: \newcommand{\Q}{\mathbb{Q}}
 #+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
-#+LATEX_HEADER: \newcommand{\explain}[2]{\underset{\mathclap{\overset{\uparrow}{\textrm{#2}}}}{#1}}
-#+LATEX_HEADER: \newcommand{\explainup}[2]{\overset{\mathclap{\underset{\downarrow}{\textrm{#2}}}}{#1}}
 
 #+LATEX_HEADER: \let\oldDelta\Delta
 #+LATEX_HEADER: \renewcommand\Delta{{\scriptstyle\oldDelta}}
-#+LATEX_HEADER: \renewcommand\varepsilon{{\scriptstyle\mathcal{E}}}
-#+LATEX_HEADER: \renewcommand\Varepsilon{\mathcal{E}}
+#+LATEX_HEADER: \renewcommand\vepsilon{{\scriptstyle\mathcal{E}}}
+#+LATEX_HEADER: \renewcommand\Vepsilon{\mathcal{E}}
+#+LATEX_HEADER: \renewcommand\vphi{\varphi}
 #+LATEX_HEADER: \renewcommand\emptyset{\varnothing}
-#+LATEX_HEADER: \renewcommand\vec[1]{\vv{#1}}
+#+LATEX_HEADER: \renewcommand\v[1]{\vv{#1}}
 #+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
 #+LATEX_HEADER: \let\oldtext\text
 #+LATEX_HEADER: \renewcommand{\text}[1]{\oldtext{ #1 }}
