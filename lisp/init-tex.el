@@ -4,7 +4,6 @@
   :hook ((LaTeX-mode . display-line-numbers-mode)
          (LaTeX-mode . turn-on-auto-fill)
          (LaTeX-mode . (lambda ()
-                         (interactive)
                          (define-key LaTeX-mode-map "\C-j" 'nil)
                          (company-mode -1)
                          (my/latex-load-prettify-symbols))))

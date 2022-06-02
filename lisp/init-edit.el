@@ -12,6 +12,14 @@
   :diminish
   :hook (after-init . global-auto-revert-mode))
 
+(use-package goto-addr
+  :ensure nil
+  :after evil
+  :hook ((text-mode . goto-address-mode)
+         (prog-mode . goto-address-prog-mode))
+  :bind (:map evil-normal-state-map
+              ("C-<return>" . goto-address-at-point)))
+
 (use-package avy
   :after evil
   :bind (:map evil-normal-state-map
