@@ -657,19 +657,6 @@ Automatically reload files was modified by external program
 
 #+end_src
 
-** goto-addr
-
-Click to browse URL or to send to e-mail address
-
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-
-  (use-package goto-addr
-    :ensure nil
-    :hook ((text-mode . goto-address-mode)
-           (prog-mode . goto-address-prog-mode)))
-
-#+end_src
-
 ** avy
 
 Jump to things in Emacs tree-style
@@ -688,20 +675,6 @@ Jump to things in Emacs tree-style
     (setq avy-all-windows     nil
           avy-timeout-seconds 0.4))
 
-#+end_src
-
-** ace-link
-
-Quickly follow links
-
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-
-  (use-package ace-link
-    :hook (after-init . ace-link-setup-default)
-    :config
-    (leader-key-def
-      "bu" 'ace-link-addr))
-	
 #+end_src
 
 ** aggressive-indent
@@ -797,17 +770,6 @@ Increase selected region by semantic units
 
 #+end_src
 
-** smart-region
-
-Smartly select region, rectangle, multi cursors
-
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-
-  (use-package smart-region
-    :hook (after-init . smart-region-on))
-
-#+end_src
-
 ** Goto last change
 
 #+begin_src emacs-lisp :tangle ./lisp/init-edit.el
@@ -834,7 +796,7 @@ Handling capitalized subwords in a nomenclature
 
 #+end_src
 
-** origami
+** COMMENT origami
 
 Flexible text folding
 
@@ -842,18 +804,10 @@ Flexible text folding
 
   (use-package origami
     :hook (prog-mode . origami-mode)
-    :init (setq origami-show-fold-header t)
-    :config (face-spec-reset-face 'origami-fold-header-face))
-
-#+end_src
-
-** sudo-edit
-
-Open files as another user
-
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-
-  (use-package sudo-edit)
+    :init
+    (setq origami-show-fold-header t)
+    :config
+    (face-spec-reset-face 'origami-fold-header-face))
 
 #+end_src
 
@@ -3332,7 +3286,7 @@ Easily adjust the font size
 
 * Utils
 
-Some usefule Utilities.
+Some usefule utilities
 
 ** Header
 
@@ -4062,15 +4016,12 @@ Snippets configurations.
                       "_"     (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "_{$1}$0"))
-                      "dt"    (lambda ()
+                      ".t"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\dot{$1}$0"))
-                      "ddt"   (lambda ()
+                      "..t"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\ddot{$1}$0"))
-                      "dddt"  (lambda ()
-                                (interactive)
-                                (yas-expand-snippet "\\dddot{$1}$0"))
                       "//"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\frac{$1}{$2}$0"))

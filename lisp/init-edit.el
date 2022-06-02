@@ -12,11 +12,6 @@
   :diminish
   :hook (after-init . global-auto-revert-mode))
 
-(use-package goto-addr
-  :ensure nil
-  :hook ((text-mode . goto-address-mode)
-         (prog-mode . goto-address-prog-mode)))
-
 (use-package avy
   :after evil
   :bind (:map evil-normal-state-map
@@ -28,12 +23,6 @@
   :config
   (setq avy-all-windows     nil
         avy-timeout-seconds 0.4))
-
-(use-package ace-link
-  :hook (after-init . ace-link-setup-default)
-  :config
-  (leader-key-def
-    "bu" 'ace-link-addr))
 
 (use-package aggressive-indent
   :diminish
@@ -90,9 +79,6 @@
          :map mc/keymap
          ("C-|"           . mc/vertical-align-with-space)))
 
-(use-package smart-region
-  :hook (after-init . smart-region-on))
-
 (use-package goto-chg
   :init
   (leader-key-def
@@ -104,13 +90,6 @@
   :diminish
   :hook ((prog-mode        . subword-mode)
          (minibuffer-setup . subword-mode)))
-
-(use-package origami
-  :hook (prog-mode . origami-mode)
-  :init (setq origami-show-fold-header t)
-  :config (face-spec-reset-face 'origami-fold-header-face))
-
-(use-package sudo-edit)
 
 (use-package prettify-symbols
   :ensure nil

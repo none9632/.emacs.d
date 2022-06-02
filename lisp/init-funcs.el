@@ -52,6 +52,14 @@ Save to `custom-file' if NO-SAVE is nil."
       (kill-buffer buffer-temp-name)
       (throw 'my-catch regexp-buffer-name))))
 
+(defun my/lf-select-file (path)
+  (interactive)
+  (shell-command-to-string (concat "[ ! -d ~/.cache/emacs/ ] && mkdir -p ~/.cache/emacs;"
+                                   "echo -n \"\" > ~/.cache/emacs/path;"
+                                   "awesome-client 'create_emacs_fm(\"" path "\")';"
+                                   "while ! [ -s ~/.cache/emacs/path ]; do sleep 0.1; done"))
+  (shell-command-to-string "cat ~/.cache/emacs/path"))
+
 ;; (defun my/test ()
 ;;   (interactive)
 ;;   (if (my/line-looking-at "^\\*+[[:ascii:]]*")
