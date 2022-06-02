@@ -348,12 +348,16 @@ Scroll one line at a time (less "jumpy" than defaults)
     "hF"  'counsel-describe-face
     "hs"  'counsel-describe-symbol
     "ch"  'counsel-command-history
-    "SPC" 'counsel-find-file
-    "q" (lambda ()
-          (interactive)
-          (cond ((bound-and-true-p org-latex-mode)   (my/org-edit-src-exit))
-                ((bound-and-true-p with-editor-mode) (with-editor-cancel t))
-                (t                                   (evil-quit))))
+    "SPC" (lambda ()
+            (interactive)
+            (let ((file-path (my/lf-select-file default-directory)))
+              (unless (equal file-path "cancel")
+                (find-file file-path))))
+    "q"   (lambda ()
+            (interactive)
+            (cond ((bound-and-true-p org-latex-mode)   (my/org-edit-src-exit))
+                  ((bound-and-true-p with-editor-mode) (with-editor-cancel t))
+                  (t                                   (evil-quit))))
     "a"   'mark-whole-buffer
     "s"   'my/open-org-file
     "bb"  'counsel-switch-buffer
@@ -1221,6 +1225,14 @@ Define functions.
             (setq regexp-buffer-name (match-string-no-properties 0)))
         (kill-buffer buffer-temp-name)
         (throw 'my-catch regexp-buffer-name))))
+
+  (defun my/lf-select-file (path)
+    (interactive)
+    (shell-command-to-string (concat "[ ! -d ~/.cache/emacs/ ] && mkdir -p ~/.cache/emacs;"
+                                     "echo -n \"\" > ~/.cache/emacs/path;"
+                                     "awesome-client 'create_emacs_fm(\"" path "\")';"
+                                     "while ! [ -s ~/.cache/emacs/path ]; do sleep 0.1; done"))
+    (shell-command-to-string "cat ~/.cache/emacs/path"))
 
   ;; (defun my/test ()
   ;;   (interactive)
@@ -2210,15 +2222,11 @@ Org configurations.
 
   (defun my/insert-image ()
     (interactive)
-    (shell-command-to-string (concat "[ ! -d ~/.cache/emacs/ ] && mkdir -p ~/.cache/emacs;"
-                                     "echo -n \"\" > ~/.cache/emacs/path;"
-                                     "awesome-client 'create_emacs_fm(\"~/Pictures/screenshots\")';"
-                                     "while ! [ -s ~/.cache/emacs/path ]; do sleep 0.1; done"))
-    (setq old-file-path (shell-command-to-string "cat ~/.cache/emacs/path"))
-    (unless (equal old-file-path "cancel")
-      (setq new-file-path (shell-command-to-string (concat "inkscape-figures move " old-file-path)))
-      (insert (concat "[[" new-file-path "]]"))
-      (org-display-inline-images nil t (point-at-bol) (point-at-eol))))
+    (let ((file-path (my/lf-select-file "~/Pictures/screenshots")))
+      (unless (equal file-path "cancel")
+        (setq file-path (shell-command-to-string (concat "inkscape-figures move " file-path)))
+        (insert (concat "[[" file-path "]]"))
+        (org-display-inline-images nil t (point-at-bol) (point-at-eol)))))
 
   (defun my/remove-images ()
     (interactive)

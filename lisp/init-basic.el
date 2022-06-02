@@ -114,12 +114,16 @@
   "hF"  'counsel-describe-face
   "hs"  'counsel-describe-symbol
   "ch"  'counsel-command-history
-  "SPC" 'counsel-find-file
-  "q" (lambda ()
-        (interactive)
-        (cond ((bound-and-true-p org-latex-mode)   (my/org-edit-src-exit))
-              ((bound-and-true-p with-editor-mode) (with-editor-cancel t))
-              (t                                   (evil-quit))))
+  "SPC" (lambda ()
+          (interactive)
+          (let ((file-path (my/lf-select-file default-directory)))
+            (unless (equal file-path "cancel")
+              (find-file file-path))))
+  "q"   (lambda ()
+          (interactive)
+          (cond ((bound-and-true-p org-latex-mode)   (my/org-edit-src-exit))
+                ((bound-and-true-p with-editor-mode) (with-editor-cancel t))
+                (t                                   (evil-quit))))
   "a"   'mark-whole-buffer
   "s"   'my/open-org-file
   "bb"  'counsel-switch-buffer

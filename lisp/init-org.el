@@ -113,15 +113,11 @@
 
 (defun my/insert-image ()
   (interactive)
-  (shell-command-to-string (concat "[ ! -d ~/.cache/emacs/ ] && mkdir -p ~/.cache/emacs;"
-                                   "echo -n \"\" > ~/.cache/emacs/path;"
-                                   "awesome-client 'create_emacs_fm(\"~/Pictures/screenshots\")';"
-                                   "while ! [ -s ~/.cache/emacs/path ]; do sleep 0.1; done"))
-  (setq old-file-path (shell-command-to-string "cat ~/.cache/emacs/path"))
-  (unless (equal old-file-path "cancel")
-    (setq new-file-path (shell-command-to-string (concat "inkscape-figures move " old-file-path)))
-    (insert (concat "[[" new-file-path "]]"))
-    (org-display-inline-images nil t (point-at-bol) (point-at-eol))))
+  (let ((file-path (my/lf-select-file "~/Pictures/screenshots")))
+    (unless (equal file-path "cancel")
+      (setq file-path (shell-command-to-string (concat "inkscape-figures move " file-path)))
+      (insert (concat "[[" file-path "]]"))
+      (org-display-inline-images nil t (point-at-bol) (point-at-eol)))))
 
 (defun my/remove-images ()
   (interactive)
