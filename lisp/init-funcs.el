@@ -40,6 +40,18 @@ Save to `custom-file' if NO-SAVE is nil."
     (beginning-of-line)
     (looking-at-p "^[[:space:]]*$")))
 
+(defun my/search-buffer-name (regexp)
+  (catch 'my-catch
+    (let ((buffer-temp-name (make-temp-name "scratch-"))
+          (regexp-buffer-name nil))
+      (switch-to-buffer buffer-temp-name)
+      (insert (mapconcat (function buffer-name) (buffer-list) "\n"))
+      (goto-char (point-min))
+      (if (re-search-forward regexp nil t)
+          (setq regexp-buffer-name (match-string-no-properties 0)))
+      (kill-buffer buffer-temp-name)
+      (throw 'my-catch regexp-buffer-name))))
+
 ;; (defun my/test ()
 ;;   (interactive)
 ;;   (if (my/line-looking-at "^\\*+[[:ascii:]]*")

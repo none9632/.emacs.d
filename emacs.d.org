@@ -1210,6 +1210,18 @@ Define functions.
       (beginning-of-line)
       (looking-at-p "^[[:space:]]*$")))
 
+  (defun my/search-buffer-name (regexp)
+    (catch 'my-catch
+      (let ((buffer-temp-name (make-temp-name "scratch-"))
+            (regexp-buffer-name nil))
+        (switch-to-buffer buffer-temp-name)
+        (insert (mapconcat (function buffer-name) (buffer-list) "\n"))
+        (goto-char (point-min))
+        (if (re-search-forward regexp nil t)
+            (setq regexp-buffer-name (match-string-no-properties 0)))
+        (kill-buffer buffer-temp-name)
+        (throw 'my-catch regexp-buffer-name))))
+
   ;; (defun my/test ()
   ;;   (interactive)
   ;;   (if (my/line-looking-at "^\\*+[[:ascii:]]*")
@@ -2439,6 +2451,86 @@ Org configurations.
 
 #+end_src
 
+** COMMENT Sidebar
+*** Org sidebar
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (use-package org-sidebar
+    :diminish t
+    :init
+    (setq org-sidebar-show nil)
+
+    (defun my/org-sidebar-tree-toggle (open)
+      (setq inhibit-message  t)
+      (org-sidebar-tree-toggle)
+      (if (equal open t)
+          (select-window (get-buffer-window (my/search-buffer-name "^<tree>.*"))))
+      (setq inhibit-message nil))
+
+    (defun my/org-sidebar-toggle ()
+      "Toggle the org-sidebar"
+      (interactive)
+      (let ((tree-buffer-name (my/search-buffer-name "^<tree>.*")))
+        (cond ((equal (buffer-name (current-buffer)) tree-buffer-name) (progn
+                                                                         (my/org-sidebar-tree-toggle nil)
+                                                                         (setq org-sidebar-show nil)))
+              ((equal org-sidebar-show t) (select-window (get-buffer-window tree-buffer-name)))
+              (t                          (progn
+                                            (my/org-sidebar-tree-toggle t)
+                                            (setq org-sidebar-show   t
+                                                  tree-buffer-window (get-buffer-window (my/search-buffer-name "^<tree>.*")))
+                                            (window-resize tree-buffer-window -12 t t))))))
+
+    (leader-key-def
+      :keymap 'org-mode-map
+      "n" 'my/org-sidebar-toggle)
+    :config
+    (evil-define-key '(normal) org-sidebar-tree-map (kbd "<tab>") 'org-sidebar-tree-cycle)
+    (set-face-attribute 'header-line nil :background "#282c34" :foreground "#282c34"))
+
+#+end_src
+
+*** imenu-list
+
+#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+
+  (require 'imenu)
+
+  (use-package imenu-list
+    :after evil
+    :init
+    (setq imenu-list-focus-after-activation t
+          imenu-list-idle-update-delay-time 0.2
+          imenu-list-mode-line-format       nil
+          imenu-list-position               'left
+          imenu-list-size                   36)
+
+    (defun my/org-sidebar-toggle ()
+      "Toggle the org-sidebar"
+      (interactive)
+      (if (equal (buffer-name (current-buffer)) "*Ilist*")
+          (imenu-list-smart-toggle)
+        (progn
+          (if (fboundp 'imenu-list-show)
+              (progn
+                (if (eq imenu-list-minor-mode nil)
+                    (imenu-list-minor-mode))
+                (imenu-list-show))
+            (progn
+              (imenu-list-smart-toggle)
+              (setq-local evil-normal-state-cursor '(nil)))))))
+
+    (evil-define-key '(normal) imenu-list-major-mode-map (kbd "q") 'imenu-list-smart-toggle)
+    (evil-define-key '(normal) imenu-list-major-mode-map (kbd "<tab>") 'hs-toggle-hiding)
+
+    (leader-key-def "n" 'my/org-sidebar-toggle)
+    :config
+    (set-face-attribute 'imenu-list-entry-face-0 nil :foreground "#51afef" :height 1.2 :weight 'regular)
+    (set-face-attribute 'imenu-list-entry-face-1 nil :foreground "#c678dd" :height 1.15))
+
+#+end_src
+
 ** COMMENT Org test
 
 #+begin_src emacs-lisp :tangle ./lisp/init-org.el
@@ -3496,8 +3588,11 @@ Window configurations.
     (custom-set-variables
      '(zoom-size                        '(0.618 . 0.618))
      '(zoom-mode                        t)
-     '(zoom-ignored-buffer-names        '("COMMIT_EDITMSG" " *command-log*"))
+     '(zoom-ignored-buffer-names        '("COMMIT_EDITMSG"
+                                          " *command-log*"
+                                          "*Ilist*"))
      '(zoom-ignored-buffer-name-regexps '("^magit-diff"
+                                          "^<tree>.*"
                                           ".*LaTeX environment"
                                           ".*LaTeX fragment")))
 

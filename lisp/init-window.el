@@ -5,8 +5,11 @@
   (custom-set-variables
    '(zoom-size                        '(0.618 . 0.618))
    '(zoom-mode                        t)
-   '(zoom-ignored-buffer-names        '("COMMIT_EDITMSG" " *command-log*"))
+   '(zoom-ignored-buffer-names        '("COMMIT_EDITMSG"
+                                        " *command-log*"
+                                        "*Ilist*"))
    '(zoom-ignored-buffer-name-regexps '("^magit-diff"
+                                        "^<tree>.*"
                                         ".*LaTeX environment"
                                         ".*LaTeX fragment")))
 
