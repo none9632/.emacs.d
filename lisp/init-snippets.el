@@ -178,7 +178,7 @@
                     ";e"    "\\vepsilon "
                     ";E"    "\\Vepsilon "
                     ";z"    "\\zeta "
-                    ";h"    "\\eta "
+                    ";n"    "\\eta "
                     ";q"    "\\theta "
                     ";Q"    "\\Theta "
                     ";i"    "\\iota "
@@ -204,6 +204,7 @@
                     ";Y"    "\\Psi "
                     ";w"    "\\omega "
                     ";W"    "\\Omega "
+                    ";h"    "\\hbar "
                     ";8"    "\\infty "
                     ";0"    "\\emptyset "
                     "acos"  "\\arccos "
@@ -242,7 +243,6 @@
                     "da"    "\\da "
                     "uua"   "\\uua "
                     "uda"   "\\uda "
-                    "rad"   "\\rad "
                     "AA"    "\\forall "
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
@@ -307,7 +307,7 @@
                               (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
                     "vc"    (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\v{$1}$0"))
+                              (yas-expand-snippet "\\vec{$1}$0"))
                     "brv"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\autobrv{$1}$0"))
