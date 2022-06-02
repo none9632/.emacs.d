@@ -827,6 +827,72 @@ Flexible text folding
 
 #+end_src
 
+** hideshow
+
+Flexible text folding
+
+#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+
+  (use-package hideshow
+    :after evil
+    :ensure nil
+    :diminish hs-minor-mode
+    :hook (prog-mode . hs-minor-mode)
+    :bind (:map evil-normal-state-map
+                ("TAB"     . hs-cycle)
+                ("SPC TAB" . hs-toggle-all))
+    :config
+    (defun hs-cycle (&optional level)
+      (interactive "p")
+      (let (message-log-max
+            (inhibit-message t))
+        (if (= level 1)
+            (pcase last-command
+              ('hs-cycle
+               (hs-hide-level 1)
+               (setq this-command 'hs-cycle-children))
+              ('hs-cycle-children
+               (save-excursion (hs-show-block))
+               (setq this-command 'hs-cycle-subtree))
+              ('hs-cycle-subtree
+               (hs-hide-block))
+              (_
+               (if (not (hs-already-hidden-p))
+                   (hs-hide-block)
+                 (hs-hide-level 1)
+                 (setq this-command 'hs-cycle-children))))
+          (hs-hide-level level)
+          (setq this-command 'hs-hide-level))))
+
+    (defun hs-toggle-all ()
+      "Toggle hide/show all."
+      (interactive)
+      (pcase last-command
+        ('hs-toggle-all
+         (save-excursion (hs-show-all))
+         (setq this-command 'hs-global-show))
+        (_ (hs-hide-all))))
+
+    ;; Display line counts
+    (defun hs-display-code-line-counts (ov)
+      "Display line counts when hiding codes."
+      (when (eq 'code (overlay-get ov 'hs))
+        (overlay-put ov 'display
+                     (concat
+                      " "
+                      (propertize
+                       (if (char-displayable-p ?⏷) "⏷" "...")
+                       'face 'shadow)
+                      (propertize
+                       (format " (%d lines)"
+                               (count-lines (overlay-start ov)
+                                            (overlay-end ov)))
+                       'face '(:inherit shadow))
+                      " "))))
+    (setq hs-set-up-overlay #'hs-display-code-line-counts))
+
+#+end_src
+
 ** pretty-symbols
 
 #+begin_src emacs-lisp :tangle ./lisp/init-edit.el
