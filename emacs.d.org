@@ -812,21 +812,6 @@ Handling capitalized subwords in a nomenclature
 
 #+end_src
 
-** COMMENT origami
-
-Flexible text folding
-
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
-
-  (use-package origami
-    :hook (prog-mode . origami-mode)
-    :init
-    (setq origami-show-fold-header t)
-    :config
-    (face-spec-reset-face 'origami-fold-header-face))
-
-#+end_src
-
 ** hideshow
 
 Flexible text folding
@@ -836,11 +821,9 @@ Flexible text folding
   (use-package hideshow
     :after evil
     :ensure nil
-    :diminish hs-minor-mode
     :hook (prog-mode . hs-minor-mode)
     :bind (:map evil-normal-state-map
-                ("TAB"     . hs-cycle)
-                ("SPC TAB" . hs-toggle-all))
+                ("TAB"     . hs-cycle))
     :config
     (defun hs-cycle (&optional level)
       (interactive "p")
@@ -863,15 +846,6 @@ Flexible text folding
                  (setq this-command 'hs-cycle-children))))
           (hs-hide-level level)
           (setq this-command 'hs-hide-level))))
-
-    (defun hs-toggle-all ()
-      "Toggle hide/show all."
-      (interactive)
-      (pcase last-command
-        ('hs-toggle-all
-         (save-excursion (hs-show-all))
-         (setq this-command 'hs-global-show))
-        (_ (hs-hide-all))))
 
     ;; Display line counts
     (defun hs-display-code-line-counts (ov)
@@ -936,6 +910,8 @@ Flexible text folding
       (push '("\\Lra"          . ?⇔) prettify-symbols-alist)
       (push '("\\La"           . ?⇐) prettify-symbols-alist)
       (push '("\\Ra"           . ?⇒) prettify-symbols-alist)
+      (push '("\\Sqrt"         . ?√) prettify-symbols-alist)
+      (push '("\\div"          . ?÷) prettify-symbols-alist)
       (push '("\\degree"       . ?⚬) prettify-symbols-alist)
       (push '("\\triangle"     . ?Δ) prettify-symbols-alist)
       (push '("\\vepsilon"     . ?ε) prettify-symbols-alist)
@@ -1159,7 +1135,7 @@ Evil configuration.
 
   (use-package key-chord
     :after evil
-    :hook (prog-mode . key-chord-mode)
+    :hook (evil-mode . key-chord-mode)
     :config
     (setq key-chord-two-keys-delay 0.15)
     (key-chord-define evil-insert-state-map (kbd "jj") 'evil-normal-state)

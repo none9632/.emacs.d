@@ -83,7 +83,7 @@
 
 (use-package key-chord
   :after evil
-  :hook (prog-mode . key-chord-mode)
+  :hook (evil-mode . key-chord-mode)
   :config
   (setq key-chord-two-keys-delay 0.15)
   (key-chord-define evil-insert-state-map (kbd "jj") 'evil-normal-state)

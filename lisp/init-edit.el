@@ -102,11 +102,9 @@
 (use-package hideshow
   :after evil
   :ensure nil
-  :diminish hs-minor-mode
   :hook (prog-mode . hs-minor-mode)
   :bind (:map evil-normal-state-map
-              ("TAB"     . hs-cycle)
-              ("SPC TAB" . hs-toggle-all))
+              ("TAB"     . hs-cycle))
   :config
   (defun hs-cycle (&optional level)
     (interactive "p")
@@ -129,15 +127,6 @@
                (setq this-command 'hs-cycle-children))))
         (hs-hide-level level)
         (setq this-command 'hs-hide-level))))
-
-  (defun hs-toggle-all ()
-    "Toggle hide/show all."
-    (interactive)
-    (pcase last-command
-      ('hs-toggle-all
-       (save-excursion (hs-show-all))
-       (setq this-command 'hs-global-show))
-      (_ (hs-hide-all))))
 
   ;; Display line counts
   (defun hs-display-code-line-counts (ov)
@@ -196,6 +185,8 @@
     (push '("\\Lra"          . ?⇔) prettify-symbols-alist)
     (push '("\\La"           . ?⇐) prettify-symbols-alist)
     (push '("\\Ra"           . ?⇒) prettify-symbols-alist)
+    (push '("\\Sqrt"         . ?√) prettify-symbols-alist)
+    (push '("\\div"          . ?÷) prettify-symbols-alist)
     (push '("\\degree"       . ?⚬) prettify-symbols-alist)
     (push '("\\triangle"     . ?Δ) prettify-symbols-alist)
     (push '("\\vepsilon"     . ?ε) prettify-symbols-alist)
