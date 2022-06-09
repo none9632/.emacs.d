@@ -240,7 +240,10 @@
   (interactive)
   (yas-exit-all-snippets)
   (if (equal (count-lines (point-min) (point-max)) 1)
-      (setq latex-fragment t)
+      (progn
+        (goto-char (- (point-max) 3))
+        (delete-horizontal-space)
+        (setq latex-fragment t))
     (setq latex-fragment nil))
   (org-edit-src-exit)
   (cond (change-lang                (shell-command-to-string "xkb-switch -n")))

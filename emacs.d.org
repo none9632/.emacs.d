@@ -2367,7 +2367,10 @@ Org configurations.
     (interactive)
     (yas-exit-all-snippets)
     (if (equal (count-lines (point-min) (point-max)) 1)
-        (setq latex-fragment t)
+        (progn
+          (goto-char (- (point-max) 3))
+          (delete-horizontal-space)
+          (setq latex-fragment t))
       (setq latex-fragment nil))
     (org-edit-src-exit)
     (cond (change-lang                (shell-command-to-string "xkb-switch -n")))
@@ -3908,12 +3911,11 @@ Snippets configurations.
                               (my/insert-image))
                       "жшь" (lambda ()
                               (interactive)
-                              (my/insert-image))
-                      "\\\\" (lambda ()
-                               (interactive)
-                               (yas-expand-snippet " \\\\\\\\")))
+                              (my/insert-image)))
 
     (aas-set-snippets 'latex-mode
+                      :cond (lambda ()
+                              (not (texmathp)))
                       "mk"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "$$1$"))
@@ -3930,10 +3932,7 @@ Snippets configurations.
                               (interactive)
                               (shell-command-to-string "xdotool key Mode_switch")
                               (yas-expand-snippet (yas-lookup-snippet "align"))
-                              (my/delete-one-blank-line))
-                      "\\{" (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\\\{$1\\\\}$0")))
+                              (my/delete-one-blank-line)))
 
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
@@ -4231,7 +4230,10 @@ Snippets configurations.
                       ";|"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\left|$1\\right|$0")
-                                (delete-char))))
+                                (delete-char))
+                      "\\{" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\{$1\\\\}$0"))))
 
 #+end_src
 

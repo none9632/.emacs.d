@@ -96,12 +96,11 @@
                             (my/insert-image))
                     "жшь" (lambda ()
                             (interactive)
-                            (my/insert-image))
-                    "\\\\" (lambda ()
-                             (interactive)
-                             (yas-expand-snippet " \\\\\\\\")))
+                            (my/insert-image)))
 
   (aas-set-snippets 'latex-mode
+                    :cond (lambda ()
+                            (not (texmathp)))
                     "mk"  (lambda ()
                             (interactive)
                             (yas-expand-snippet "$$1$"))
@@ -118,10 +117,7 @@
                             (interactive)
                             (shell-command-to-string "xdotool key Mode_switch")
                             (yas-expand-snippet (yas-lookup-snippet "align"))
-                            (my/delete-one-blank-line))
-                    "\\{" (lambda ()
-                            (interactive)
-                            (yas-expand-snippet "\\\\{$1\\\\}$0")))
+                            (my/delete-one-blank-line)))
 
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
@@ -419,6 +415,9 @@
                     ";|"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\left|$1\\right|$0")
-                              (delete-char))))
+                              (delete-char))
+                    "\\{" (lambda ()
+                            (interactive)
+                            (yas-expand-snippet "\\\\{$1\\\\}$0"))))
 
 (provide 'init-snippets)
