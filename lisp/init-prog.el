@@ -29,6 +29,9 @@
   :ensure nil
   :hook (makefile-mode . enable-tabs))
 
-(use-package lua-mode)
+(use-package lua-mode
+  :after evil
+  :config
+  (evil-define-key 'normal lua-mode-map (kbd "K") nil))
 
 (provide 'init-prog)
