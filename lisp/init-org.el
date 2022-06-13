@@ -162,10 +162,100 @@
   (setq pdf-file-name (org-latex-compile tex-file-name))
   (async-shell-command (concat "zathura " pdf-file-name) nil nil))
 
+(defun my/get-org-latex-image ()
+  (interactive)
+  (catch 'my-catch
+    (let* ((processing-info
+            (cdr (assq org-preview-latex-default-process org-preview-latex-process-alist)))
+           (face (face-at-point))
+           ;; Get the colors from the face at point.
+           (fg
+            (let ((color (plist-get org-format-latex-options
+                                    :foreground)))
+              (if 'forbuffer
+                  (cond
+                   ((eq color 'auto)
+                    (face-attribute face :foreground nil 'default))
+                   ((eq color 'default)
+                    (face-attribute 'default :foreground nil))
+                   (t color))
+                color)))
+           (bg
+            (let ((color (plist-get org-format-latex-options
+                                    :background)))
+              (if 'forbuffer
+                  (cond
+                   ((eq color 'auto)
+                    (face-attribute face :background nil 'default))
+                   ((eq color 'default)
+                    (face-attribute 'default :background nil))
+                   (t color))
+                color)))
+           (value (org-element-property :value (org-element-context)))
+           (hash (sha1 (prin1-to-string
+                        (list org-format-latex-header
+                              org-latex-default-packages-alist
+                              org-latex-packages-alist
+                              org-format-latex-options
+                              'forbuffer value fg bg))))
+           (imagetype (or (plist-get processing-info :image-output-type) "png"))
+           (prefix (concat org-preview-latex-image-directory "org-ltximg"))
+           (absprefix (expand-file-name prefix default-directory))
+           (movefile (format "%s_%s.%s" absprefix hash imagetype)))
+      (throw 'my-catch movefile))))
+
+(defun my/view-org-fragment ()
+  (interactive)
+  (unless (bound-and-true-p my/latex-window-frame)
+    (async-start
+     (progn
+       (setq latex-fragment-buffer (get-buffer-create " *latex-fragment*"))
+       (let ((latex-image-file   nil)
+             (latex-image        nil)
+             (latex-image-width  nil)
+             (latex-image-height nil))
+         (save-excursion
+           (forward-char)
+           (re-search-backward "(")
+           (re-search-forward  "[[:digit:]]+")
+           (re-search-backward (concat "\\\\tag{" (match-string-no-properties 0) "}"))
+           (setq latex-image-file   (my/get-org-latex-image)
+                 latex-image        (create-image latex-image-file)
+                 latex-image-width  (car (image-size latex-image t))
+                 latex-image-height (cdr (image-size latex-image t))))
+         (with-current-buffer latex-fragment-buffer
+           (insert "\n   ")
+           (insert-image latex-image))
+         (if (or (eq latex-image-height 85)
+                 (eq latex-image-height 31))
+             (setq latex-image-height (+ latex-image-height 10)))
+         (setq my/latex-window-frame (posframe-show
+                                      latex-fragment-buffer
+                                      :position (point)
+                                      :font "SauceCodePro Nerd Font 6"
+                                      :width (floor (* latex-image-width 0.21))
+                                      :height (+ 4 (floor (/ (- latex-image-height 22) 10.55)))
+                                      :border-width 2
+                                      :border-color "#32424b"
+                                      :override-parameters '((parent-frame . nil)))))))
+    (add-hook 'post-command-hook #'my/hide-org-fragment)))
+
+(defun my/hide-org-fragment ()
+  (interactive)
+  (let ((current-postiton (point)))
+    (unless (equal current-postiton my/previous-position)
+      (if my/latex-window-frame
+          (progn
+            (posframe-delete-frame latex-fragment-buffer)
+            (setq my/latex-window-frame nil)
+            (evil-delete-buffer latex-fragment-buffer)
+            (remove-hook 'post-command-hook #'my/hide-org-fragment))))))
+
 (defun my/org-latex-mode ()
   (interactive)
-  (setq org-src-window-setup    'split-window-below
-        company-box-enable-icon nil)
+  (setq-local org-src-window-setup    'split-window-below
+              company-box-enable-icon nil
+              org-latex-mode          t)
   (aas-activate-for-major-mode)
   (visual-line-mode t)
   (my/update-theorem-and-lemma-counts)
@@ -199,9 +289,6 @@
                                               (mapc #'delete-overlay (overlays-in (point-min) (point-max)))
                                               (widen))))))))
 
-(setq org-jump-to-previous-block nil
-      org-latex-mode             nil)
-
 (defun my/isearch-line-forward (regexp-p)
   (catch 'my-catch
     (narrow-to-region (line-beginning-position) (line-end-position))
@@ -221,37 +308,50 @@
 
 (defun my/org-edit-special ()
   (interactive)
-  (setq line-str           (buffer-substring (line-beginning-position) (line-end-position))
-        processed-line-str (replace-regexp-in-string "\\[\\[[[:word:]\\|\\.\\|/]*\\]\\]" "" line-str)
-        current-layout     (shell-command-to-string "xkb-switch -p"))
-  (shell-command-to-string "xdotool key Mode_switch")
-  (if (and (equal processed-line-str "")
-           (not (equal line-str "")))
-      (my/inkscape-figures-edit line-str)
-    (progn
-      (org-edit-special)
-      (toggle-truncate-lines)
-      (setq-local org-latex-mode t)
-      (if (equal current-layout "ru\n")
-          (setq change-lang t)
-        (setq change-lang nil)))))
+  (if (and (bound-and-true-p org-latex-mode)
+           (looking-at "(\\|)\\|[[:digit:]]+"))
+      (save-excursion
+        (setq my/previous-position (point))
+        (narrow-to-region (line-beginning-position) (line-end-position))
+        (if (or (looking-at "(")
+                (re-search-backward "(" nil t))
+            (progn
+              (widen)
+              (if (looking-at "([[:digit:]]+)")
+                  (my/view-org-fragment)))
+          (widen)))
+    (let* ((line-str           (buffer-substring (line-beginning-position) (line-end-position)))
+           (processed-line-str (replace-regexp-in-string "\\[\\[[[:word:]\\|\\.\\|/]*\\]\\]" "" line-str))
+           (current-layout     (shell-command-to-string "xkb-switch -p")))
+      (shell-command-to-string "xdotool key Mode_switch")
+      (if (and (equal processed-line-str "")
+               (not (equal line-str "")))
+          (my/inkscape-figures-edit line-str)
+        (progn
+          (org-edit-special)
+          (toggle-truncate-lines)
+          (setq-local previous-major-mode-is-org t)
+          (if (equal current-layout "ru\n")
+              (setq change-lang t)
+            (setq change-lang nil)))))))
 
 (defun my/org-edit-src-exit ()
   (interactive)
   (yas-exit-all-snippets)
-  (if (equal (count-lines (point-min) (point-max)) 1)
-      (progn
-        (goto-char (- (point-max) 3))
-        (delete-horizontal-space)
-        (setq latex-fragment t))
-    (setq latex-fragment nil))
-  (org-edit-src-exit)
-  (cond (change-lang                (shell-command-to-string "xkb-switch -n")))
-  (cond (org-jump-to-previous-block (org-previous-block 1))
-        (latex-fragment             (progn
-                                      (if (org-in-item-p) (my/just-one-space))
-                                      (my/isearch-line-forward "\\)")
-                                      (org-latex-preview)))))
+  (let ((latex-fragment nil))
+    (if (equal (count-lines (point-min) (point-max)) 1)
+        (progn
+          (goto-char (- (point-max) 2))
+          (delete-horizontal-space)
+          (setq latex-fragment t))
+      (setq latex-fragment nil))
+    (org-edit-src-exit)
+    (cond (change-lang                                   (shell-command-to-string "xkb-switch -n")))
+    (cond ((bound-and-true-p org-jump-to-previous-block) (org-previous-block 1))
+          (latex-fragment                                (progn
+                                                           (if (org-in-item-p) (my/just-one-space))
+                                                           (my/isearch-line-forward "\\)")
+                                                           (org-latex-preview))))))
 
 (defun my/org-insert-item-or-heading ()
   (interactive)

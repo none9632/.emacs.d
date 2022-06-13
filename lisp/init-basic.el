@@ -121,9 +121,9 @@
               (find-file file-path))))
   "q"   (lambda ()
           (interactive)
-          (cond ((bound-and-true-p org-latex-mode)   (my/org-edit-src-exit))
-                ((bound-and-true-p with-editor-mode) (with-editor-cancel t))
-                (t                                   (evil-quit))))
+          (cond ((bound-and-true-p previous-major-mode-is-org) (my/org-edit-src-exit))
+                ((bound-and-true-p with-editor-mode)           (with-editor-cancel t))
+                (t                                             (evil-quit))))
   "a"   'mark-whole-buffer
   "s"   'my/open-org-file
   "bb"  'counsel-switch-buffer
