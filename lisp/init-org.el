@@ -19,7 +19,7 @@
         org-hide-block-startup            nil
         org-src-preserve-indentation      nil
         org-cycle-separator-lines         2
-        org-startup-folded                'all
+        org-startup-folded                t
         org-src-window-setup              'current-window
         org-edit-src-persistent-message   nil
         org-return-follows-link           t

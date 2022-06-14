@@ -2,7 +2,6 @@
 #+LATEX_CLASS_OPTIONS: [12pt, a4paper]
 #+OPTIONS: toc:t
 #+OPTIONS: H:5
-#+STARTUP: fold
 
 #+LATEX_HEADER: \usepackage{hyperref}      % For adding links
 #+LATEX_HEADER: \usepackage{mathtext}
