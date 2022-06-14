@@ -53,6 +53,15 @@
 #+LATEX_HEADER: \newcommand{\Q}{\mathbb{Q}}
 #+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
 
+#+LATEX_HEADER: \renewcommand{\[}{\left[}
+#+LATEX_HEADER: \renewcommand{\]}{\right]}
+#+LATEX_HEADER: \renewcommand{\l}{\left}
+#+LATEX_HEADER: \renewcommand{\r}{\right}
+#+LATEX_HEADER: \let\oldlb\{
+#+LATEX_HEADER: \renewcommand{\{}{\left\oldlb}
+#+LATEX_HEADER: \let\oldrb\}
+#+LATEX_HEADER: \renewcommand{\}}{\right\oldrb}
+
 #+LATEX_HEADER: \let\oldDelta\Delta
 #+LATEX_HEADER: \renewcommand\Delta{{\scriptstyle\oldDelta}}
 #+LATEX_HEADER: \renewcommand\vepsilon{{\scriptstyle\mathcal{E}}}
