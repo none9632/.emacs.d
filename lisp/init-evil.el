@@ -24,9 +24,14 @@
                ("p"   . (lambda ()
                           (interactive)
                           (evil-paste-after 1)
-                          (if (eq major-mode 'org-mode)
-                              (let ((end-point   (mark t))
-                                    (start-point (point)))
+                          (if (bound-and-true-p org-latex-mode)
+                              (let ((start-point (mark t))
+                                    (end-point   (point)))
+                                (if (> start-point end-point)
+                                    (progn
+                                      (setq-local temp-var end-point)
+                                      (setq end-point   start-point
+                                            start-point temp-var)))
                                 (org-display-inline-images nil t start-point end-point)
                                 (org--latex-preview-region start-point end-point))))))
          (:map evil-visual-state-map
