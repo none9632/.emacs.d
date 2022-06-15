@@ -56,6 +56,9 @@
     (setq-default visual-fill-column-width       110
                   visual-fill-column-center-text t))
 
+  (use-package org-auto-tangle
+    :hook (org-mode . org-auto-tangle-mode))
+
 (use-package worf
   :after evil
   :bind ((:map evil-normal-state-map
@@ -389,43 +392,6 @@
   "ce"  'my/change-environment
   "rc"  'my/update-theorem-and-lemma-counts
   "TAB" 'evil-close-folds)
-
-(setq org-babel-tangle-async-mode nil)
-
-(defun my/org-babel-tangle-async-mode (&optional arg)
-  (interactive)
-  (if (eq arg nil)
-      (cond (org-babel-tangle-async-mode (setq org-babel-tangle-async-mode nil))
-            (t                           (setq org-babel-tangle-async-mode t)))
-    (setq org-babel-tangle-async-mode arg))
-  (if (eq org-babel-tangle-async-mode t)
-      (message "org-babel-tangle-async-mode on")
-    (message "org-babel-tangle-async-mode off")))
-
-(defun my/org-babel-tangle-async (file)
-  "Invoke `org-babel-tangle-file' asynchronously."
-  (message "Tangling %s..." (buffer-file-name))
-  (async-start
-   (let ((args (list file)))
-     `(lambda ()
-        (require 'org)
-        (let ((start-time (current-time)))
-          (apply #'org-babel-tangle-file ',args)
-          (format "%.2f" (float-time (time-since start-time))))))
-   (let ((message-string (format "Tangling %S completed after " file)))
-     `(lambda (tangle-time)
-        (message (concat ,message-string
-                         (format "%s seconds" tangle-time)))))))
-
-(defun my/org-babel-tangle-current-buffer-async ()
-  "Tangle current buffer asynchronously."
-  (interactive)
-  (if org-babel-tangle-async-mode
-      (my/org-babel-tangle-async (buffer-file-name))))
-
-(add-hook 'org-mode-hook (lambda ()
-                           (add-hook 'after-save-hook #'my/org-babel-tangle-current-buffer-async
-                                     'run-at-end 'only-in-org-mode)))
 
 (defun my/org-config-mode ()
   (interactive)
