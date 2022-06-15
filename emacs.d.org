@@ -1,7 +1,6 @@
 # -*- eval: (my/org-config-mode) -*-
 
 #+TITILE: Emacs configuration
-#+auto_tangle: t
 
 * Early-init
 
@@ -2538,9 +2537,9 @@ Org configurations.
 
   (defun my/org-config-mode ()
     (interactive)
-    (setq org-babel-tangle-async-mode       t
-          org-jump-to-previous-block        t
-          org-edit-src-auto-save-idle-delay 1))
+    (setq-local org-jump-to-previous-block        t
+                org-edit-src-auto-save-idle-delay 1
+                org-auto-tangle-default           t))
 
 #+end_src
 

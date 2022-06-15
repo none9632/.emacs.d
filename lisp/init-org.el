@@ -395,9 +395,9 @@
 
 (defun my/org-config-mode ()
   (interactive)
-  (setq org-babel-tangle-async-mode       t
-        org-jump-to-previous-block        t
-        org-edit-src-auto-save-idle-delay 1))
+  (setq-local org-jump-to-previous-block        t
+              org-edit-src-auto-save-idle-delay 1
+              org-auto-tangle-default           t))
 
 )
 
