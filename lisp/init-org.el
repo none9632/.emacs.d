@@ -272,10 +272,11 @@
 
 (defun my/insert-image ()
   (interactive)
-  (let ((file-path (my/lf-select-file "~/Pictures/screenshots")))
-    (unless (equal file-path "cancel")
-      (setq file-path (shell-command-to-string (concat "inkscape-figures move " file-path)))
-      (insert (concat "[[" file-path "]]"))
+  (let ((image-path (my/lf-select-file "~/Pictures/screenshots")))
+    (unless (equal image-path "cancel")
+      (shell-command-to-string (concat "convert " image-path " -resize 1100x600 " image-path))
+      (setq image-path (shell-command-to-string (concat "inkscape-figures move " image-path)))
+      (insert (concat "[[" image-path "]]"))
       (org-display-inline-images nil t (point-at-bol) (point-at-eol)))))
 
 (defun my/remove-images ()
