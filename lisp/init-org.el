@@ -101,48 +101,6 @@
     (while (re-search-forward "\\\\begin{lemma}" nil t)
       (setq latex-lemma-count (1+ latex-lemma-count)))))
 
-(defun my/inkscape-figures-create ()
-  (interactive)
-  (setq img-file-path (shell-command-to-string "inkscape-figures create"))
-  (if (not (equal img-file-path ""))
-      (progn
-        (insert img-file-path)
-        (if (not (equal org-inline-image-overlays nil))
-            (org-toggle-inline-images))
-        (org-toggle-inline-images))
-    (progn
-      (evil-previous-line)
-      (kill-whole-line 2))))
-
-(defun my/insert-image ()
-  (interactive)
-  (let ((file-path (my/lf-select-file "~/Pictures/screenshots")))
-    (unless (equal file-path "cancel")
-      (setq file-path (shell-command-to-string (concat "inkscape-figures move " file-path)))
-      (insert (concat "[[" file-path "]]"))
-      (org-display-inline-images nil t (point-at-bol) (point-at-eol)))))
-
-(defun my/remove-images ()
-  (interactive)
-  (message "Removing unused images...")
-  (setq used-file-names-str "unused_name")
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward "\\[\\[\\./images/.+\\]\\]" nil t)
-      (setq used-file-names-str (concat used-file-names-str
-                                        "\\|"
-                                        (replace-regexp-in-string "\\[\\|\\]"
-                                                                  ""
-                                                                  (match-string-no-properties 0))))))
-  (shell-command-to-string (concat "find ./images/ -type f | grep -v \"" used-file-names-str "\" | xargs rm"))
-  (message "Removing unused images...done"))
-
-(defun my/inkscape-figures-edit (line-str)
-  (interactive)
-  (setq file-name (replace-regexp-in-string "\\[\\|\\]" "" line-str))
-  (shell-command-to-string (concat "inkscape-figures edit " file-name))
-  (org-toggle-inline-images)
-  (org-toggle-inline-images))
 
 (defun my/change-environment ()
   (interactive)
@@ -165,7 +123,7 @@
   (setq pdf-file-name (org-latex-compile tex-file-name))
   (async-shell-command (concat "zathura " pdf-file-name) nil nil))
 
-(defun my/get-org-latex-image ()
+(defun my/get-org-latex-fragment-image ()
   (interactive)
   (catch 'my-catch
     (let* ((processing-info
@@ -222,7 +180,7 @@
            (re-search-backward "(")
            (re-search-forward  "[[:digit:]]+")
            (re-search-backward (concat "\\\\tag{" (match-string-no-properties 0) "}"))
-           (setq latex-image-file   (my/get-org-latex-image)
+           (setq latex-image-file   (my/get-org-latex-fragment-image)
                  latex-image        (create-image latex-image-file)
                  latex-image-width  (car (image-size latex-image t))
                  latex-image-height (cdr (image-size latex-image t))))
@@ -291,6 +249,49 @@
                                                   (org-latex-preview '(4))))
                                               (mapc #'delete-overlay (overlays-in (point-min) (point-max)))
                                               (widen))))))))
+
+(defun my/inkscape-figures-create ()
+  (interactive)
+  (setq img-file-path (shell-command-to-string "inkscape-figures create"))
+  (if (not (equal img-file-path ""))
+      (progn
+        (insert img-file-path)
+        (if (not (equal org-inline-image-overlays nil))
+            (org-toggle-inline-images))
+        (org-toggle-inline-images))
+    (progn
+      (evil-previous-line)
+      (kill-whole-line 2))))
+
+(defun my/inkscape-figures-edit (line-str)
+  (interactive)
+  (setq file-name (replace-regexp-in-string "\\[\\|\\]" "" line-str))
+  (shell-command-to-string (concat "inkscape-figures edit " file-name))
+  (org-toggle-inline-images)
+  (org-toggle-inline-images))
+
+(defun my/insert-image ()
+  (interactive)
+  (let ((file-path (my/lf-select-file "~/Pictures/screenshots")))
+    (unless (equal file-path "cancel")
+      (setq file-path (shell-command-to-string (concat "inkscape-figures move " file-path)))
+      (insert (concat "[[" file-path "]]"))
+      (org-display-inline-images nil t (point-at-bol) (point-at-eol)))))
+
+(defun my/remove-images ()
+  (interactive)
+  (message "Removing unused images...")
+  (setq used-file-names-str "unused_name")
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\\[\\[\\./images/.+\\]\\]" nil t)
+      (setq used-file-names-str (concat used-file-names-str
+                                        "\\|"
+                                        (replace-regexp-in-string "\\[\\|\\]"
+                                                                  ""
+                                                                  (match-string-no-properties 0))))))
+  (shell-command-to-string (concat "find ./images/ -type f | grep -v \"" used-file-names-str "\" | xargs rm"))
+  (message "Removing unused images...done"))
 
 (defun my/isearch-line-forward (regexp-p)
   (catch 'my-catch
