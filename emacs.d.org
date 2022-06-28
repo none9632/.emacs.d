@@ -2408,9 +2408,20 @@ Org configurations.
 
   (defun my/insert-image ()
     (interactive)
-    (let ((image-path (my/lf-select-file "~/Pictures/screenshots")))
+    (let ((image-path   (my/lf-select-file "~/Pictures/screenshots"))
+          (image        nil)
+          (image-width  nil)
+          (image-height nil))
       (unless (equal image-path "cancel")
-        (shell-command-to-string (concat "convert " image-path " -resize 1100x600 " image-path))
+        (setq image        (create-image image-path)
+              image-width  (car (image-size image t))
+              image-height (cdr (image-size image t)))
+        (if (or (> image-width 1050)
+                (> image-height 600))
+            (shell-command-to-string (concat "convert "
+                                             image-path
+                                             " -quality 95 -resize 1050x600 "
+                                             image-path)))
         (setq image-path (shell-command-to-string (concat "inkscape-figures move " image-path)))
         (insert (concat "[[" image-path "]]"))
         (org-display-inline-images nil t (point-at-bol) (point-at-eol)))))
@@ -2545,9 +2556,9 @@ Org configurations.
 
   (defun my/org-config-mode ()
     (interactive)
-    (setq-local org-jump-to-previous-block        t
-                org-edit-src-auto-save-idle-delay 1
-                org-auto-tangle-default           t))
+    (setq org-jump-to-previous-block        t
+          org-edit-src-auto-save-idle-delay 1
+          org-auto-tangle-default           t))
 
 #+end_src
 
