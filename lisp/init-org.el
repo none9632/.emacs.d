@@ -284,7 +284,7 @@
               (> image-height 600))
           (shell-command-to-string (concat "convert "
                                            image-path
-                                           " -quality 95 -resize 1050x600 "
+                                           " -quality 100 -resize 1050x600 "
                                            image-path)))
       (setq image-path (shell-command-to-string (concat "inkscape-figures move " image-path)))
       (insert (concat "[[" image-path "]]"))
