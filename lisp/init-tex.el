@@ -19,8 +19,7 @@
 
 (use-package cdlatex
   :after yasnippet
-  :hook ((org-mode    . turn-on-cdlatex)
-         (LaTeX-mode  . turn-on-cdlatex)
+  :hook ((LaTeX-mode  . turn-on-cdlatex)
          (cdlatex-tab . my/cdlatex-in-yas-field))
   :bind ((:map cdlatex-mode-map
                ("<"     . nil)
@@ -32,8 +31,18 @@
                ("'"     . nil)
                ("`"     . nil))
          (:map evil-insert-state-map
-               ("<tab>" . cdlatex-tab)))
+               ("<tab>" . expand-snippet-or-cdlatex-tab)))
   :config
+  (defun do-yas-expand ()
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
+
+  (defun expand-snippet-or-cdlatex-tab ()
+    (interactive)
+    (if (or (not yas/minor-mode)
+            (null (do-yas-expand)))
+        (cdlatex-tab)))
+
   (defun my/cdlatex-in-yas-field ()
     ;; Check if we're at the end of the Yas field
     (when-let* ((_ (overlayp yas--active-field-overlay))
