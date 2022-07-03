@@ -25,6 +25,8 @@
 (use-package aas
   :hook (LaTeX-mode . aas-activate-for-major-mode)
   :config
+  
+  
   (aas-set-snippets 'org-mode
                     "tm"  (lambda ()
                             (interactive)
@@ -101,7 +103,8 @@
                     "жшь" (lambda ()
                             (interactive)
                             (my/insert-image)))
-
+  
+  
   (aas-set-snippets 'latex-mode
                     :cond (lambda ()
                             (not (texmathp)))
@@ -122,7 +125,7 @@
                             (shell-command-to-string "xdotool key Mode_switch")
                             (yas-expand-snippet (yas-lookup-snippet "align"))
                             (my/delete-one-blank-line)))
-
+  
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
                     "'k"    "кг"
@@ -146,7 +149,7 @@
                     "'w"    "Вб"
                     "'T"    "Тл"
                     "'F"    "Ф")
-
+  
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
                     "("     (lambda ()
@@ -179,7 +182,7 @@
                     ";}"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\\\}$0")))
-
+  
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
                     "*"     "\\cdot "
@@ -431,6 +434,7 @@
                     "ctg"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\ctg ${1:\\alpha }")
-                              (add-hook 'post-command-hook #'my/temp-abort-snippet))))
+                              (add-hook 'post-command-hook #'my/temp-abort-snippet)))
+  )
 
 (provide 'init-snippets)
