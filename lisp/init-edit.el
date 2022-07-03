@@ -160,7 +160,74 @@
     (set-face-background 'org-block-begin-line "#282c34")
     (push '("#+begin_latex latex" . ? ) prettify-symbols-alist)
     (push '("#+end_latex"         . ? ) prettify-symbols-alist)
-    (push '("\\\\"                . ?↵) prettify-symbols-alist))
+    (push '("\\\\"                . ?↵) prettify-symbols-alist)
+
+    (defvar pretty-alist
+      (cl-pairlis '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta"
+                    "theta" "iota" "kappa" "lambda" "mu" "nu" "xi"
+                    "omicron" "pi" "rho" "sigma_final" "sigma" "tau"
+                    "upsilon" "phi" "chi" "psi" "omega")
+                  (mapcar
+                   (lambda (x) (make-char 'greek-iso8859-7 x))
+                   (number-sequence 97 121))))
+    (add-to-list 'pretty-alist '("rangle"   . ?\⟩))
+    (add-to-list 'pretty-alist '("Gamma"    . 915))
+    (add-to-list 'pretty-alist '("Delta"    . 916))
+    (add-to-list 'pretty-alist '("vepsilon" . ?ε))
+    (add-to-list 'pretty-alist '("Vepsilon" . ?Ɛ))
+    (add-to-list 'pretty-alist '("Theta"    . 920))
+    (add-to-list 'pretty-alist '("Lambda"   . 923))
+    (add-to-list 'pretty-alist '("Xi"       . 926))
+    (add-to-list 'pretty-alist '("Pi"       . 928))
+    (add-to-list 'pretty-alist '("Sigma"    . 931))
+    (add-to-list 'pretty-alist '("Upsilon"  . 933))
+    (add-to-list 'pretty-alist '("vphi"     . ?φ))
+    (add-to-list 'pretty-alist '("Phi"      . 934))
+    (add-to-list 'pretty-alist '("Psi"      . 936))
+    (add-to-list 'pretty-alist '("Omega"    . 937))
+    (add-to-list 'pretty-alist '("mp"       . ?∓))
+    (add-to-list 'pretty-alist '("pm"       . ?±))
+    (add-to-list 'pretty-alist '("to"       . 8594))
+    (add-to-list 'pretty-alist '("div"      . 247))
+    (add-to-list 'pretty-alist '("ll"       . 8810))
+    (add-to-list 'pretty-alist '("gg"       . 8811))
+    (add-to-list 'pretty-alist '("leq"      . 8804))
+    (add-to-list 'pretty-alist '("geq"      . 8805))
+    (add-to-list 'pretty-alist '("neq"      . 8800))
+    (add-to-list 'pretty-alist '("sim"      . 8764))
+    (add-to-list 'pretty-alist '("approx"   . 8776))
+    (add-to-list 'pretty-alist '("infty"    . 8734))
+    (add-to-list 'pretty-alist '("perp"     . 8869))
+    (add-to-list 'pretty-alist '("parallel" . 8741))
+    (add-to-list 'pretty-alist '("angle"    . 8736))
+    (add-to-list 'pretty-alist '("triangle" . ?Δ))
+    (add-to-list 'pretty-alist '("degree"   . 9900))
+    (add-to-list 'pretty-alist '("ua"       . 8593))
+    (add-to-list 'pretty-alist '("da"       . 8595))
+    (add-to-list 'pretty-alist '("uua"      . 8648))
+    (add-to-list 'pretty-alist '("uda"      . 8645))
+    (add-to-list 'pretty-alist '("forall"   . 8704))
+    (add-to-list 'pretty-alist '("exists"   . 8707))
+
+    (mapc
+     (lambda (x)
+       (let ((word (car x))
+             (char (cdr x)))
+         (font-lock-add-keywords
+          nil
+          `((,(concat "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[a-zA-Z]")
+             (0 (progn
+                  (decompose-region (match-beginning 2) (match-end 2))
+                  nil)))))
+         (font-lock-add-keywords
+          nil
+          `((,(concat "\\(^\\|[^a-zA-Z0-9]\\)\\(" word "\\)[^a-zA-Z]")
+             (0 (progn
+                  (compose-region (1- (match-beginning 2)) (match-end 2)
+                                  ,char)
+                  nil)))))))
+     pretty-alist))
+
   (defun my/latex-load-prettify-symbols ()
     (interactive)
     (push '("\\pm"       . ?±)  prettify-symbols-alist)
@@ -185,6 +252,8 @@
     (push '("\\R"        . ?ℝ) prettify-symbols-alist)
     (push '("\\C"        . ?ℂ) prettify-symbols-alist)
     (push '("\\not\\in"  . ?∉) prettify-symbols-alist)
+    (push '("\\ua"       . 8593) prettify-symbols-alist)
+    (push '("\\da"       . 8595) prettify-symbols-alist)
     (push '("\\uua"      . ?⇈) prettify-symbols-alist)
     (push '("\\uda"      . ?⇅) prettify-symbols-alist)
     (push '("\\Lra"      . ?⇔) prettify-symbols-alist)

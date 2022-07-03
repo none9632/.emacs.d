@@ -104,6 +104,81 @@
                             (interactive)
                             (my/insert-image)))
   
+  (aas-set-snippets 'org-mode
+                    :cond #'texmathp
+                    "->"    "\\to "
+                    ">>"    "\\gg "
+                    "<<"    "\\ll "
+                    "<="    "\\leq "
+                    ">="    "\\geq "
+                    ";="    "\\neq "
+                    "pm"    "\\pm "
+                    "mp"    "\\mp "
+                    "~~"    "\\sim "
+                    "~="    "\\approx "
+                    ";a"    "\\alpha "
+                    ";b"    "\\beta "
+                    ";g"    "\\gamma "
+                    ";G"    "\\Gamma "
+                    ";d"    "\\delta "
+                    ";D"    "\\Delta "
+                    ";e"    "\\vepsilon "
+                    ";E"    "\\Vepsilon "
+                    ";z"    "\\zeta "
+                    ";n"    "\\eta "
+                    ";q"    "\\theta "
+                    ";Q"    "\\Theta "
+                    ";i"    "\\iota "
+                    ";k"    "\\kappa "
+                    ";l"    "\\lambda "
+                    ";L"    "\\Lambda "
+                    ";m"    "\\mu "
+                    ";v"    "\\nu "
+                    ";x"    "\\xi "
+                    ";X"    "\\Xi "
+                    ";p"    "\\pi "
+                    ";P"    "\\Pi "
+                    ";r"    "\\rho "
+                    ";s"    "\\sigma "
+                    ";S"    "\\Sigma "
+                    ";t"    "\\tau "
+                    ";u"    "\\upsilon "
+                    ";U"    "\\Upsilon "
+                    ";f"    "\\vphi "
+                    ";F"    "\\Phi "
+                    ";o"    "\\chi "
+                    ";y"    "\\psi "
+                    ";Y"    "\\Psi "
+                    ";w"    "\\omega "
+                    ";W"    "\\Omega "
+                    ";h"    "\\hbar "
+                    ";8"    "\\infty "
+                    "per"   "\\perp "
+                    "par"   "\\parallel "
+                    "ang"   "\\angle "
+                    "dg"    "\\degree "
+                    "ua"    "\\ua "
+                    "da"    "\\da "
+                    "uua"   "\\uua "
+                    "uda"   "\\uda "
+                    "AA"    "\\forall "
+                    "EE"    "\\exists "
+                    "nEE"   "\\nexists "
+                    "div"   "\\div "
+                    "sr"    "^2"
+                    "cb"    "^3"
+                    "inv"   "^{-1}"
+                    "td"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "^{$1}"))
+                    "vc"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\vec{$1}$0"))
+                    "tri"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\triangle ${1:ABC}$0")
+                              (add-hook 'post-command-hook #'my/temp-abort-snippet)))
+  
   
   (aas-set-snippets 'latex-mode
                     :cond (lambda ()
