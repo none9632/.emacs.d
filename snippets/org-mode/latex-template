@@ -3,6 +3,6 @@
 # key: ltemp
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (save-buffer) (revert-buffer t t nil))))
 # --
-# -*- org-src-window-setup: split-window-below; eval: (my/org-latex-mode) -*-
+# -*- eval: (my/org-latex-mode) -*-
 
 #+SETUPFILE: ~/.emacs.d/org/latex-export.org
