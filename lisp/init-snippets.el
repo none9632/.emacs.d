@@ -90,17 +90,17 @@
                                   (yas-expand-snippet (yas-lookup-snippet "display math"))
                                   (my/delete-one-blank-line))
                               (insert "вь")))
-                    ";fg" (lambda ()
+                    "'fg" (lambda ()
                             (interactive)
                             (yas-expand-snippet (yas-lookup-snippet "figure")))
-                    "жап" (lambda ()
+                    "эап" (lambda ()
                             (interactive)
                             (shell-command-to-string "xdotool key Mode_switch")
                             (yas-expand-snippet (yas-lookup-snippet "figure")))
-                    ";im" (lambda ()
+                    "'im" (lambda ()
                             (interactive)
                             (my/insert-image))
-                    "жшь" (lambda ()
+                    "эшь" (lambda ()
                             (interactive)
                             (my/insert-image)))
   
@@ -177,7 +177,19 @@
                     "tri"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\triangle ${1:ABC}$0")
-                              (add-hook 'post-command-hook #'my/temp-abort-snippet)))
+                              (add-hook 'post-command-hook #'my/temp-abort-snippet))
+                    "mrm"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mrm{$1}$0"))
+                    "mbf"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mbf{$1}$0"))
+                    "mcal"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mcal{$1}$0"))
+                    "msrc"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mscr{$1}$0")))
   
   
   (aas-set-snippets 'latex-mode
@@ -348,7 +360,6 @@
                     "vv"    "\\vee "
                     "nvv"   "\\wedge "
                     "qq"    "\\quad "
-                    "md"    "\\mathrm{d} "
                     "eq"    "\\equiv "
                     "ua"    "\\ua "
                     "da"    "\\da "
@@ -365,7 +376,10 @@
                     "CC"    "\\C"
                     "sr"    "^2"
                     "cb"    "^3"
-                    "inv"   "^{-1}"
+                    "inv"   "^{-1}")
+  
+  (aas-set-snippets 'latex-mode
+                    :cond #'texmathp
                     "td"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "^{$1}"))
@@ -509,7 +523,19 @@
                     "ctg"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\ctg ${1:\\alpha }")
-                              (add-hook 'post-command-hook #'my/temp-abort-snippet)))
+                              (add-hook 'post-command-hook #'my/temp-abort-snippet))
+                    "mrm"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mrm{$1}$0"))
+                    "mbf"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mbf{$1}$0"))
+                    "mcal"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mcal{$1}$0"))
+                    "msrc"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mscr{$1}$0")))
   )
 
 (provide 'init-snippets)
