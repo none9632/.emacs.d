@@ -64,7 +64,9 @@
   :bind ((:map evil-normal-state-map
                ("SPC t"           . worf-goto))
          (:map worf-mode-map
-               ("<S-iso-lefttab>" . nil)))
+               ("<S-iso-lefttab>" . nil)
+               ("["               . nil)
+               ("]"               . nil)))
   :hook (org-mode . worf-mode))
 
 (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
