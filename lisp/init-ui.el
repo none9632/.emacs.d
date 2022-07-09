@@ -86,7 +86,6 @@
                                                              doom-modeline-height     34))
                                                (dashboard-jump-to-recents)
                                                (hl-line-mode t)))
-
   (dashboard-setup-startup-hook)
   ;; :config
   ;; (defvar dashboard-recover-layout-p nil

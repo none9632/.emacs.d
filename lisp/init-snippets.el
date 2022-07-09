@@ -187,7 +187,7 @@
                     "mcal"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "msrc"  (lambda ()
+                    "mas"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
   
@@ -533,7 +533,7 @@
                     "mcal"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "msrc"  (lambda ()
+                    "mas"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
   )

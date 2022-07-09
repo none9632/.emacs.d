@@ -795,10 +795,10 @@ Increase selected region by semantic units
 #+begin_src emacs-lisp :tangle ./lisp/init-edit.el
 
   (use-package goto-chg
-    :init
-    (leader-key-def
-      ";" 'goto-last-change
-      "," 'goto-last-change-reverse))
+    :after evil
+    :bind (:map evil-normal-state-map
+                (";" . goto-last-change)
+                ("," . goto-last-change-reverse)))
 
 #+end_src
 
@@ -827,7 +827,7 @@ Flexible text folding
     :ensure nil
     :hook (prog-mode . hs-minor-mode)
     :bind (:map evil-normal-state-map
-                ("TAB"     . hs-cycle))
+                ("TAB" . hs-cycle))
     :config
     (defun hs-cycle (&optional level)
       (interactive "p")
@@ -3344,7 +3344,6 @@ Visual (UI) configurations for better lookings and appearances.
                                                                doom-modeline-height     34))
                                                  (dashboard-jump-to-recents)
                                                  (hl-line-mode t)))
-
     (dashboard-setup-startup-hook)
     ;; :config
     ;; (defvar dashboard-recover-layout-p nil
@@ -4178,7 +4177,7 @@ Snippets configurations.
                     "mcal"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "msrc"  (lambda ()
+                    "mas"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
 
@@ -4529,7 +4528,7 @@ Snippets configurations.
                     "mcal"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "msrc"  (lambda ()
+                    "mas"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
 

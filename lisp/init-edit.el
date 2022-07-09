@@ -93,10 +93,10 @@
          ("C-|"           . mc/vertical-align-with-space)))
 
 (use-package goto-chg
-  :init
-  (leader-key-def
-    ";" 'goto-last-change
-    "," 'goto-last-change-reverse))
+  :after evil
+  :bind (:map evil-normal-state-map
+              (";" . goto-last-change)
+              ("," . goto-last-change-reverse)))
 
 (use-package subword
   :ensure nil
@@ -109,7 +109,7 @@
   :ensure nil
   :hook (prog-mode . hs-minor-mode)
   :bind (:map evil-normal-state-map
-              ("TAB"     . hs-cycle))
+              ("TAB" . hs-cycle))
   :config
   (defun hs-cycle (&optional level)
     (interactive "p")
