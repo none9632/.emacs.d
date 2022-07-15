@@ -18,8 +18,8 @@
   (setq-default TeX-master nil))
 
 (use-package cdlatex
-  :after yasnippet
-  :hook ((LaTeX-mode  . turn-on-cdlatex)
+  :after (evil yasnippet)
+  :hook ((prog-mode  . turn-on-cdlatex)
          (cdlatex-tab . my/cdlatex-in-yas-field))
   :bind ((:map cdlatex-mode-map
                ("<"     . nil)

@@ -2432,7 +2432,7 @@ Org configurations.
                                             (org-narrow-to-subtree)
                                             (save-excursion
                                               (goto-char (point-min))
-                                              (search-forward-regexp "^\*+" nil t 2)
+                                              (search-forward-regexp "^\*+ " nil t 2)
                                               (org-display-inline-images nil t (point-min) (point))
                                               (org--latex-preview-region (point-min) (point)))
                                             (widen)))
@@ -2818,8 +2818,8 @@ Org configurations.
 #+begin_src emacs-lisp :tangle ./lisp/init-tex.el
 
   (use-package cdlatex
-    :after yasnippet
-    :hook ((LaTeX-mode  . turn-on-cdlatex)
+    :after (evil yasnippet)
+    :hook ((prog-mode  . turn-on-cdlatex)
            (cdlatex-tab . my/cdlatex-in-yas-field))
     :bind ((:map cdlatex-mode-map
                  ("<"     . nil)
@@ -3719,20 +3719,6 @@ Version control systems.
       "q"   'magit-log-bury-buffer)
     (leader-key-def
       "ef" 'with-editor-finish))
-
-#+end_src
-
-** magit-todos
-
-Show TODOs in magit
-
-#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
-
-  (use-package magit-todos
-    :after magit
-    :init
-    (setq magit-todos-nice (if (executable-find "nice") t nil))
-    (magit-todos-mode 1))
 
 #+end_src
 

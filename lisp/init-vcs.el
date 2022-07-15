@@ -38,10 +38,4 @@
   (leader-key-def
     "ef" 'with-editor-finish))
 
-(use-package magit-todos
-  :after magit
-  :init
-  (setq magit-todos-nice (if (executable-find "nice") t nil))
-  (magit-todos-mode 1))
-
 (provide 'init-vcs)
