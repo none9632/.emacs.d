@@ -106,6 +106,11 @@
   
   (aas-set-snippets 'org-mode
                     :cond #'texmathp
+                    "*"     "\\cdot "
+                    "%"     "\\%"
+                    "  "    "\\ "
+                    "xx"    "\\times "
+                    "..."   "\\ldots "
                     "->"    "\\to "
                     ">>"    "\\gg "
                     "<<"    "\\ll "
@@ -164,6 +169,7 @@
                     "AA"    "\\forall "
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
+                    "eq"    "\\equiv "
                     "div"   "\\div "
                     "sr"    "^2"
                     "cb"    "^3"
@@ -199,6 +205,14 @@
                             (interactive)
                             (yas-expand-snippet "$$1$"))
                     "ьл"  (lambda ()
+                            (interactive)
+                            (shell-command-to-string "xdotool key Mode_switch")
+                            (yas-expand-snippet "$$1$")
+                            (add-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet 0 t))
+                    "ms"  (lambda ()
+                            (interactive)
+                            (yas-expand-snippet "$$1$"))
+                    "ьы"  (lambda ()
                             (interactive)
                             (shell-command-to-string "xdotool key Mode_switch")
                             (yas-expand-snippet "$$1$")
