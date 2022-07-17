@@ -70,21 +70,19 @@
         dashboard-set-file-icons    t
         dashboard-set-heading-icons t
         dashboard-set-navigator     nil
-        dashboard-items             '((recents   . 8)
-                                      (projects  . 5)
-                                      (bookmarks . 5))
+        dashboard-items             '((projects  . 8)
+                                      (recents   . 8))
         dashboard-heading-icons     '((recents   . "file-text")
-                                      (bookmarks . "bookmark")
                                       (projects  . "briefcase")))
 
   (add-hook 'after-init-hook                 'dashboard-refresh-buffer)
   (add-hook 'dashboard-mode-hook             'my/dashboard-banner)
-  (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-recents)
+  (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-projects)
   (add-hook 'dashboard-mode-hook             (lambda ()
                                                (with-current-buffer "*dashboard*"
                                                  (setq-local evil-normal-state-cursor '(nil)
                                                              doom-modeline-height     34))
-                                               (dashboard-jump-to-recents)
+                                               (dashboard-jump-to-projects)
                                                (hl-line-mode t)))
   (dashboard-setup-startup-hook)
   ;; :config

@@ -3,15 +3,18 @@
 (use-package projectile
   :diminish
   :bind (:map projectile-mode-map
-         ("s-t"   . projectile-find-file) ; `cmd-t' or `super-t'
-         ("C-c p" . projectile-command-map))
+              ("C-c p" . projectile-command-map))
   :hook (after-init . projectile-mode)
   :init
   (setq projectile-mode-line-prefix ""
         projectile-sort-order       'recentf
-        projectile-use-git-grep     t)
+        projectile-use-git-grep     t
+        projectile-enable-caching   t)
   :config
-  ;; (projectile-update-mode-line)         ; Update mode-line at the first time
+  (projectile-update-mode-line)         ; Update mode-line at the first time
+
+  (when (file-directory-p "~/Cloud/Projects")
+    (setq projectile-project-search-path '("~/Cloud/Projects")))
 
   ;; Use the faster searcher to handle project files: ripgrep `rg'.
   (when (and (not (executable-find "fd"))
@@ -20,10 +23,6 @@
           (let ((rg-cmd ""))
             (dolist (dir projectile-globally-ignored-directories)
               (setq rg-cmd (format "%s --glob '!%s'" rg-cmd dir)))
-            (concat "rg -0 --files --color=never --hidden" rg-cmd))))
-
-  ;; Support Perforce project
-  (let ((val (or (getenv "P4CONFIG") ".p4config")))
-    (add-to-list 'projectile-project-root-files-bottom-up val)))
+            (concat "rg -0 --files --color=never --hidden" rg-cmd)))))
 
 (provide 'init-projectile)
