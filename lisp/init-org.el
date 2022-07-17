@@ -26,6 +26,9 @@
         org-startup-indented              t
         org-startup-with-inline-images    nil)
 
+  (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
@@ -123,7 +126,7 @@
                             "sd '^\\\\begin\\{lemma\\}' '\\\\begin{boxlemma}' ./" tex-file-name ";"
                             "sd '^\\\\end\\{lemma\\}' '\\\\end{boxlemma}' ./" tex-file-name ";"))
   (setq pdf-file-name (org-latex-compile tex-file-name))
-  (async-shell-command (concat "zathura " pdf-file-name) nil nil))
+  (async-shell-command (concat "evince " pdf-file-name) nil nil))
 
 (defun my/get-org-latex-fragment-image ()
   (interactive)
