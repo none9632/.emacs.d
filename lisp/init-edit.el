@@ -211,6 +211,9 @@
     (add-to-list 'pretty-alist '("l("       . ?\())
     (add-to-list 'pretty-alist '("r)"       . ?\)))
     (add-to-list 'pretty-alist '("equiv"    . ?≡))
+    (add-to-list 'pretty-alist '("cdot"     . 8901))
+    (add-to-list 'pretty-alist '("prec"     . ?≺))
+    (add-to-list 'pretty-alist '("succ"     . ?≻))
 
     (mapc
      (lambda (x)

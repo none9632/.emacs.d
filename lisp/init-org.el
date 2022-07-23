@@ -344,7 +344,7 @@
     (let* ((line-str           (buffer-substring (line-beginning-position) (line-end-position)))
            (processed-line-str (replace-regexp-in-string "\\[\\[[[:word:]\\|\\.\\|/]*\\]\\]" "" line-str))
            (current-layout     (shell-command-to-string "xkb-switch -p")))
-      (shell-command-to-string "xdotool key Mode_switch")
+      (shell-command-to-string "xkb-switch -s us")
       (if (and (equal processed-line-str "")
                (not (equal line-str "")))
           (my/inkscape-figures-edit line-str)
