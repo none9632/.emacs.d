@@ -2226,7 +2226,10 @@ Org configurations.
           org-edit-src-persistent-message   nil
           org-return-follows-link           t
           org-startup-indented              t
-          org-startup-with-inline-images    nil)
+          org-startup-with-inline-images    nil
+          org-emphasis-alist                '(("*" bold)
+                                              ("/" italic)
+                                              ("_" underline)))
 
     (setcar (nthcdr 4 org-emphasis-regexp-components) 10)
     (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
