@@ -885,6 +885,7 @@ Flexible text folding
       (push '("#+begin_latex latex" . ? ) prettify-symbols-alist)
       (push '("#+end_latex"         . ? ) prettify-symbols-alist)
       (push '("\\\\"                . ?↵) prettify-symbols-alist)
+      (push '("\\l("                . ?\() prettify-symbols-alist)
 
       (defvar pretty-alist
         (cl-pairlis '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta"
@@ -932,12 +933,12 @@ Flexible text folding
       (add-to-list 'pretty-alist '("uda"      . 8645))
       (add-to-list 'pretty-alist '("forall"   . 8704))
       (add-to-list 'pretty-alist '("exists"   . 8707))
-      (add-to-list 'pretty-alist '("l("       . ?\())
       (add-to-list 'pretty-alist '("r)"       . ?\)))
       (add-to-list 'pretty-alist '("equiv"    . ?≡))
       (add-to-list 'pretty-alist '("cdot"     . 8901))
       (add-to-list 'pretty-alist '("prec"     . ?≺))
       (add-to-list 'pretty-alist '("succ"     . ?≻))
+      (add-to-list 'pretty-alist '("ldots"    . 8230))
 
       (mapc
        (lambda (x)
@@ -2203,7 +2204,14 @@ Org configurations.
     :hook (org-mode . (lambda ()
                         (turn-on-auto-fill)
                         (variable-pitch-mode 1)
-                        (diff-hl-mode 0)))
+                        (diff-hl-mode 0)
+                        ;; Disable in electic-pair-mode in latex fragment
+                        (setq-local electric-pair-inhibit-predicate
+                                    `(lambda (c)
+                                       (if (or (char-equal c ?<)
+                                               (texmathp))
+                                           t
+                                         (,electric-pair-inhibit-predicate c))))))
     :config
     (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
     (setq org-ellipsis                      " ▾ "
@@ -2311,7 +2319,6 @@ Org configurations.
       (goto-char (point-min))
       (while (re-search-forward "\\\\begin{lemma}" nil t)
         (setq latex-lemma-count (1+ latex-lemma-count)))))
-
 
   (defun my/change-environment ()
     (interactive)
@@ -2836,7 +2843,8 @@ Org configurations.
                  ("|"     . nil)
                  ("_"     . nil)
                  ("'"     . nil)
-                 ("`"     . nil))
+                 ("`"     . nil)
+                 ("$"     . nil))
            (:map evil-insert-state-map
                  ("<tab>" . expand-snippet-or-cdlatex-tab)))
     :config
@@ -4087,6 +4095,24 @@ Snippets configurations.
                     "эшь" (lambda ()
                             (interactive)
                             (my/insert-image)))
+
+  (aas-set-snippets 'org-mode
+                    :cond #'texmathp
+                    "("     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "($1)$0"))
+                    "["     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "[$1]$0"))
+                    "{"     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "{$1}$0"))
+                    "|"     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "|$1|$0"))
+                    ";{"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\{$1\\\\}$0")))
 
   (aas-set-snippets 'org-mode
                     :cond #'texmathp

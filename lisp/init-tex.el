@@ -29,7 +29,8 @@
                ("|"     . nil)
                ("_"     . nil)
                ("'"     . nil)
-               ("`"     . nil))
+               ("`"     . nil)
+               ("$"     . nil))
          (:map evil-insert-state-map
                ("<tab>" . expand-snippet-or-cdlatex-tab)))
   :config

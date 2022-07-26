@@ -9,7 +9,14 @@
   :hook (org-mode . (lambda ()
                       (turn-on-auto-fill)
                       (variable-pitch-mode 1)
-                      (diff-hl-mode 0)))
+                      (diff-hl-mode 0)
+                      ;; Disable in electic-pair-mode in latex fragment
+                      (setq-local electric-pair-inhibit-predicate
+                                  `(lambda (c)
+                                     (if (or (char-equal c ?<)
+                                             (texmathp))
+                                         t
+                                       (,electric-pair-inhibit-predicate c))))))
   :config
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
   (setq org-ellipsis                      " ▾ "
@@ -105,7 +112,6 @@
     (goto-char (point-min))
     (while (re-search-forward "\\\\begin{lemma}" nil t)
       (setq latex-lemma-count (1+ latex-lemma-count)))))
-
 
 (defun my/change-environment ()
   (interactive)

@@ -106,6 +106,24 @@
   
   (aas-set-snippets 'org-mode
                     :cond #'texmathp
+                    "("     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "($1)$0"))
+                    "["     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "[$1]$0"))
+                    "{"     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "{$1}$0"))
+                    "|"     (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "|$1|$0"))
+                    ";{"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\{$1\\\\}$0")))
+  
+  (aas-set-snippets 'org-mode
+                    :cond #'texmathp
                     "*"     "\\cdot "
                     "%"     "\\%"
                     "  "    "\\ "

@@ -161,6 +161,7 @@
     (push '("#+begin_latex latex" . ? ) prettify-symbols-alist)
     (push '("#+end_latex"         . ? ) prettify-symbols-alist)
     (push '("\\\\"                . ?↵) prettify-symbols-alist)
+    (push '("\\l("                . ?\() prettify-symbols-alist)
 
     (defvar pretty-alist
       (cl-pairlis '("alpha" "beta" "gamma" "delta" "epsilon" "zeta" "eta"
@@ -208,12 +209,12 @@
     (add-to-list 'pretty-alist '("uda"      . 8645))
     (add-to-list 'pretty-alist '("forall"   . 8704))
     (add-to-list 'pretty-alist '("exists"   . 8707))
-    (add-to-list 'pretty-alist '("l("       . ?\())
     (add-to-list 'pretty-alist '("r)"       . ?\)))
     (add-to-list 'pretty-alist '("equiv"    . ?≡))
     (add-to-list 'pretty-alist '("cdot"     . 8901))
     (add-to-list 'pretty-alist '("prec"     . ?≺))
     (add-to-list 'pretty-alist '("succ"     . ?≻))
+    (add-to-list 'pretty-alist '("ldots"    . 8230))
 
     (mapc
      (lambda (x)
