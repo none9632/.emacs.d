@@ -3,12 +3,15 @@
 #+TITILE: Emacs configuration
 
 * Early-init
+:PROPERTIES:
+:header-args: :tangle ./early-init.el
+:END:
 
 Emacs 27 introduces early-init.el, which is run before init.el, before package and UI initialization happens.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./early-init.el
+#+begin_src emacs-lisp
 	
   ;; -*- lexical-binding: t -*-
 
@@ -16,7 +19,7 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 
 ** Early-init
 
-#+begin_src emacs-lisp :tangle ./early-init.el
+#+begin_src emacs-lisp
 
   ;; Defer garbage collection further back in the startup process
   (setq gc-cons-threshold most-positive-fixnum)
@@ -36,9 +39,13 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 #+end_src
 
 * Init
+:PROPERTIES:
+:header-args: :tangle ./init.el
+:END:
+
 ** Header
 
-#+begin_src emacs-lisp :tangle ./init.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t no-byte-compile: t -*-
 
@@ -46,7 +53,7 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 
 ** Speed up startup
 
-#+begin_src emacs-lisp :tangle ./init.el
+#+begin_src emacs-lisp
 
   (defvar centaur-gc-cons-threshold (if (display-graphic-p) 16000000 1600000)
     "The default value to use for `gc-cons-threshold'. If you experience freezing,
@@ -94,7 +101,7 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 
 ** Startup theme
 
-#+begin_src emacs-lisp :tangle ./init.el
+#+begin_src emacs-lisp
 
   ;; Hide cursor and mode-line at startup
   (setq-default mode-line-format nil)
@@ -104,7 +111,7 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 
 ** Load path
 
-#+begin_src emacs-lisp :tangle ./init.el
+#+begin_src emacs-lisp
 
   ;; Optimize: Force "lisp" at the head to reduce the startup time.
   (defun update-load-path (&rest _)
@@ -120,7 +127,7 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 
 ** Packages
 
-#+begin_src emacs-lisp :tangle ./init.el
+#+begin_src emacs-lisp
 
   ;; Without this comment Emacs25 adds (package-initialize) here
   (require 'init-package)
@@ -161,12 +168,15 @@ Emacs 27 introduces early-init.el, which is run before init.el, before package a
 #+end_src
 
 * Basic
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-basic.el
+:END:
 
 Better defaults configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -177,7 +187,7 @@ Better defaults configurations.
 
 ** Personal information
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (setq user-full-name    "none"
         user-mail-address "none")
@@ -186,7 +196,7 @@ Better defaults configurations.
 
 ** Encoding
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   ;; UTF-8 as the default coding system
   (when (fboundp 'set-charset-priority)
@@ -211,7 +221,7 @@ Better defaults configurations.
 
 ** Keep Folders Clean
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (shell-command "rm -f ~/.emacs.d/session.*")
   (shell-command "rm -f ~/.emacs.d/org-src-*.txt")
@@ -220,7 +230,7 @@ Better defaults configurations.
 
 ** Fonts
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (defun my/set-font-faces ()
     ;; Set the font face based on platform
@@ -243,7 +253,7 @@ Better defaults configurations.
 ** History
 *** saveplace
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 	
   (use-package saveplace
     :ensure nil
@@ -253,7 +263,7 @@ Better defaults configurations.
 
 *** savehist
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (use-package savehist
     :ensure nil
@@ -271,7 +281,7 @@ Better defaults configurations.
 
 *** simple
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (use-package simple
     :ensure nil
@@ -295,7 +305,7 @@ Better defaults configurations.
 
 *** so-long
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (use-package so-long
     :ensure nil
@@ -308,7 +318,7 @@ Better defaults configurations.
 
 Scroll one line at a time (less "jumpy" than defaults)
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (when (display-graphic-p)
     (setq mouse-wheel-scroll-amount     '(1 ((shift) . 1))
@@ -322,7 +332,7 @@ Scroll one line at a time (less "jumpy" than defaults)
 
 ** Keybinding
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
   (global-set-key (kbd "C-S-n")    'make-frame-command)
@@ -368,7 +378,7 @@ Scroll one line at a time (less "jumpy" than defaults)
 
 ** Indentation
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (setq-default tab-width 4)
   (setq indent-tabs-mode nil)
@@ -384,7 +394,7 @@ Scroll one line at a time (less "jumpy" than defaults)
 
 ** Misc
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (fset 'yes-or-no-p 'y-or-n-p)
   (setq-default major-mode       'text-mode
@@ -407,19 +417,22 @@ Scroll one line at a time (less "jumpy" than defaults)
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (provide 'init-basic)
 
 #+end_src
 
 * Completion
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-completion.el
+:END:
 
 Auto-completion configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -430,7 +443,7 @@ Auto-completion configurations.
 
 ** company
 
-#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+#+begin_src emacs-lisp
 
   (use-package company
     :diminish
@@ -454,7 +467,7 @@ Auto-completion configurations.
 
 Better sorting and filtering
 
-#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+#+begin_src emacs-lisp
 
   (use-package company-prescient
     :after company
@@ -465,7 +478,7 @@ Better sorting and filtering
 
 ** company-box
 
-#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+#+begin_src emacs-lisp
 
   (use-package company-box
     :after company
@@ -514,19 +527,22 @@ Better sorting and filtering
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-completion.el
+#+begin_src emacs-lisp
 
   (provide 'init-completion)
 
 #+end_src
 
 * Custom
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-custom.el
+:END:
 
 Customization.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-custom.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -534,7 +550,7 @@ Customization.
 
 ** Custom definitions
 
-#+begin_src emacs-lisp :tangle ./lisp/init-custom.el
+#+begin_src emacs-lisp
 
   ;; Emacs Lisp Package Archive (ELPA)
   (defcustom centaur-package-archives-alist
@@ -579,19 +595,22 @@ Customization.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-custom.el
+#+begin_src emacs-lisp
 	
   (provide 'init-custom)
 
 #+end_src
 
 * Edit
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-edit.el
+:END:
 
 Editing configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 	
@@ -602,7 +621,7 @@ Editing configurations.
 
 ** Russian keyboard
 
-#+begin_src emacs-lisp :tangle ./lisp/init-basic.el
+#+begin_src emacs-lisp
 
   (defun reverse-input-method (input-method)
     "Build the reverse mapping of single letters from INPUT-METHOD."
@@ -635,7 +654,7 @@ Editing configurations.
 
 Delete selection if you insert
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 	
   (use-package delsel
     :ensure nil
@@ -647,7 +666,7 @@ Delete selection if you insert
 
 Automatically reload files was modified by external program
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 	
   (use-package autorevert
     :ensure nil
@@ -660,7 +679,7 @@ Automatically reload files was modified by external program
 
 Click to browse URL or to send to e-mail address
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package goto-addr
     :ensure nil
@@ -676,7 +695,7 @@ Click to browse URL or to send to e-mail address
 
 Jump to things in Emacs tree-style
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package avy
     :after evil
@@ -696,7 +715,7 @@ Jump to things in Emacs tree-style
 
 Minor mode to aggressively keep your code always indented
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package aggressive-indent
     :diminish
@@ -726,7 +745,7 @@ Minor mode to aggressively keep your code always indented
 
 An all-in-one comment command to rule them all
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package comment-dwim-2
     :init
@@ -743,7 +762,7 @@ An all-in-one comment command to rule them all
 
 Automatic parenthesis pairing
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package electric-pair
     :ensure nil
@@ -762,7 +781,7 @@ Automatic parenthesis pairing
 
 Increase selected region by semantic units
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package expand-region
     :after evil
@@ -774,7 +793,7 @@ Increase selected region by semantic units
 
 ** multiplite-regiton
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package multiple-cursors
     :bind (("C-S-c C-S-c"   . mc/edit-lines)
@@ -792,7 +811,7 @@ Increase selected region by semantic units
 
 ** Goto last change
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package goto-chg
     :after evil
@@ -806,7 +825,7 @@ Increase selected region by semantic units
 
 Handling capitalized subwords in a nomenclature
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package subword
     :ensure nil
@@ -820,7 +839,7 @@ Handling capitalized subwords in a nomenclature
 
 Flexible text folding
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package hideshow
     :after evil
@@ -873,7 +892,7 @@ Flexible text folding
 
 ** pretty-symbols
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (use-package prettify-symbols
     :ensure nil
@@ -1003,19 +1022,22 @@ Flexible text folding
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-edit.el
+#+begin_src emacs-lisp
 
   (provide 'init-edit)
 	
 #+end_src
 
 * Elisp
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-elisp.el
+:END:
 
 Emacs Lisp configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -1023,7 +1045,7 @@ Emacs Lisp configurations.
 
 ** Emacs lisp mode
 
-#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+#+begin_src emacs-lisp
 
   (use-package elisp-mode
     :ensure nil
@@ -1047,7 +1069,7 @@ Emacs Lisp configurations.
 
 A better help buffer
 
-#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+#+begin_src emacs-lisp
 
   (use-package helpful
     :defines (counsel-describe-function-function
@@ -1098,20 +1120,23 @@ A better help buffer
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-elisp.el
+#+begin_src emacs-lisp
 	
   (provide 'init-elisp)
 
 #+end_src
 
 * Evil
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-evil.el
+:END:
 
 Evil configuration.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
-	
+#+begin_src emacs-lisp
+
   ;; -*- lexical-binding: t -*-
 
   (require 'init-basic)
@@ -1120,7 +1145,7 @@ Evil configuration.
 
 ** evil
 
-#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+#+begin_src emacs-lisp
 
   (use-package evil
     :hook (prog-mode . evil-mode)
@@ -1205,7 +1230,7 @@ Evil configuration.
 
 ** evil-collection
 
-#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+#+begin_src emacs-lisp
 
   (use-package evil-collection
     :after evil
@@ -1216,7 +1241,7 @@ Evil configuration.
 
 ** key-chord
 
-#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+#+begin_src emacs-lisp
 
   (use-package key-chord
     :after evil
@@ -1243,19 +1268,22 @@ Evil configuration.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-evil.el
+#+begin_src emacs-lisp
 	
   (provide 'init-evil)
 
 #+end_src
 
 * Funcs
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-funcs.el
+:END:
 
 Define functions.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 	
@@ -1266,7 +1294,7 @@ Define functions.
 
 ** Open this file
 
-#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+#+begin_src emacs-lisp
 
   (defun my/open-org-file ()
     "Open `.emacs.d.org'."
@@ -1280,7 +1308,7 @@ Define functions.
 
 ** Misc
 
-#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+#+begin_src emacs-lisp
 
   (defun create-scratch-buffer ()
     "Create a scratch buffer."
@@ -1340,7 +1368,7 @@ Define functions.
 
 ** Pakcage repository (ELPA)
 
-#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+#+begin_src emacs-lisp
 
   (defun set-package-archives (archives &optional refresh async no-save)
     "Set the package archives (ELPA).
@@ -1365,7 +1393,7 @@ Define functions.
 
 ** Update
 
-#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+#+begin_src emacs-lisp
 
   (defvar centaur--updating-packages nil)
   (defun update-packages (&optional sync)
@@ -1402,19 +1430,22 @@ Define functions.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-funcs.el
+#+begin_src emacs-lisp
 	
   (provide 'init-funcs)
 
 #+end_src
 
 * Highlight
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-highlight.el
+:END:
 
 Highlighting configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 	
@@ -1422,7 +1453,7 @@ Highlighting configurations.
 
 ** Highlight the current line
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package hl-line
     :ensure nil
@@ -1432,7 +1463,7 @@ Highlighting configurations.
 
 ** Highlight matching parens
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package paren
     :ensure nil
@@ -1444,7 +1475,7 @@ Highlighting configurations.
 
 ** Highlight symbols
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package symbol-overlay
     :diminish
@@ -1491,7 +1522,7 @@ Highlighting configurations.
 
 ** Highlight indentions
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (defun my/hig-restart ()
     (interactive)
@@ -1531,7 +1562,7 @@ Highlighting configurations.
 
 ** Colorize color names in buffers
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package rainbow-mode
     :diminish
@@ -1562,7 +1593,7 @@ Highlighting configurations.
 
 ** Highlight TODO and similar keywords in comments and strings
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package hl-todo
     :bind (:map hl-todo-mode-map
@@ -1581,7 +1612,7 @@ Highlighting configurations.
 
 ** Highlight uncommitted changes using VC
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package diff-hl
     :custom-face
@@ -1628,7 +1659,7 @@ Highlighting configurations.
 
 ** Highlight some operations
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package volatile-highlights
     :diminish
@@ -1645,7 +1676,7 @@ Highlighting configurations.
 
 ** Pulse current line
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (use-package pulse
     :ensure nil
@@ -1696,19 +1727,22 @@ Highlighting configurations.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-highlight.el
+#+begin_src emacs-lisp
 
   (provide 'init-highlight)
 
 #+end_src
 
 * Ibuffer
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-ibuffer.el
+:END:
 
 IBuffer configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -1719,7 +1753,7 @@ IBuffer configurations.
 
 ** ibuffer
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+#+begin_src emacs-lisp
 
   (use-package ibuffer
     :after evil avy
@@ -1756,7 +1790,7 @@ IBuffer configurations.
 
 Group ibuffer's list by project root
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+#+begin_src emacs-lisp
 
   (use-package ibuffer-projectile
     :functions all-the-icons-octicon ibuffer-do-sort-by-alphabetic
@@ -1779,7 +1813,7 @@ Group ibuffer's list by project root
 
 ** Keybinding
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+#+begin_src emacs-lisp
 
   (leader-key-def
     "l" (lambda ()
@@ -1803,19 +1837,22 @@ Group ibuffer's list by project root
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ibuffer.el
+#+begin_src emacs-lisp
 	
   (provide 'init-ibuffer)
 
 #+end_src
 
 * Ivy
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-ivy.el
+:END:
 
 Ivy configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -1827,7 +1864,7 @@ Ivy configurations.
 
 ** counsel
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+#+begin_src emacs-lisp
 
   (use-package counsel
     :diminish ivy-mode counsel-mode
@@ -2130,7 +2167,7 @@ Ivy configurations.
 
 ** swiper
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+#+begin_src emacs-lisp
 
   (use-package swiper
     :after evil
@@ -2143,7 +2180,7 @@ Ivy configurations.
 
 More friendly display transformer for Ivy
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+#+begin_src emacs-lisp
 
   (use-package ivy-rich
     :hook (;; Must load after `counsel-projectile'
@@ -2163,7 +2200,7 @@ More friendly display transformer for Ivy
 Better experience with icons
 Enable it before`ivy-rich-mode' for better performance
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+#+begin_src emacs-lisp
 
   (use-package all-the-icons-ivy-rich
     :if (display-graphic-p)
@@ -2173,19 +2210,22 @@ Enable it before`ivy-rich-mode' for better performance
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ivy.el
+#+begin_src emacs-lisp
 
   (provide 'init-ivy)
 	
 #+end_src
 
 * Org mode
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-org.el
+:END:
 
 Org configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -2196,7 +2236,7 @@ Org configurations.
 
 ** General configuration
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (use-package org
     :defer t
@@ -2271,7 +2311,7 @@ Org configurations.
 
 ** worf
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (use-package worf
     :after evil
@@ -2287,7 +2327,7 @@ Org configurations.
 
 ** LaTeX
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
         org-format-latex-options (plist-put org-format-latex-options :scale 1.6)
@@ -2475,7 +2515,7 @@ Org configurations.
 
 ** Images
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (defun my/inkscape-figures-create ()
     (interactive)
@@ -2536,7 +2576,7 @@ Org configurations.
 
 ** Keybindings
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (defun my/isearch-line-forward (regexp-p)
     (catch 'my-catch
@@ -2643,7 +2683,7 @@ Org configurations.
 
 ** Org config mode
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (defun my/org-config-mode ()
     (interactive)
@@ -2656,7 +2696,7 @@ Org configurations.
 ** COMMENT Sidebar
 *** Org sidebar
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (use-package org-sidebar
     :diminish t
@@ -2695,7 +2735,7 @@ Org configurations.
 
 *** imenu-list
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (require 'imenu)
 
@@ -2735,7 +2775,7 @@ Org configurations.
 
 ** COMMENT Org test
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   (defun my/org-back-to-top-level-heading ()
     "Go back to the current top level heading."
@@ -2781,7 +2821,7 @@ Org configurations.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-org.el
+#+begin_src emacs-lisp
 
   )
 	
@@ -2790,9 +2830,13 @@ Org configurations.
 #+end_src
 
 * Tex
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-tex.el
+:END:
+
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 	
@@ -2800,7 +2844,7 @@ Org configurations.
 
 ** Auctex
 
-#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+#+begin_src emacs-lisp
 
   (use-package auctex
     :hook ((LaTeX-mode . display-line-numbers-mode)
@@ -2823,7 +2867,7 @@ Org configurations.
 
 ** COMMENT evil-tex
 
-#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+#+begin_src emacs-lisp
 
   (use-package evil-tex
     :hook (LaTeX-mode . evil-tex-mode))
@@ -2832,7 +2876,7 @@ Org configurations.
 
 ** cdlatex
 
-#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+#+begin_src emacs-lisp
 
   (use-package cdlatex
     :after (evil yasnippet)
@@ -2884,19 +2928,22 @@ Org configurations.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-tex.el
+#+begin_src emacs-lisp
 
   (provide 'init-tex)
 
 #+end_src
 
 * Package
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-package.el
+:END:
 
 Emacs Package management configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -2907,7 +2954,7 @@ Emacs Package management configurations.
 
 ** Save selected packages
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 
   ;; HACK: DO NOT copy package-selected-packages to init/custom file forcibly.
   ;; https://github.com/jwiegley/use-package/issues/383#issuecomment-247801751
@@ -2921,7 +2968,7 @@ Emacs Package management configurations.
 
 ** Set ELPA packages
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 
   (set-package-archives centaur-package-archives nil nil t)
 	
@@ -2929,7 +2976,7 @@ Emacs Package management configurations.
 
 ** Initialize packages
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 
   (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
     (setq package-enable-at-startup nil)          ; To prevent initializing twice
@@ -2939,7 +2986,7 @@ Emacs Package management configurations.
 
 ** use-pakcage
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 
   ;; Setup `use-package'
   (unless (package-installed-p 'use-package)
@@ -2964,7 +3011,7 @@ Emacs Package management configurations.
 
 ** Update GPG keyring for GNU ELPA
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 
   (use-package gnu-elpa-keyring-update)
 	
@@ -2972,7 +3019,7 @@ Emacs Package management configurations.
 
 ** Auto update packages
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 
   (use-package auto-package-update
     :init
@@ -2984,19 +3031,22 @@ Emacs Package management configurations.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-package.el
+#+begin_src emacs-lisp
 	
   (provide 'init-package)
 
 #+end_src
 
 * Prog
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-prog.el
+:END:
 
 General programming configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 	
@@ -3008,7 +3058,7 @@ General programming configurations.
 
 Jump to definition
 
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+#+begin_src emacs-lisp
 
   (use-package dumb-jump
     :bind (("M-g o" . dumb-jump-go-other-window)
@@ -3024,33 +3074,9 @@ Jump to definition
 
 #+end_src
 
-** yaml-mode
-
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
-
-  (use-package yaml-mode)
-
-#+end_src
-
-** vimrc-mode
-
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
-
-  (use-package vimrc-mode)
-
-#+end_src
-
-** fish-mode
-
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
-
-  (use-package fish-mode)
-
-#+end_src
-
 ** css-mode
 
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+#+begin_src emacs-lisp
 
   (use-package css-mode
     :ensure nil
@@ -3061,7 +3087,7 @@ Jump to definition
 
 ** makefile-mode
 
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+#+begin_src emacs-lisp
 
   (use-package makefile-mode
     :ensure nil
@@ -3071,7 +3097,7 @@ Jump to definition
 
 ** lua-mode
 
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+#+begin_src emacs-lisp
 
   (use-package lua-mode
     :after evil
@@ -3080,21 +3106,34 @@ Jump to definition
 
 #+end_src
 
+** Misc
+
+#+begin_src emacs-lisp
+
+  (use-package yaml-mode)
+  (use-package vimrc-mode)
+  (use-package fish-mode)
+
+#+end_src
+
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-prog.el
+#+begin_src emacs-lisp
 
   (provide 'init-prog)
 	
 #+end_src
 
 * Projectile
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-projectile.el
+:END:
 
 Projectile configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-projectile.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 	
@@ -3104,7 +3143,7 @@ Projectile configurations.
 
 Manage and navigate projects
 
-#+begin_src emacs-lisp :tangle ./lisp/init-projectile.el
+#+begin_src emacs-lisp
 
   (use-package projectile
     :diminish
@@ -3135,19 +3174,22 @@ Manage and navigate projects
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-projectile.el
+#+begin_src emacs-lisp
 
   (provide 'init-projectile)
 	
 #+end_src
 
 * Treemacs
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-treemacs.el
+:END:
 
 Treemacs: A tree layout file explorer.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -3159,7 +3201,7 @@ Treemacs: A tree layout file explorer.
 
 ** treemacs
 
-#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+#+begin_src emacs-lisp
 
   (use-package treemacs
     :after evil
@@ -3204,7 +3246,7 @@ Treemacs: A tree layout file explorer.
 
 ** treemacs-evil
 
-#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+#+begin_src emacs-lisp
 
   (use-package treemacs-evil
     :after treemacs evil)
@@ -3213,7 +3255,7 @@ Treemacs: A tree layout file explorer.
 
 ** treemacs-projectile
 
-#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+#+begin_src emacs-lisp
 
   (use-package treemacs-projectile
     :after treemacs projectile
@@ -3224,7 +3266,7 @@ Treemacs: A tree layout file explorer.
 
 ** treemacs-magit
 
-#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+#+begin_src emacs-lisp
 
   (use-package treemacs-magit
     :after treemacs magit
@@ -3239,19 +3281,22 @@ Treemacs: A tree layout file explorer.
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-treemacs.el
+#+begin_src emacs-lisp
 	
   (provide 'init-treemacs)
 
 #+end_src
 
 * UI
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-ui.el
+:END:
 
 Visual (UI) configurations for better lookings and appearances.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -3262,7 +3307,7 @@ Visual (UI) configurations for better lookings and appearances.
 
 ** Optimization
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (setq idle-update-delay 1.0)
 
@@ -3276,7 +3321,7 @@ Visual (UI) configurations for better lookings and appearances.
 
 ** Inhibit resizing frame
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (setq frame-inhibit-implied-resize t
         frame-resize-pixelwise       t)
@@ -3285,7 +3330,7 @@ Visual (UI) configurations for better lookings and appearances.
 
 ** Theme
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   ;; Make certain buffers grossly incandescent
   ;; Must before loading the theme
@@ -3314,7 +3359,7 @@ Visual (UI) configurations for better lookings and appearances.
 
 ** Dashboard
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (use-package page-break-lines
     :ensure t
@@ -3421,7 +3466,7 @@ Visual (UI) configurations for better lookings and appearances.
 ** Mode-line
 *** doom-modeline
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (use-package doom-modeline
     :custom
@@ -3441,7 +3486,7 @@ Visual (UI) configurations for better lookings and appearances.
 
 *** hide-mode-line
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (use-package hide-mode-line
     :hook (((completion-list-mode
@@ -3453,7 +3498,7 @@ Visual (UI) configurations for better lookings and appearances.
 
 A minor-mode menu for mode-line
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (use-package minions
     :hook (doom-modeline-mode . minions-mode))
@@ -3462,7 +3507,7 @@ A minor-mode menu for mode-line
 
 ** Icons
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (use-package all-the-icons
     :if (display-graphic-p)
@@ -3475,7 +3520,7 @@ A minor-mode menu for mode-line
 
 Show native line numbers
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (use-package display-line-numbers
     :ensure nil
@@ -3490,7 +3535,7 @@ Show native line numbers
 
 ** Suppress GUI features
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (setq use-file-dialog                   nil
         use-dialog-box                    nil
@@ -3501,7 +3546,7 @@ Show native line numbers
 
 ** Display dividers between windows
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (setq window-divider-default-places       t
         window-divider-default-bottom-width 1
@@ -3515,7 +3560,7 @@ Show native line numbers
 
 Easily adjust the font size
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (global-set-key (kbd "C-=") 'text-scale-increase)
   (global-set-key (kbd "C--") 'text-scale-decrease)
@@ -3525,19 +3570,22 @@ Easily adjust the font size
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-ui.el
+#+begin_src emacs-lisp
 
   (provide 'init-ui)
 	
 #+end_src
 
 * Utils
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-utils.el
+:END:
 
 Some usefule utilities
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 	
@@ -3547,7 +3595,7 @@ Some usefule utilities
 
 Display available keybindings in popup
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+#+begin_src emacs-lisp
 
   (use-package which-key
     :diminish
@@ -3560,7 +3608,7 @@ Display available keybindings in popup
 
 ** real-auto-save
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+#+begin_src emacs-lisp
 
   (use-package real-auto-save
     :hook (find-file . real-auto-save-mode)
@@ -3571,7 +3619,7 @@ Display available keybindings in popup
 
 ** command-log-mode
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+#+begin_src emacs-lisp
 
   (use-package posframe)
   (use-package command-log-mode
@@ -3612,9 +3660,10 @@ Display available keybindings in popup
 
 ** COMMENT Search tools
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+Writable 'grep' buffer
 
-  ;; Writable `grep' buffer
+#+begin_src emacs-lisp
+
   (use-package wgrep
     :init
     (setq wgrep-auto-save-buffer t
@@ -3649,7 +3698,7 @@ Display available keybindings in popup
 
 ** COMMENT Process
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+#+begin_src emacs-lisp
 
   (use-package proced
     :ensure nil
@@ -3662,7 +3711,7 @@ Display available keybindings in popup
 
 ** Misc
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+#+begin_src emacs-lisp
 
   (use-package copyit)                    ; copy path, url, etc.
   (use-package esup)                      ; Emacs startup profiler
@@ -3674,19 +3723,22 @@ Display available keybindings in popup
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-utils.el
+#+begin_src emacs-lisp
 
   (provide 'init-utils)
 	
 #+end_src
 
 * VCS
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-vcs.el
+:END:
 
 Version control systems.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -3694,7 +3746,7 @@ Version control systems.
 
 ** magit
 
-#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+#+begin_src emacs-lisp
 
   (use-package magit
     :bind ((:map magit-status-mode-map
@@ -3740,7 +3792,7 @@ Version control systems.
 
 Walk through git revisions of a file
 
-#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+#+begin_src emacs-lisp
 
   (use-package git-timemachine
     :custom-face
@@ -3756,19 +3808,22 @@ Walk through git revisions of a file
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-vcs.el
+#+begin_src emacs-lisp
 
   (provide 'init-vcs)
 	
 #+end_src
 
 * Window
+:PROPERTIES:
+:header-args: :tangle ./lisp/init-window.el
+:END:
 
 Window configurations.
 
 ** Header
 
-#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+#+begin_src emacs-lisp
 
   ;; -*- lexical-binding: t -*-
 
@@ -3776,7 +3831,7 @@ Window configurations.
 
 ** zoom
 
-#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+#+begin_src emacs-lisp
 
   (use-package zoom
     :init
@@ -3799,7 +3854,7 @@ Window configurations.
 
 Quickly switch windows
 
-#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+#+begin_src emacs-lisp
 
   (use-package ace-window
     :hook (emacs-startup . ace-window-display-mode)
@@ -3830,7 +3885,7 @@ Quickly switch windows
 
 Enforce rules for popups
 
-#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+#+begin_src emacs-lisp
 
   (use-package shackle
     :functions org-switch-to-buffer-other-window
@@ -3957,7 +4012,7 @@ Enforce rules for popups
 
 ** End
 
-#+begin_src emacs-lisp :tangle ./lisp/init-window.el
+#+begin_src emacs-lisp
 
   (provide 'init-window)
 	
