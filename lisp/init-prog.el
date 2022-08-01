@@ -14,12 +14,6 @@
   (setq dumb-jump-prefer-searcher 'rg
         dumb-jump-selector        'ivy))
 
-(use-package yaml-mode)
-
-(use-package vimrc-mode)
-
-(use-package fish-mode)
-
 (use-package css-mode
   :ensure nil
   :config
@@ -33,5 +27,9 @@
   :after evil
   :config
   (evil-define-key 'normal lua-mode-map (kbd "K") nil))
+
+(use-package yaml-mode)
+(use-package vimrc-mode)
+(use-package fish-mode)
 
 (provide 'init-prog)
