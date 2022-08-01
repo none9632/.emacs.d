@@ -4023,6 +4023,8 @@ Snippets configurations.
 #+begin_src emacs-lisp :tangle no :noweb-ref latex-mode-snippets
 
   (aas-set-snippets 'org-mode
+                    :cond (lambda ()
+                            (not (texmathp)))
                     "tm"  (lambda ()
                             (interactive)
                             (if (my/current-line-empty-p)

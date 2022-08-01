@@ -28,6 +28,8 @@
   
   
   (aas-set-snippets 'org-mode
+                    :cond (lambda ()
+                            (not (texmathp)))
                     "tm"  (lambda ()
                             (interactive)
                             (if (my/current-line-empty-p)
