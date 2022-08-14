@@ -49,6 +49,9 @@
   ;;        ("L"    . restore-session)
   ;;        ("U"    . update-config-and-packages)
   ;;        ("q"    . quit-dashboard))
+  :bind (:map dashboard-mode-map
+              ([remap dashboard-next-line]     . widget-forward)
+              ([remap dashboard-previous-line] . widget-backward))
   :init
   (defun my/dashboard-banner ()
     (defvar package-count 0)
