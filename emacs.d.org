@@ -3151,15 +3151,15 @@ Manage and navigate projects
                 ("C-c p" . projectile-command-map))
     :hook (after-init . projectile-mode)
     :init
-    (setq projectile-mode-line-prefix ""
-          projectile-sort-order       'recentf
-          projectile-use-git-grep     t
-          projectile-enable-caching   t)
+    (setq projectile-mode-line-prefix    ""
+          projectile-sort-order          'recentf
+          projectile-use-git-grep        t
+          projectile-enable-caching      t
+          projectile-project-search-path '("~/Cloud/Projects"
+                                           "~/Nextcloud/Projects"
+                                           "~/Projects"))
     :config
     (projectile-update-mode-line)         ; Update mode-line at the first time
-
-    (when (file-directory-p "~/Cloud/Projects")
-      (setq projectile-project-search-path '("~/Cloud/Projects")))
 
     ;; Use the faster searcher to handle project files: ripgrep `rg'.
     (when (and (not (executable-find "fd"))
