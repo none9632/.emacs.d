@@ -3404,12 +3404,17 @@ Visual (UI) configurations for better lookings and appearances.
 
     (add-hook 'after-init-hook                 'dashboard-refresh-buffer)
     (add-hook 'dashboard-mode-hook             'my/dashboard-banner)
-    (add-hook 'dashboard-after-initialize-hook 'dashboard-jump-to-projects)
+    (add-hook 'dashboard-after-initialize-hook (lambda ()
+                                                 (if (or (not (eq dashboard-projects-alist nil))
+                                                         (not (eq dashboard-recentf-alist  nil)))
+                                                     (widget-forward 1))))
     (add-hook 'dashboard-mode-hook             (lambda ()
                                                  (with-current-buffer "*dashboard*"
                                                    (setq-local evil-normal-state-cursor '(nil)
                                                                doom-modeline-height     34))
-                                                 (dashboard-jump-to-projects)
+                                                 (if (or (not (eq dashboard-projects-alist nil))
+                                                         (not (eq dashboard-recentf-alist  nil)))
+                                                     (widget-forward 1))
                                                  (hl-line-mode t)))
     (dashboard-setup-startup-hook)
     ;; :config
