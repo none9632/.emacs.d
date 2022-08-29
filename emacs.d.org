@@ -2473,11 +2473,21 @@ Org configurations.
               (evil-delete-buffer latex-fragment-buffer)
               (remove-hook 'post-command-hook #'my/hide-org-fragment))))))
 
+  (defun my/org-latex-auto-fill-function ()
+    (if (and (eq (texmathp) t)
+             (> (current-column) (current-fill-column)))
+        (save-excursion
+          (re-search-backward "\\\\(")
+          (unless (eq (current-column) 0)
+            (newline)))
+      (org-auto-fill-function)))
+
   (defun my/org-latex-mode ()
     (interactive)
     (setq-local org-src-window-setup    'split-window-below
                 company-box-enable-icon nil
-                org-latex-mode          t)
+                org-latex-mode          t
+                auto-fill-function      'my/org-latex-auto-fill-function)
     (aas-activate-for-major-mode)
     (visual-line-mode t)
     (my/update-theorem-and-lemma-counts)
@@ -2638,6 +2648,12 @@ Org configurations.
       (cond (change-lang                                   (shell-command-to-string "xkb-switch -n")))
       (cond ((bound-and-true-p org-jump-to-previous-block) (org-previous-block 1))
             (latex-fragment                                (progn
+                                                             (save-excursion
+                                                               (re-search-forward "\\\\)")
+                                                               (if (> (current-column) (current-fill-column))
+                                                                   (progn
+                                                                     (move-to-column (+ (current-fill-column) 1))
+                                                                     (my/auto-fill-function))))
                                                              (if (org-in-item-p) (my/just-one-space))
                                                              (my/isearch-line-forward "\\)")
                                                              (org-latex-preview))))))
