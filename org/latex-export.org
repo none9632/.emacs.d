@@ -34,7 +34,7 @@
 #+LATEX_HEADER: \DeclareMathOperator{\sgn}{sgn}
 
 #+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
-#+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1 \colon #2 \right\}}
+#+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1\ \textbf{|}\ #2 \right\}}
 #+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
 #+LATEX_HEADER: \newcommand{\oline}[1]{\overline{#1}}
 #+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}

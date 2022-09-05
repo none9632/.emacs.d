@@ -185,7 +185,7 @@ Better defaults configurations.
 	
 #+end_src
 
-** Personal information
+** Personal Information
 
 #+begin_src emacs-lisp
 
@@ -4394,6 +4394,7 @@ Snippets configurations.
                     "*"     "\\cdot "
                     "%"     "\\%"
                     "  "    "\\ "
+                    "\\\\"  "\\setminus "
                     "xx"    "\\times "
                     "..."   "\\ldots "
                     "->"    "\\to "
