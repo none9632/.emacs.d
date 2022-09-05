@@ -4070,6 +4070,8 @@ Snippets configurations.
   (use-package yasnippet
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode)
+    :bind ((:map yas-keymap
+                 ("<escape>" . undo)))
     :config
     (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
@@ -4085,17 +4087,19 @@ Snippets configurations.
 
 #+begin_src emacs-lisp :noweb no-export
 
-  (defun my/change-lang-in-snippet ()
-    (shell-command-to-string "xkb-switch -n")
-    (remove-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet t))
-
-  (defun my/temp-abort-snippet ()
-    (yas-abort-snippet)
-    (remove-hook 'post-command-hook #'my/temp-abort-snippet))
-
   (use-package aas
     :hook (LaTeX-mode . aas-activate-for-major-mode)
     :config
+    (defun my/change-lang-in-snippet ()
+      (shell-command-to-string "xkb-switch -n")
+      (remove-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet t))
+
+    (defun my/temp-abort-snippet ()
+      (yas-abort-snippet)
+      (remove-hook 'post-command-hook #'my/temp-abort-snippet))
+
+    (add-hook 'aas-pre-snippet-expand-hook 'undo-boundary)
+
     <<org-mode-snippets>>
     <<latex-mode-snippets>>)
 

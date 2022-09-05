@@ -14,17 +14,21 @@
       (if (re-search-forward "^[[:space:]]*$" nil t)
           (kill-whole-line)))))
 
-(defun my/change-lang-in-snippet ()
-  (shell-command-to-string "xkb-switch -n")
-  (remove-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet t))
-
-(defun my/temp-abort-snippet ()
-  (yas-abort-snippet)
-  (remove-hook 'post-command-hook #'my/temp-abort-snippet))
-
 (use-package aas
   :hook (LaTeX-mode . aas-activate-for-major-mode)
+  :bind ((:map evil-insert-state-map
+               ("<escape>" . undo)))
   :config
+  (defun my/change-lang-in-snippet ()
+    (shell-command-to-string "xkb-switch -n")
+    (remove-hook 'yas/after-exit-snippet-hook 'my/change-lang-in-snippet t))
+
+  (defun my/temp-abort-snippet ()
+    (yas-abort-snippet)
+    (remove-hook 'post-command-hook #'my/temp-abort-snippet))
+
+  (add-hook 'aas-pre-snippet-expand-hook 'undo-boundary)
+
   
   
   (aas-set-snippets 'org-mode
