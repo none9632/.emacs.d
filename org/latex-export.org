@@ -52,6 +52,7 @@
 #+LATEX_HEADER: \newcommand{\Q}{\mathbb{Q}}
 #+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
 #+LATEX_HEADER: \newcommand{\mbf}[1]{\mathbf{#1}}
+#+LATEX_HEADER: \newcommand{\mbb}[1]{\mathbb{#1}}
 #+LATEX_HEADER: \newcommand{\mrm}[1]{\mathrm{#1}}
 #+LATEX_HEADER: \newcommand{\mcal}[1]{\mathcal{#1}}
 #+LATEX_HEADER: \newcommand{\mscr}[1]{\mathscr{#1}}

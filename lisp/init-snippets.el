@@ -284,7 +284,7 @@
                               (yas-expand-snippet "\\\\l($1\\\\r)$0"))
                     "["     (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\\\[$1\\\\]$0"))
+                              (yas-expand-snippet "[$1]$0"))
                     "{"     (lambda ()
                               (interactive)
                               (yas-expand-snippet "{$1}$0"))
@@ -293,16 +293,16 @@
                               (yas-expand-snippet "\\\\l|$1\\\\r|$0"))
                     ";{"    (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\\\{$1\\\\}$0"))
+                              (yas-expand-snippet "\\\\l\\\\{$1\\\\r\\\\}$0"))
+                    ";["    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\\\l[$1\\\\r]$0"))
                     ";("    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\l("))
                     ";)"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\r)"))
-                    ";["    (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\l["))
                     ";]"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\r]"))
@@ -315,10 +315,11 @@
                     "*"     "\\cdot "
                     "%"     "\\%"
                     "  "    "\\ "
-                    "\\\\"  "\\setminus "
+                    ";\\"   "\\setminus "
                     "xx"    "\\times "
                     "..."   "\\ldots "
                     "->"    "\\to "
+                    ";->"   "\\mapsto "
                     "=="    "&="
                     "=>"    "\\Ra "
                     "=<"    "\\La "
@@ -388,6 +389,7 @@
                     "per"   "\\perp "
                     "par"   "\\parallel "
                     "ang"   "\\angle "
+                    "cir"   "\\circ "
                     "min"   "\\min "
                     "max"   "\\max "
                     "sgn"   "\\sgn "
@@ -398,6 +400,7 @@
                     "bcap"  "\\bigcap "
                     "notin" "\\not\\in "
                     "cc"    "\\subset "
+                    "c="    "\\subseteq "
                     "dg"    "\\degree "
                     "vd"    "\\vdots "
                     "vv"    "\\vee "
@@ -573,6 +576,9 @@
                     "mbf"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mbf{$1}$0"))
+                    "mbb"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\mbb{$1}$0"))
                     "mcal"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
