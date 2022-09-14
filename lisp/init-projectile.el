@@ -10,9 +10,9 @@
         projectile-sort-order          'recentf
         projectile-use-git-grep        t
         projectile-enable-caching      t
-        projectile-project-search-path '("~/Cloud/Projects"
-                                         "~/Nextcloud/Projects"
-                                         "~/Projects"))
+        projectile-project-search-path '(("~/Cloud/Projects"     . 2)
+                                         ("~/Nextcloud/Projects" . 2)
+                                         ("~/Projects"           . 2)))
   :config
   (projectile-update-mode-line)         ; Update mode-line at the first time
 
