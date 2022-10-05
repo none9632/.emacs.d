@@ -984,10 +984,12 @@ Flexible text folding
       (push '("\\mp"       . ?∓)  prettify-symbols-alist)
       (push '("\\l("       . ?\() prettify-symbols-alist)
       (push '("\\r)"       . ?\)) prettify-symbols-alist)
-      (push '("\\["        . ?\[) prettify-symbols-alist)
-      (push '("\\]"        . ?\]) prettify-symbols-alist)
       (push '("\\{"        . ?\{) prettify-symbols-alist)
       (push '("\\}"        . ?\}) prettify-symbols-alist)
+      (push '("\\l\\{"     . ?\{) prettify-symbols-alist)
+      (push '("\\r\\}"     . ?\}) prettify-symbols-alist)
+      (push '("\\l["       . ?\[) prettify-symbols-alist)
+      (push '("\\r]"       . ?\]) prettify-symbols-alist)
       (push '("\\l|"       . ?|)  prettify-symbols-alist)
       (push '("\\r|"       . ?|)  prettify-symbols-alist)
       (push '("\\Bigl("    . ?\() prettify-symbols-alist)
@@ -1016,6 +1018,8 @@ Flexible text folding
       (push '("\\vepsilon" . ?ε) prettify-symbols-alist)
       (push '("\\Vepsilon" . ?Ɛ) prettify-symbols-alist)
       (push '("\\vphi"     . ?φ) prettify-symbols-alist)
+      (push '("\\land"     . ?∧) prettify-symbols-alist)
+      (push '("\\lor"      . ?∨) prettify-symbols-alist)
       (push '("\\\\"       . ?↵) prettify-symbols-alist)))
 
 #+end_src
@@ -4278,6 +4282,11 @@ Snippets configurations.
                     "nEE"   "\\nexists "
                     "eq"    "\\equiv "
                     "div"   "\\div "
+                    "NN"    "\\N "
+                    "ZZ"    "\\Z "
+                    "QQ"    "\\Q "
+                    "RR"    "\\R "
+                    "CC"    "\\C "
                     "sr"    "^2"
                     "cb"    "^3"
                     "inv"   "^{-1}"
@@ -4294,13 +4303,13 @@ Snippets configurations.
                     "mrm"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mrm{$1}$0"))
-                    "mbf"   (lambda ()
+                    "mf"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mbf{$1}$0"))
-                    "mcal"  (lambda ()
+                    "mcl"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "mas"   (lambda ()
+                    "mcr"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
 
@@ -4501,11 +4510,13 @@ Snippets configurations.
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
                     "div"   "\\div "
-                    "NN"    "\\N"
-                    "ZZ"    "\\Z"
-                    "QQ"    "\\Q"
-                    "RR"    "\\R"
-                    "CC"    "\\C"
+                    "land"  "\\land "
+                    "lor"   "\\lor "
+                    "NN"    "\\N "
+                    "ZZ"    "\\Z "
+                    "QQ"    "\\Q "
+                    "RR"    "\\R "
+                    "CC"    "\\C "
                     "sr"    "^2"
                     "cb"    "^3"
                     "inv"   "^{-1}")
@@ -4628,7 +4639,7 @@ Snippets configurations.
                               (yas-expand-snippet "\\coprod^{$1}_{$2}$0"))
                     "lim"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\lim_{${1:n} \\to ${2:0}}$0"))
+                              (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
                     "int"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\int^{${1:\\infty}}_{${2:-\\infty}}$0"))
@@ -4659,16 +4670,16 @@ Snippets configurations.
                     "mrm"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mrm{$1}$0"))
-                    "mbf"   (lambda ()
+                    "mf"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mbf{$1}$0"))
                     "mbb"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mbb{$1}$0"))
-                    "mcal"  (lambda ()
+                    "mcl"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "mas"   (lambda ()
+                    "mcr"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
 

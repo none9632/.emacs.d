@@ -197,6 +197,11 @@
                     "nEE"   "\\nexists "
                     "eq"    "\\equiv "
                     "div"   "\\div "
+                    "NN"    "\\N "
+                    "ZZ"    "\\Z "
+                    "QQ"    "\\Q "
+                    "RR"    "\\R "
+                    "CC"    "\\C "
                     "sr"    "^2"
                     "cb"    "^3"
                     "inv"   "^{-1}"
@@ -213,13 +218,13 @@
                     "mrm"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mrm{$1}$0"))
-                    "mbf"   (lambda ()
+                    "mf"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mbf{$1}$0"))
-                    "mcal"  (lambda ()
+                    "mcl"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "mas"   (lambda ()
+                    "mcr"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
   
@@ -415,11 +420,13 @@
                     "EE"    "\\exists "
                     "nEE"   "\\nexists "
                     "div"   "\\div "
-                    "NN"    "\\N"
-                    "ZZ"    "\\Z"
-                    "QQ"    "\\Q"
-                    "RR"    "\\R"
-                    "CC"    "\\C"
+                    "land"  "\\land "
+                    "lor"   "\\lor "
+                    "NN"    "\\N "
+                    "ZZ"    "\\Z "
+                    "QQ"    "\\Q "
+                    "RR"    "\\R "
+                    "CC"    "\\C "
                     "sr"    "^2"
                     "cb"    "^3"
                     "inv"   "^{-1}")
@@ -542,7 +549,7 @@
                               (yas-expand-snippet "\\coprod^{$1}_{$2}$0"))
                     "lim"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\lim_{${1:n} \\to ${2:0}}$0"))
+                              (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
                     "int"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\int^{${1:\\infty}}_{${2:-\\infty}}$0"))
@@ -573,16 +580,16 @@
                     "mrm"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mrm{$1}$0"))
-                    "mbf"   (lambda ()
+                    "mf"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mbf{$1}$0"))
                     "mbb"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mbb{$1}$0"))
-                    "mcal"  (lambda ()
+                    "mcl"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mcal{$1}$0"))
-                    "mas"   (lambda ()
+                    "mcr"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\mscr{$1}$0")))
   )

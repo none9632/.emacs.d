@@ -21,6 +21,7 @@
 #+LATEX_HEADER: \usepackage{mathtools}     % for \explain and \explainup
 #+LATEX_HEADER: \usepackage{xparse}        % for \sqrt
 #+LATEX_HEADER: \usepackage[b]{esvect}     % for better \vec
+#+LATEX_HEADER: \usepackage{upgreek}
 
 #+LATEX_HEADER: \usepackage{siunitx}       % Required for alignment (S in tabular)
 #+LATEX_HEADER: \usepackage{multirow}      % Required for multirows
@@ -76,16 +77,14 @@
 #+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
 #+LATEX_HEADER: \let\oldtext\text
 #+LATEX_HEADER: \renewcommand{\text}[1]{\oldtext{ #1 }}
-#+LATEX_HEADER: \let\oldbigcup\bigcup
-#+LATEX_HEADER: \renewcommand\bigcup{{\textstyle\oldbigcup}}
-#+LATEX_HEADER: \let\oldbigcap\bigcap
-#+LATEX_HEADER: \renewcommand\bigcap{{\textstyle\oldbigcap}}
 #+LATEX_HEADER: \let\oldsum\sum
 #+LATEX_HEADER: \renewcommand\sum{\displaystyle\oldsum}
 #+LATEX_HEADER: \let\oldprod\prod
 #+LATEX_HEADER: \renewcommand\prod{\displaystyle\oldprod}
 #+LATEX_HEADER: \let\oldcoprod\coprod
 #+LATEX_HEADER: \renewcommand\coprod{\displaystyle\oldcoprod}
+#+LATEX_HEADER: \let\oldlim\lim
+#+LATEX_HEADER: \renewcommand\lim{\displaystyle\oldlim}
 #+LATEX_HEADER: \let\oldint\int
 #+LATEX_HEADER: \renewcommand\int{\oldint\limits}
 #+LATEX_HEADER: \let\oldpart\part
