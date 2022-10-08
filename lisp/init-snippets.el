@@ -35,8 +35,8 @@
     (my/common-snippets 'org-mode)
     (my/common-snippets 'latex-mode)
     (or mode (setq mode nil))
-    (if (eq mode 'physics) (my/physics-snippets))
-    (if (eq mode 'math)    (my/math-snippets)))
+    (if (eq mode 'phys) (my/phys-snippets))
+    (if (eq mode 'math) (my/math-snippets)))
 
   (add-hook 'aas-pre-snippet-expand-hook 'undo-boundary)
 
@@ -273,7 +273,7 @@
                                 (yas-expand-snippet "\\Bigl[$1,\\ ${2:+\\infty}\\Bigr)$0"))))
   
   
-  (defun my/physics-snippets ()
+  (defun my/phys-snippets ()
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
                       ";h"    "\\hbar "
