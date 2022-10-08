@@ -21,7 +21,8 @@
 #+LATEX_HEADER: \usepackage{mathtools}     % for \explain and \explainup
 #+LATEX_HEADER: \usepackage{xparse}        % for \sqrt
 #+LATEX_HEADER: \usepackage[b]{esvect}     % for better \vec
-#+LATEX_HEADER: \usepackage{upgreek}
+#+LATEX_HEADER: \usepackage{upgreek}       % for bold greek letters
+#+LATEX_HEADER: \usepackage{mathrsfs}      % for \mathscr
 
 #+LATEX_HEADER: \usepackage{siunitx}       % Required for alignment (S in tabular)
 #+LATEX_HEADER: \usepackage{multirow}      % Required for multirows
