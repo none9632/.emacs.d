@@ -23,6 +23,8 @@
 #+LATEX_HEADER: \usepackage[b]{esvect}     % for better \vec
 #+LATEX_HEADER: \usepackage{upgreek}       % for bold greek letters
 #+LATEX_HEADER: \usepackage{mathrsfs}      % for \mathscr
+#+LATEX_HEADER: %\usepackage{bbm}
+#+LATEX_HEADER: \usepackage{dsfont}
 
 #+LATEX_HEADER: \usepackage{siunitx}       % Required for alignment (S in tabular)
 #+LATEX_HEADER: \usepackage{multirow}      % Required for multirows
@@ -55,9 +57,11 @@
 #+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
 #+LATEX_HEADER: \newcommand{\mbf}[1]{\mathbf{#1}}
 #+LATEX_HEADER: \newcommand{\mbb}[1]{\mathbb{#1}}
+#+LATEX_HEADER: \newcommand{\mds}[1]{\mathds{#1}}
 #+LATEX_HEADER: \newcommand{\mrm}[1]{\mathrm{#1}}
 #+LATEX_HEADER: \newcommand{\mcal}[1]{\mathcal{#1}}
 #+LATEX_HEADER: \newcommand{\mscr}[1]{\mathscr{#1}}
+#+LATEX_HEADER: \newcommand{\eqdef}{\overset{\mathrm{def}}{=\mathrel{\mkern-3mu}=}}
 
 #+LATEX_HEADER: \renewcommand{\[}{\left[}
 #+LATEX_HEADER: \renewcommand{\]}{\right]}

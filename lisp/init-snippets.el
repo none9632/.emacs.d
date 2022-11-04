@@ -45,12 +45,12 @@
     (aas-set-snippets mode
                       :cond #'texmathp
                       "*"     "\\cdot "
+                      "'8"    "*"
                       "%"     "\\%"
                       "  "    "\\ "
                       "xx"    "\\times "
                       "..."   "\\ldots "
                       "->"    "\\to "
-                      ;; "=="    "&="
                       "=>"    "\\Ra "
                       "=<"    "\\La "
                       ">>"    "\\gg "
@@ -73,8 +73,8 @@
                       ";E"    "\\Vepsilon "
                       ";z"    "\\zeta "
                       ";n"    "\\eta "
-                      ";q"    "\\theta "
-                      ";Q"    "\\Theta "
+                      ";o"    "\\theta "
+                      ";O"    "\\Theta "
                       ";i"    "\\iota "
                       ";k"    "\\kappa "
                       ";l"    "\\lambda "
@@ -93,7 +93,7 @@
                       ";U"    "\\Upsilon "
                       ";f"    "\\vphi "
                       ";F"    "\\Phi "
-                      ";o"    "\\chi "
+                      ";q"    "\\chi "
                       ";y"    "\\psi "
                       ";Y"    "\\Psi "
                       ";w"    "\\omega "
@@ -207,6 +207,9 @@
                       "mbb"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\mbb{$1}$0"))
+                      "mds"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\mds{$1}$0"))
                       "mcl"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\mcal{$1}$0"))
@@ -222,6 +225,7 @@
                       ";->"   "\\mapsto "
                       "-<"    "\\prec "
                       ">-"    "\\succ "
+                      "=="    "\\eqdef "
                       "ml"    "\\models "
                       "cir"   "\\circ "
                       "sgn"   "\\sgn "
@@ -244,6 +248,8 @@
                       "QQ"    "\\Q "
                       "RR"    "\\R "
                       "CC"    "\\C "
+                      "ld"    "\\ddots "
+                      "det"   "\\det "
                       "set"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\set{$1}{$2}$0"))
@@ -253,6 +259,34 @@
                       "rng"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "${1:1},${2:2},\\ldots,${3:n}$0")))
+  
+    (aas-set-snippets 'org-mode
+                      :cond #'texmathp
+                      ";\\"   "\\setminus "
+                      ";->"   "\\mapsto "
+                      "-<"    "\\prec "
+                      ">-"    "\\succ "
+                      "cir"   "\\circ "
+                      "inn"   "\\in "
+                      "cup"   "\\cup "
+                      "cap"   "\\cap "
+                      "bcup"  "\\bigcup "
+                      "bcap"  "\\bigcap "
+                      "notin" "\\not\\in "
+                      "sup"   "\\sup "
+                      "cc"    "\\subset "
+                      "c=="   "\\subseteq "
+                      "eq"    "\\equiv "
+                      "AA"    "\\forall "
+                      "EE"    "\\exists "
+                      "nEE"   "\\nexists "
+                      "land"  "\\land "
+                      "lor"   "\\lor "
+                      "NN"    "\\N "
+                      "ZZ"    "\\Z "
+                      "QQ"    "\\Q "
+                      "RR"    "\\R "
+                      "CC"    "\\C ")
   
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
@@ -405,7 +439,10 @@
                               (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
                     "int"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\int^{${1:\\infty}}_{${2:-\\infty}}$0"))
+                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
+                    "oin"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\oint_{${1:-\\infty}}^{${2:\\infty}}$0"))
                     ;; "ing"   (lambda ()
                     ;;           (interactive)
                     ;;           (yas-expand-snippet (yas-lookup-snippet "integ"))
@@ -444,7 +481,10 @@
                               (yas-expand-snippet "\\mcal{$1}$0"))
                     "mcr"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\mscr{$1}$0")))
+                              (yas-expand-snippet "\\mscr{$1}$0"))
+                    "stack" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\substack{$1}$0")))
   
   
   (aas-set-snippets 'org-mode
