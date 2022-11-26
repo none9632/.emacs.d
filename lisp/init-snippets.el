@@ -17,7 +17,7 @@
 (use-package aas
   :hook (LaTeX-mode . aas-activate-for-major-mode)
   :bind ((:map evil-insert-state-map
-               ("<escape>" . undo)))
+               ("<escape>" . evil-undo)))
   :config
   (defun my/change-lang-in-snippet ()
     (shell-command-to-string "xkb-switch -n")
@@ -198,6 +198,14 @@
                                 (interactive)
                                 (yas-expand-snippet "\\ctg ${1:\\alpha }")
                                 (add-hook 'post-command-hook #'my/temp-abort-snippet))
+                      "sh"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\sh ${1:\\alpha }")
+                                (add-hook 'post-command-hook #'my/temp-abort-snippet))
+                      "ch"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\ch ${1:\\alpha }")
+                                (add-hook 'post-command-hook #'my/temp-abort-snippet))
                       "mrm"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\mrm{$1}$0"))
@@ -250,6 +258,7 @@
                       "CC"    "\\C "
                       "ld"    "\\ddots "
                       "det"   "\\det "
+                      ";0"    "\\emptyset "
                       "set"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\set{$1}{$2}$0"))

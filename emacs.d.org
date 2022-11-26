@@ -4080,8 +4080,6 @@ Snippets configurations.
   (use-package yasnippet
     :diminish yas-minor-mode
     :hook (after-init . yas-global-mode)
-    :bind ((:map yas-keymap
-                 ("<escape>" . undo)))
     :config
     (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
@@ -4099,6 +4097,8 @@ Snippets configurations.
 
   (use-package aas
     :hook (LaTeX-mode . aas-activate-for-major-mode)
+    :bind ((:map evil-insert-state-map
+                 ("<escape>" . evil-undo)))
     :config
     (defun my/change-lang-in-snippet ()
       (shell-command-to-string "xkb-switch -n")
@@ -4286,6 +4286,14 @@ Snippets configurations.
                                 (interactive)
                                 (yas-expand-snippet "\\ctg ${1:\\alpha }")
                                 (add-hook 'post-command-hook #'my/temp-abort-snippet))
+                      "sh"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\sh ${1:\\alpha }")
+                                (add-hook 'post-command-hook #'my/temp-abort-snippet))
+                      "ch"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\ch ${1:\\alpha }")
+                                (add-hook 'post-command-hook #'my/temp-abort-snippet))
                       "mrm"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\mrm{$1}$0"))
@@ -4343,6 +4351,7 @@ Snippets configurations.
                       "CC"    "\\C "
                       "ld"    "\\ddots "
                       "det"   "\\det "
+                      ";0"    "\\emptyset "
                       "set"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\set{$1}{$2}$0"))
