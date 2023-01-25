@@ -116,7 +116,7 @@
   "ch"  'counsel-command-history
   "SPC" (lambda ()
           (interactive)
-          (let ((file-path (my/lf-select-file default-directory)))
+          (let ((file-path (my/lf-select-file "~/Nextcloud/Projects/")))
             (unless (equal file-path "cancel")
               (find-file file-path))))
   "q"   (lambda ()

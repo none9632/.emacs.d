@@ -63,6 +63,7 @@
                       "mp"    "\\mp "
                       "~~"    "\\sim "
                       "~="    "\\approx "
+                      "~-"    "\\simeq "
                       ";a"    "\\alpha "
                       ";b"    "\\beta "
                       ";g"    "\\gamma "
@@ -106,6 +107,7 @@
                       "asin"  "\\arcsin "
                       "atan"  "\\arctan "
                       "atg"   "\\arctg "
+                      "actg"  "\\arcctg "
                       "cot"   "\\cot "
                       "csc"   "\\csc "
                       "csec"  "\\cosec "
@@ -223,7 +225,13 @@
                                 (yas-expand-snippet "\\mcal{$1}$0"))
                       "mcr"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\mscr{$1}$0"))))
+                                (yas-expand-snippet "\\mscr{$1}$0"))
+                      ".t"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\dot{$1}$0"))
+                      "..t"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\ddot{$1}$0"))))
   
   
   (defun my/math-snippets ()
@@ -340,13 +348,7 @@
                       "'W"    "Вт"
                       "'w"    "Вб"
                       "'T"    "Тл"
-                      "'F"    "Ф"
-                      ".t"    (lambda ()
-                                (interactive)
-                                (yas-expand-snippet "\\dot{$1}$0"))
-                      "..t"   (lambda ()
-                                (interactive)
-                                (yas-expand-snippet "\\ddot{$1}$0"))))
+                      "'F"    "Ф"))
   
   
   (aas-set-snippets 'latex-mode
@@ -386,10 +388,7 @@
                     "_"     (lambda ()
                               (interactive)
                               (yas-expand-snippet "_{$1}"))
-                    "/dd"   (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\frac{d $1}{d ${2:t}}$0"))
-                    "prt"   (lambda ()
+                    "dd/"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{\\partial $1}{\\partial ${2:x}}$0"))
                     "bar"   (lambda ()
@@ -436,6 +435,9 @@
                               (yas-expand-snippet "\\tag{$0}"))
                     "sum"   (lambda ()
                               (interactive)
+                              (yas-expand-snippet "\\sum $0"))
+                    "Sum"   (lambda ()
+                              (interactive)
                               (yas-expand-snippet "\\sum^{${1:n}}_{${2:i=1}}$0"))
                     "prod"  (lambda ()
                               (interactive)
@@ -447,6 +449,9 @@
                               (interactive)
                               (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
                     "int"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\int $0"))
+                    "Int"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
                     "oin"   (lambda ()

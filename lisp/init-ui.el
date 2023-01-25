@@ -73,7 +73,7 @@
         dashboard-set-file-icons    t
         dashboard-set-heading-icons t
         dashboard-set-navigator     nil
-        dashboard-items             '((projects  . 8)
+        dashboard-items             '((projects  . 10)
                                       (recents   . 8))
         dashboard-heading-icons     '((recents   . "file-text")
                                       (projects  . "briefcase")))
