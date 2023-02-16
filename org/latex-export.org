@@ -63,10 +63,12 @@
 #+LATEX_HEADER: \newcommand{\mscr}[1]{\mathscr{#1}}
 #+LATEX_HEADER: \newcommand{\eqdef}{\overset{\mathrm{def}}{=\mathrel{\mkern-3mu}=}}
 
-#+LATEX_HEADER: \renewcommand{\[}{\left[}
-#+LATEX_HEADER: \renewcommand{\]}{\right]}
 #+LATEX_HEADER: \renewcommand{\l}{\left}
 #+LATEX_HEADER: \renewcommand{\r}{\right}
+#+LATEX_HEADER: \renewcommand{\[}{\left[}
+#+LATEX_HEADER: \renewcommand{\]}{\right]}
+#+LATEX_HEADER: \renewcommand{\<}{\left\langle}
+#+LATEX_HEADER: \renewcommand{\>}{\right\rangle}
 #+LATEX_HEADER: \let\oldlb\{
 #+LATEX_HEADER: \renewcommand{\{}{\left\oldlb}
 #+LATEX_HEADER: \let\oldrb\}

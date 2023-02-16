@@ -146,10 +146,10 @@
                                 (yas-expand-snippet "\\\\l|$1\\\\r|$0"))
                       ";{"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\\\l\\\\{$1\\\\r\\\\}$0"))
+                                (yas-expand-snippet "\\\\{$1\\\\}$0"))
                       ";["    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\\\l[$1\\\\r]$0"))
+                                (yas-expand-snippet "\\\\[$1\\\\]$0"))
                       ";("    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\l("))
@@ -161,7 +161,13 @@
                                 (yas-expand-snippet "\\r]"))
                       ";}"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\\\}$0")))
+                                (yas-expand-snippet "\\\\}$0"))
+                      ";<"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\<$1\\>"))
+                      ";>"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\>")))
   
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -231,7 +237,13 @@
                                 (yas-expand-snippet "\\dot{$1}$0"))
                       "..t"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\ddot{$1}$0"))))
+                                (yas-expand-snippet "\\ddot{$1}$0"))
+                      "oln"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\oline{$1}$0"))
+                      "uln"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\uline{$1}$0"))))
   
   
   (defun my/math-snippets ()
@@ -246,6 +258,7 @@
                       "cir"   "\\circ "
                       "sgn"   "\\sgn "
                       "inn"   "\\in "
+                      "nni"   "\\ni "
                       "cup"   "\\cup "
                       "cap"   "\\cap "
                       "bcup"  "\\bigcup "
@@ -394,9 +407,6 @@
                     "bar"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\bar{$1}$0"))
-                    "oln"   (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\oline{$1}$0"))
                     "obr"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\obr{$1}^{$2}$0"))
@@ -438,7 +448,7 @@
                               (yas-expand-snippet "\\sum $0"))
                     "Sum"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\sum^{${1:n}}_{${2:i=1}}$0"))
+                              (yas-expand-snippet "\\sum_{${1:i=1}}^{${2:n}}$0"))
                     "prod"  (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\prod^{$1}_{$2}$0"))
