@@ -8,6 +8,10 @@
   :config
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
+  ;; (add-hook 'yas-after-exit-snippet-hook (lambda ()
+  ;;                                          (interactive)
+  ;;                                          (shell-command-to-string "xkb-switch -s us")))
+
   (defun my/delete-one-blank-line ()
     (interactive)
     (save-excursion
@@ -243,7 +247,10 @@
                                 (yas-expand-snippet "\\oline{$1}$0"))
                       "uln"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\uline{$1}$0"))))
+                                (yas-expand-snippet "\\uline{$1}$0"))
+                      "tld"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\tld{$1}$0"))))
   
   
   (defun my/math-snippets ()
