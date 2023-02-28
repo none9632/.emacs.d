@@ -83,6 +83,7 @@
 #+LATEX_HEADER: \renewcommand\emptyset{\varnothing}
 #+LATEX_HEADER: \renewcommand\vec[1]{\vv{#1}}
 #+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
+#+LATEX_HEADER: \renewcommand{\hat}[1]{\widehat{#1}}
 #+LATEX_HEADER: \let\oldtext\text
 #+LATEX_HEADER: \renewcommand{\text}[1]{\oldtext{ #1 }}
 #+LATEX_HEADER: \let\oldsum\sum
