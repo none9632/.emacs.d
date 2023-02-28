@@ -158,7 +158,7 @@
                                 (yas-expand-snippet "\\r)"))
                       ";]"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\r]"))
+                                (yas-expand-snippet "\\\\]"))
                       ";}"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\\\}$0"))
@@ -258,14 +258,16 @@
                       "cir"   "\\circ "
                       "sgn"   "\\sgn "
                       "inn"   "\\in "
-                      "nni"   "\\ni "
+                      "nii"   "\\ni "
                       "cup"   "\\cup "
                       "cap"   "\\cap "
                       "bcup"  "\\bigcup "
                       "bcap"  "\\bigcap "
                       "notin" "\\not\\in "
                       "cc"    "\\subset "
+                      ";cc"   "\\supset "
                       "c=="   "\\subseteq "
+                      ";c=="  "\\supseteq "
                       "eq"    "\\equiv "
                       "AA"    "\\forall "
                       "EE"    "\\exists "
@@ -461,16 +463,18 @@
                     "int"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\int $0"))
+                    "iint"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\iint $0"))
+                    "iiint" (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\iiint $0"))
                     "Int"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
                     "oin"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\oint_{${1:-\\infty}}^{${2:\\infty}}$0"))
-                    ;; "ing"   (lambda ()
-                    ;;           (interactive)
-                    ;;           (yas-expand-snippet (yas-lookup-snippet "integ"))
-                    ;;           (my/delete-one-blank-line))
                     "mat"   (lambda ()
                               (interactive)
                               (my/new-line-snippet)

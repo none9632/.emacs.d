@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: integ
-# key: integ
-# --
-\\${1:$$(yas/choose-value '("int" "oint" "iint" "iiint" "iiiint" "idotsint"))}$0
