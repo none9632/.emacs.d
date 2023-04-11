@@ -49,7 +49,7 @@
     (aas-set-snippets mode
                       :cond #'texmathp
                       "*"     "\\cdot "
-                      "'8"    "*"
+                      "'8"    "\\ast "
                       "%"     "\\%"
                       "  "    "\\ "
                       "xx"    "\\times "
@@ -130,9 +130,21 @@
                       "uua"   "\\uua "
                       "uda"   "\\uda "
                       "div"   "\\div "
+                      "prt"   "\\prt "
                       "sr"    "^2"
                       "cb"    "^3"
-                      "inv"   "^{-1}")
+                      "inv"   "^{-1}"
+                      "NN"    "\\N "
+                      "ZZ"    "\\Z "
+                      "QQ"    "\\Q "
+                      "RR"    "\\R "
+                      "CC"    "\\C "
+                      "inn"   "\\in "
+                      "notin" "\\not\\in "
+                      "sup"   "\\sup "
+                      "cc"    "\\subset "
+                      "c=="   "\\subseteq "
+                      "grad"  "\\grad ")
   
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -250,7 +262,10 @@
                                 (yas-expand-snippet "\\uline{$1}$0"))
                       "tld"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\tld{$1}$0"))))
+                                (yas-expand-snippet "\\tld{$1}$0"))
+                      "set"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\set{$1}{$2}$0"))))
   
   
   (defun my/math-snippets ()
@@ -260,11 +275,11 @@
                       ";->"   "\\mapsto "
                       "-<"    "\\prec "
                       ">-"    "\\succ "
-                      "=="    "\\eqdef "
+                      "=="    "\\equiv "
+                      "def"   "\\eqdef "
                       "ml"    "\\models "
                       "cir"   "\\circ "
                       "sgn"   "\\sgn "
-                      "inn"   "\\in "
                       "nii"   "\\ni "
                       "cup"   "\\cup "
                       "cap"   "\\cap "
@@ -275,7 +290,6 @@
                       ";cc"   "\\supset "
                       "c=="   "\\subseteq "
                       ";c=="  "\\supseteq "
-                      "eq"    "\\equiv "
                       "AA"    "\\forall "
                       "EE"    "\\exists "
                       "nEE"   "\\nexists "
@@ -288,10 +302,10 @@
                       "CC"    "\\C "
                       "ld"    "\\ddots "
                       "det"   "\\det "
+                      "dim"   "\\dim "
+                      "ker"   "\\ker "
+                      "Im"    "\\Ima "
                       ";0"    "\\emptyset "
-                      "set"   (lambda ()
-                                (interactive)
-                                (yas-expand-snippet "\\set{$1}{$2}$0"))
                       "mod"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\Mod{$1}$0"))
@@ -306,26 +320,17 @@
                       "-<"    "\\prec "
                       ">-"    "\\succ "
                       "cir"   "\\circ "
-                      "inn"   "\\in "
+                      "nii"   "\\ni "
                       "cup"   "\\cup "
                       "cap"   "\\cap "
                       "bcup"  "\\bigcup "
                       "bcap"  "\\bigcap "
-                      "notin" "\\not\\in "
-                      "sup"   "\\sup "
-                      "cc"    "\\subset "
-                      "c=="   "\\subseteq "
-                      "eq"    "\\equiv "
+                      "=="    "\\equiv "
                       "AA"    "\\forall "
                       "EE"    "\\exists "
                       "nEE"   "\\nexists "
                       "land"  "\\land "
-                      "lor"   "\\lor "
-                      "NN"    "\\N "
-                      "ZZ"    "\\Z "
-                      "QQ"    "\\Q "
-                      "RR"    "\\R "
-                      "CC"    "\\C ")
+                      "lor"   "\\lor ")
   
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
@@ -412,7 +417,7 @@
                               (yas-expand-snippet "_{$1}"))
                     "dd/"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\frac{\\partial $1}{\\partial ${2:x}}$0"))
+                              (yas-expand-snippet "\\frac{\\prt $1}{\\prt ${2:x}}$0"))
                     "bar"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\bar{$1}$0"))

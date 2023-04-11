@@ -36,14 +36,16 @@
 #+LATEX_HEADER: \xpretocmd{\part}{\setcounter{section}{0}}{}{}
 
 #+LATEX_HEADER: \DeclareMathOperator{\sgn}{sgn}
+#+LATEX_HEADER: \DeclareMathOperator{\grad}{grad}
+#+LATEX_HEADER: \DeclareMathOperator{\Ima}{Im}
 
 #+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
-#+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1\ \textbf{|}\ #2 \right\}}
-#+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
+#+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1\ \mbf{|}\ #2 \right\}}
 #+LATEX_HEADER: \newcommand{\oline}[1]{\overline{#1}}
 #+LATEX_HEADER: \newcommand{\uline}[1]{\underline{#1}}
 #+LATEX_HEADER: \newcommand{\obr}[1]{\overbrace{#1}}
 #+LATEX_HEADER: \newcommand{\ubr}[1]{\underbrace{#1}}
+#+LATEX_HEADER: \newcommand{\ds}{\displaystyle}
 #+LATEX_HEADER: \newcommand{\ua}{\uparrow}
 #+LATEX_HEADER: \newcommand{\da}{\downarrow}
 #+LATEX_HEADER: \newcommand{\uua}{\uparrow\uparrow}
@@ -55,6 +57,7 @@
 #+LATEX_HEADER: \newcommand{\Z}{\mathbb{Z}}
 #+LATEX_HEADER: \newcommand{\Q}{\mathbb{Q}}
 #+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
+#+LATEX_HEADER: \newcommand{\prt}{\partial}
 #+LATEX_HEADER: \newcommand{\mbf}[1]{\boldsymbol{\mathrm{#1}}}
 #+LATEX_HEADER: \newcommand{\mbb}[1]{\mathbb{#1}}
 #+LATEX_HEADER: \newcommand{\mds}[1]{\mathds{#1}}

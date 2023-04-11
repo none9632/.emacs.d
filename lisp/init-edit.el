@@ -305,6 +305,7 @@
     (push '("\\vphi"     . ?φ) prettify-symbols-alist)
     (push '("\\land"     . ?∧) prettify-symbols-alist)
     (push '("\\lor"      . ?∨) prettify-symbols-alist)
+    (push '("\\prt"      . ?∂) prettify-symbols-alist)
     (push '("\\\\"       . ?↵) prettify-symbols-alist)))
 
 (provide 'init-edit)
