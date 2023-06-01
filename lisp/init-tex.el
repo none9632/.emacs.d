@@ -14,6 +14,18 @@
   (TeX-file-line-error               t)
   (TeX-source-correlate-start-server t)
   (preview-auto-cache-preamble       t)
+  :init
+  (defun my/change-environment ()
+    (interactive)
+    (if TeX-mode-p
+        (save-excursion
+          (goto-char (point-min))
+          (if (save-excursion (re-search-forward "align" nil t))
+              (replace-regexp "align" "gather")
+            (replace-regexp "gather" "align")))))
+
+  (leader-key-def
+    "ce" 'my/change-environment)
   :config
   (setq-default TeX-master nil))
 

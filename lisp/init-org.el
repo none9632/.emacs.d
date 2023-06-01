@@ -116,14 +116,6 @@
     (while (re-search-forward "\\\\begin{lemma}" nil t)
       (setq latex-lemma-count (1+ latex-lemma-count)))))
 
-(defun my/change-environment ()
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (if (save-excursion (re-search-forward "align" nil t))
-        (replace-regexp "align" "gather")
-      (replace-regexp "gather" "align"))))
-
 (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
 
 (defun my/org-latex-export ()
@@ -439,7 +431,6 @@
   "ob"  'org-babel-tangle
   "op"  'org-latex-preview
   "oe"  'my/org-latex-export
-  "ce"  'my/change-environment
   "rc"  'my/update-theorem-and-lemma-counts
   "TAB" 'evil-close-folds)
 
