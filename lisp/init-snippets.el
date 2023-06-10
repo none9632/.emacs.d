@@ -67,7 +67,11 @@
                       "mp"    "\\mp "
                       "~~"    "\\sim "
                       "~="    "\\approx "
+                      "=~"    "\\cong "
                       "~-"    "\\simeq "
+                      "oxx"   "\\otimes "
+                      "opl"   "\\oplus "
+                      "bul"   "\\bullet "
                       ";a"    "\\alpha "
                       ";b"    "\\beta "
                       ";g"    "\\gamma "
@@ -142,6 +146,7 @@
                       "inn"   "\\in "
                       "notin" "\\not\\in "
                       "sup"   "\\sup "
+                      "inf"   "\\inf "
                       "cc"    "\\subset "
                       "c=="   "\\subseteq "
                       "grad"  "\\grad ")
@@ -381,6 +386,8 @@
   (aas-set-snippets 'latex-mode
                     :cond (lambda ()
                             (not (texmathp)))
+                    "it"  "\\item "
+                    "ше"  "\\item "
                     "mk"  (lambda ()
                             (interactive)
                             (yas-expand-snippet "$$1$"))
@@ -405,6 +412,15 @@
                             (interactive)
                             (shell-command-to-string "xdotool key Mode_switch")
                             (yas-expand-snippet (yas-lookup-snippet "align"))
+                            (my/delete-one-blank-line))
+                    "ls"  (lambda ()
+                            (interactive)
+                            (yas-expand-snippet (yas-lookup-snippet "list"))
+                            (my/delete-one-blank-line))
+                    "ды"  (lambda ()
+                            (interactive)
+                            (shell-command-to-string "xdotool key Mode_switch")
+                            (yas-expand-snippet (yas-lookup-snippet "list"))
                             (my/delete-one-blank-line)))
   
   (aas-set-snippets 'latex-mode
@@ -486,7 +502,7 @@
                               (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
                     "oin"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\oint_{${1:-\\infty}}^{${2:\\infty}}$0"))
+                              (yas-expand-snippet "\\oint $0"))
                     "mat"   (lambda ()
                               (interactive)
                               (my/new-line-snippet)
