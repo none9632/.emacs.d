@@ -99,6 +99,12 @@
 #+LATEX_HEADER: \renewcommand\lim{\displaystyle\oldlim}
 #+LATEX_HEADER: \let\oldint\int
 #+LATEX_HEADER: \renewcommand\int{\oldint\limits}
+#+LATEX_HEADER: \let\oldiint\iint
+#+LATEX_HEADER: \renewcommand\iint{\oldiint\limits}
+#+LATEX_HEADER: \let\oldiiint\iiint
+#+LATEX_HEADER: \renewcommand\iiint{\oldiiint\limits}
+#+LATEX_HEADER: \let\oldoint\oint
+#+LATEX_HEADER: \renewcommand\oint{\oldoint\limits}
 #+LATEX_HEADER: \let\oldpart\part
 #+LATEX_HEADER: \renewcommand\part{\newpage\oldpart}
 #+LATEX_HEADER: \let\oldparagraph\paragraph
