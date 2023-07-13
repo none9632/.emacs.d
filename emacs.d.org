@@ -234,13 +234,13 @@ Better defaults configurations.
 
   (defun my/set-font-faces ()
     ;; Set the font face based on platform
-    (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+    (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 150)
 
     ;; Set the fixed pitch fac
-    (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+    (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 150)
 
     ;; Set the variable pitch face
-    (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular))
+    (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 150 :weight 'regular))
 
   (if (daemonp)
       (add-hook 'after-make-frame-functions (lambda (frame)
@@ -2319,7 +2319,7 @@ Org configurations.
     (use-package visual-fill-column
       :hook (org-mode . visual-fill-column-mode)
       :config
-      (setq-default visual-fill-column-width       110
+      (setq-default visual-fill-column-width       140
                     visual-fill-column-center-text t))
 
     (use-package org-auto-tangle
@@ -2492,7 +2492,6 @@ Org configurations.
             (newline)))
       (org-auto-fill-function)))
 
-  (defun my/org-latex-mode ()
   (defun my/org-latex-mode (&optional mode)
     (interactive)
     (setq-local org-src-window-setup    'split-window-below

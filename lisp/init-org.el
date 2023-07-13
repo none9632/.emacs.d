@@ -66,7 +66,7 @@
   (use-package visual-fill-column
     :hook (org-mode . visual-fill-column-mode)
     :config
-    (setq-default visual-fill-column-width       110
+    (setq-default visual-fill-column-width       140
                   visual-fill-column-center-text t))
 
   (use-package org-auto-tangle
@@ -227,13 +227,14 @@
           (newline)))
     (org-auto-fill-function)))
 
-(defun my/org-latex-mode ()
+(defun my/org-latex-mode (&optional mode)
   (interactive)
   (setq-local org-src-window-setup    'split-window-below
               company-box-enable-icon nil
               org-latex-mode          t
               auto-fill-function      'my/org-latex-auto-fill-function)
   (aas-activate-for-major-mode)
+  (my/enable-snippets mode)
   (visual-line-mode t)
   (my/update-theorem-and-lemma-counts)
   (my/org-load-prettify-symbols)

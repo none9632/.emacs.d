@@ -8,10 +8,6 @@
   :config
   (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
-  ;; (add-hook 'yas-after-exit-snippet-hook (lambda ()
-  ;;                                          (interactive)
-  ;;                                          (shell-command-to-string "xkb-switch -s us")))
-
   (defun my/delete-one-blank-line ()
     (interactive)
     (save-excursion
@@ -288,8 +284,6 @@
                       "nii"   "\\ni "
                       "cup"   "\\cup "
                       "cap"   "\\cap "
-                      "bcup"  "\\bigcup "
-                      "bcap"  "\\bigcap "
                       "notin" "\\not\\in "
                       "cc"    "\\subset "
                       ";cc"   "\\supset "
@@ -353,7 +347,13 @@
                                 (yas-expand-snippet "\\Bigl(${1:-\\infty},\\ $2\\Bigr]$0"))
                       "ilsr"  (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\Bigl[$1,\\ ${2:+\\infty}\\Bigr)$0"))))
+                                (yas-expand-snippet "\\Bigl[$1,\\ ${2:+\\infty}\\Bigr)$0"))
+                      "bcap"  (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\bcap_{${1:i=1}}^{${2:n}}$0"))
+                      "bcup"  (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\bcup_{${1:i=1}}^{${2:n}}$0"))))
   
   
   (defun my/phys-snippets ()

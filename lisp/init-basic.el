@@ -30,13 +30,13 @@
 
 (defun my/set-font-faces ()
   ;; Set the font face based on platform
-  (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+  (set-face-attribute 'default nil :font "SauceCodePro Nerd Font" :weight 'regular :height 150)
 
   ;; Set the fixed pitch fac
-  (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 125)
+  (set-face-attribute 'fixed-pitch nil :font "SauceCodePro Nerd Font" :weight 'regular :height 150)
 
   ;; Set the variable pitch face
-  (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 125 :weight 'regular))
+  (set-face-attribute 'variable-pitch nil :font "SauceCodePro Nerd Font" :height 150 :weight 'regular))
 
 (if (daemonp)
     (add-hook 'after-make-frame-functions (lambda (frame)
