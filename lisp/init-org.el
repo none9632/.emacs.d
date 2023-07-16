@@ -103,17 +103,12 @@
   :config
   (setq org-fragtog-preview-delay 0.25))
 
-(defun my/update-theorem-and-lemma-counts ()
-  (interactive)
-  (setq latex-theorem-count 1
-        latex-lemma-count   1)
+(defun my/get-latex-block-count (block-name)
+  (setq latex-block-count 0)
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "\\\\begin{theorem}" nil t)
-      (setq latex-theorem-count (1+ latex-theorem-count)))
-    (goto-char (point-min))
-    (while (re-search-forward "\\\\begin{lemma}" nil t)
-      (setq latex-lemma-count (1+ latex-lemma-count)))))
+    (while (re-search-forward (concat "\\\\begin{" block-name "}") nil t)
+      (setq latex-block-count (1+ latex-block-count)))))
 
 (add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
 
@@ -235,7 +230,6 @@
   (aas-activate-for-major-mode)
   (my/enable-snippets mode)
   (visual-line-mode t)
-  (my/update-theorem-and-lemma-counts)
   (my/org-load-prettify-symbols)
   (my/remove-images)
   (add-hook 'org-pre-cycle-hook
@@ -422,7 +416,6 @@
   "ob"  'org-babel-tangle
   "op"  'org-latex-preview
   "oe"  'my/org-latex-export
-  "rc"  'my/update-theorem-and-lemma-counts
   "TAB" 'evil-close-folds)
 
 (defun my/org-config-mode ()

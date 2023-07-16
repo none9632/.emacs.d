@@ -2,10 +2,10 @@
 # name: theorem
 # key: theorem
 # condition: t
-# expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (shell-command-to-string "xkb-switch -n") (evil-insert-state) (right-char) (setq latex-theorem-count (1+ latex-theorem-count)))))
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (shell-command-to-string "xkb-switch -n") (evil-insert-state) (right-char))))
 # --
 #+begin_latex latex
-\begin{theorem}{`(insert (number-to-string latex-theorem-count))`}
+\begin{theorem}{`(progn (my/get-latex-block-count "theorem") (insert (number-to-string latex-block-count)))`}
   $0
 \end{theorem}
 #+end_latex
