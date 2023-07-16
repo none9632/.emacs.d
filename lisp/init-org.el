@@ -83,8 +83,7 @@
   :hook (org-mode . worf-mode))
 
 (setq org-latex-toc-command    "\\tableofcontents \\clearpage"
-      org-format-latex-options (plist-put org-format-latex-options :scale 1.6)
-      org-latex-create-formula-image-program 'imagemagick)
+      org-format-latex-options (plist-put org-format-latex-options :scale 2))
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
@@ -331,14 +330,6 @@
           (throw 'my-catch t)))
     (widen)))
 
-(defun my/just-one-space ()
-  (insert "x")
-  (if (my/isearch-line-forward "\\(")
-      (progn
-        (evil-backward-char 2)
-        (delete-horizontal-space)))
-  (backward-delete-char 1))
-
 (defun my/org-edit-special ()
   (interactive)
   (if (and (bound-and-true-p org-latex-mode)
@@ -382,13 +373,12 @@
     (cond (change-lang                                   (shell-command-to-string "xkb-switch -n")))
     (cond ((bound-and-true-p org-jump-to-previous-block) (org-previous-block 1))
           (latex-fragment                                (progn
-                                                           (save-excursion
-                                                             (re-search-forward "\\\\)")
-                                                             (if (> (current-column) (current-fill-column))
-                                                                 (progn
-                                                                   (move-to-column (+ (current-fill-column) 1))
-                                                                   (my/auto-fill-function))))
-                                                           (if (org-in-item-p) (my/just-one-space))
+                                                           ;; (save-excursion
+                                                           ;;   (re-search-forward "\\\\)")
+                                                           ;;   (if (> (current-column) (current-fill-column))
+                                                           ;;       (progn
+                                                           ;;         (move-to-column (+ (current-fill-column) 1))
+                                                           ;;         (my/auto-fill-function))))
                                                            (my/isearch-line-forward "\\)")
                                                            (org-latex-preview))))))
 
