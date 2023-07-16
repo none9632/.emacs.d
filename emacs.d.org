@@ -1265,7 +1265,9 @@ Evil configuration.
     :after evil
     :hook (evil-mode . key-chord-mode)
     :config
-    (setq key-chord-two-keys-delay 0.15)
+    (setq key-chord-two-keys-delay           0.15
+          key-chord-safety-interval-backward 0
+          key-chord-safety-interval-forward  0)
     (key-chord-define evil-insert-state-map (kbd "jj") 'evil-normal-state)
 
     (define-key evil-insert-state-map "о" #'my/maybe-exit)
