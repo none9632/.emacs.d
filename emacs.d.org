@@ -2321,7 +2321,7 @@ Org configurations.
     (use-package visual-fill-column
       :hook (org-mode . visual-fill-column-mode)
       :config
-      (setq-default visual-fill-column-width       140
+      (setq-default visual-fill-column-width       130
                     visual-fill-column-center-text t))
 
     (use-package org-auto-tangle
