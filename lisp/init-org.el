@@ -123,6 +123,44 @@
   (setq pdf-file-name (org-latex-compile tex-file-name))
   (async-shell-command (concat "evince " pdf-file-name) nil nil))
 
+(defun my/org-latex-block-update (block-name regexp)
+  (interactive)
+  (save-excursion
+    (let ((latex-block-count 0)
+          (counters          '())
+          (matched-string    nil))
+      (goto-char (point-min))
+      (while (re-search-forward (concat "\\\\begin{" block-name "}") nil t)
+        (re-search-forward "[[:digit:]]+")
+        (setq matched-string (match-string 0))
+        (replace-match (concat "_" matched-string))
+        (add-to-list 'counters (string-to-number matched-string) t)
+        (save-excursion
+          (goto-char (point-min))
+          (while (re-search-forward (concat "\\(" regexp "\\) " matched-string) nil t)
+            (re-search-backward "[[:digit:]]+")
+            (replace-match (concat "_" matched-string)))))
+      (goto-char (point-min))
+      (while (re-search-forward (concat "\\\\begin{" block-name "}") nil t)
+        (setq latex-block-count (1+ latex-block-count))
+        (re-search-forward "_[[:digit:]]+")
+        (setq matched-string (match-string 0))
+        (pop counters)
+        (replace-match (number-to-string latex-block-count))
+        (save-excursion
+          (goto-char (point-min))
+          (while (re-search-forward (concat "\\(" regexp "\\) " matched-string) nil t)
+            (re-search-backward "_[[:digit:]]+")
+            (replace-match (number-to-string latex-block-count))))))))
+
+(defun my/org-latex-theorem-update ()
+  (interactive)
+  (my/org-latex-block-update "theorem" "теореме\\|теоремы\\|теорем\\|теореме"))
+
+(defun my/org-latex-lemma-update ()
+  (interactive)
+  (my/org-latex-block-update "lemma" "лемме\\|леммы\\|лемм\\|лемме\\|лемма"))
+
 (defun my/get-org-latex-fragment-image ()
   (interactive)
   (catch 'my-catch
