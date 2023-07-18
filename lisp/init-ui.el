@@ -74,9 +74,7 @@
         dashboard-set-heading-icons t
         dashboard-set-navigator     nil
         dashboard-items             '((projects  . 10)
-                                      (recents   . 8))
-        dashboard-heading-icons     '((recents   . "file-text")
-                                      (projects  . "briefcase")))
+                                      (recents   . 8)))
 
   (add-hook 'after-init-hook                 'dashboard-refresh-buffer)
   (add-hook 'dashboard-mode-hook             'my/dashboard-banner)
