@@ -138,8 +138,8 @@
         (save-excursion
           (goto-char (point-min))
           (while (re-search-forward (concat "\\(" regexp "\\) " matched-string) nil t)
-            (re-search-backward "[[:digit:]]+")
-            (replace-match (concat "_" matched-string)))))
+            (re-search-backward " [[:digit:]]+")
+            (replace-match (concat " _" matched-string)))))
       (goto-char (point-min))
       (while (re-search-forward (concat "\\\\begin{" block-name "}") nil t)
         (setq latex-block-count (1+ latex-block-count))
@@ -149,7 +149,7 @@
         (replace-match (number-to-string latex-block-count))
         (save-excursion
           (goto-char (point-min))
-          (while (re-search-forward (concat "\\(" regexp "\\) " matched-string) nil t)
+          (while (re-search-forward (concat "\\(" regexp "\\) " matched-string "[^0-9]") nil t)
             (re-search-backward "_[[:digit:]]+")
             (replace-match (number-to-string latex-block-count))))))))
 
@@ -159,7 +159,7 @@
 
 (defun my/org-latex-lemma-update ()
   (interactive)
-  (my/org-latex-block-update "lemma" "лемме\\|леммы\\|лемм\\|лемме\\|лемма"))
+  (my/org-latex-block-update "lemma" "лемме\\|леммы\\|лемм\\|лемма"))
 
 (defun my/get-org-latex-fragment-image ()
   (interactive)
