@@ -66,7 +66,7 @@
   (use-package visual-fill-column
     :hook (org-mode . visual-fill-column-mode)
     :config
-    (setq-default visual-fill-column-width       140
+    (setq-default visual-fill-column-width       130
                   visual-fill-column-center-text t))
 
   (use-package org-auto-tangle
@@ -428,10 +428,23 @@
           (previous-line)
           (if (org-at-heading-p)
               (setq prev-heading-folded t)
-            (setq prev-heading-folded nil)))
+            (setq prev-heading-folded nil))
+          )
         (if prev-heading-folded
             (outline-up-heading 1)
-          (org-previous-visible-heading 1)))
+          (org-previous-visible-heading 1))
+        )
+    (org-previous-visible-heading 1)))
+
+(defun my/org-previous-visible-heading ()
+  (interactive)
+  (save-excursion
+    (previous-line)
+    (if (org-at-heading-p)
+        (setq prev-heading-folded t)
+      (setq prev-heading-folded nil)))
+  (if prev-heading-folded
+      (outline-up-heading 1)
     (org-previous-visible-heading 1)))
 
 (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)

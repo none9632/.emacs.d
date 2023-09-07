@@ -143,7 +143,7 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq-default major-mode       'text-mode
-              fill-column      100)
+              fill-column      124)
 
 (setq visible-bell                    t
       inhibit-compacting-font-caches  t    ; Don’t compact font caches during GC.

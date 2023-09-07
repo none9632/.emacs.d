@@ -398,7 +398,7 @@ Scroll one line at a time (less "jumpy" than defaults)
 
   (fset 'yes-or-no-p 'y-or-n-p)
   (setq-default major-mode       'text-mode
-                fill-column      100)
+                fill-column      124)
 
   (setq visible-bell                    t
         inhibit-compacting-font-caches  t    ; Don’t compact font caches during GC.
@@ -1024,7 +1024,9 @@ Flexible text folding
       (push '("\\land"     . ?∧) prettify-symbols-alist)
       (push '("\\lor"      . ?∨) prettify-symbols-alist)
       (push '("\\prt"      . ?∂) prettify-symbols-alist)
-      (push '("\\\\"       . ?↵) prettify-symbols-alist)))
+      (push '("\\\\"       . ?↵) prettify-symbols-alist)
+      (push '("\\boplus"   . ?⊕) prettify-symbols-alist)
+      (push '("\\botimes"  . ?⊗) prettify-symbols-alist)))
 
 #+end_src
 
@@ -2707,10 +2709,23 @@ Org configurations.
             (previous-line)
             (if (org-at-heading-p)
                 (setq prev-heading-folded t)
-              (setq prev-heading-folded nil)))
+              (setq prev-heading-folded nil))
+            )
           (if prev-heading-folded
               (outline-up-heading 1)
-            (org-previous-visible-heading 1)))
+            (org-previous-visible-heading 1))
+          )
+      (org-previous-visible-heading 1)))
+
+  (defun my/org-previous-visible-heading ()
+    (interactive)
+    (save-excursion
+      (previous-line)
+      (if (org-at-heading-p)
+          (setq prev-heading-folded t)
+        (setq prev-heading-folded nil)))
+    (if prev-heading-folded
+        (outline-up-heading 1)
       (org-previous-visible-heading 1)))
 
   (evil-define-key '(normal insert visual) org-mode-map (kbd "C-k") 'evil-window-up)
@@ -4191,6 +4206,8 @@ Snippets configurations.
                       "~-"    "\\simeq "
                       "oxx"   "\\otimes "
                       "opl"   "\\oplus "
+                      "bxx"   "\\botimes "
+                      "bpl"   "\\boplus "
                       "bul"   "\\bullet "
                       ";a"    "\\alpha "
                       ";b"    "\\beta "
@@ -4638,7 +4655,7 @@ Snippets configurations.
                               (yas-expand-snippet "\\iiint $0"))
                     "Int"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
+                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}${3:f(x)}${4:dx}$0"))
                     "oin"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\oint $0"))

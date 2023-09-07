@@ -306,6 +306,8 @@
     (push '("\\land"     . ?∧) prettify-symbols-alist)
     (push '("\\lor"      . ?∨) prettify-symbols-alist)
     (push '("\\prt"      . ?∂) prettify-symbols-alist)
-    (push '("\\\\"       . ?↵) prettify-symbols-alist)))
+    (push '("\\\\"       . ?↵) prettify-symbols-alist)
+    (push '("\\boplus"   . ?⊕) prettify-symbols-alist)
+    (push '("\\botimes"  . ?⊗) prettify-symbols-alist)))
 
 (provide 'init-edit)

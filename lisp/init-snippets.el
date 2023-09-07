@@ -67,6 +67,8 @@
                       "~-"    "\\simeq "
                       "oxx"   "\\otimes "
                       "opl"   "\\oplus "
+                      "bxx"   "\\botimes "
+                      "bpl"   "\\boplus "
                       "bul"   "\\bullet "
                       ";a"    "\\alpha "
                       ";b"    "\\beta "
@@ -499,7 +501,7 @@
                               (yas-expand-snippet "\\iiint $0"))
                     "Int"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}$0"))
+                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}${3:f(x)}${4:dx}$0"))
                     "oin"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\oint $0"))

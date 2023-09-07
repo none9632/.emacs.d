@@ -67,6 +67,8 @@
 #+LATEX_HEADER: \newcommand{\tld}[1]{\widetilde{#1}}
 #+LATEX_HEADER: \newcommand\bcap{\displaystyle\bigcap}
 #+LATEX_HEADER: \newcommand\bcup{\displaystyle\bigcup}
+#+LATEX_HEADER: \newcommand\boplus{\bigoplus}
+#+LATEX_HEADER: \newcommand\botimes{\bigotimes}
 #+LATEX_HEADER: \newcommand{\eqdef}{\overset{\mathrm{def}}{=\mathrel{\mkern-3mu}=}}
 
 #+LATEX_HEADER: \renewcommand{\l}{\left}
