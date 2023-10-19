@@ -2703,22 +2703,6 @@ Org configurations.
 
   (defun my/org-previous-visible-heading ()
     (interactive)
-    (if (org-at-heading-p)
-        (progn
-          (save-excursion
-            (previous-line)
-            (if (org-at-heading-p)
-                (setq prev-heading-folded t)
-              (setq prev-heading-folded nil))
-            )
-          (if prev-heading-folded
-              (outline-up-heading 1)
-            (org-previous-visible-heading 1))
-          )
-      (org-previous-visible-heading 1)))
-
-  (defun my/org-previous-visible-heading ()
-    (interactive)
     (save-excursion
       (previous-line)
       (if (org-at-heading-p)
