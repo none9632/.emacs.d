@@ -147,7 +147,9 @@
                       "inf"   "\\inf "
                       "cc"    "\\subset "
                       "c=="   "\\subseteq "
-                      "grad"  "\\grad ")
+                      "grad"  "\\grad "
+                      "nabla" "\\nabla "
+                      "Div"   "\\Div ")
   
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -316,6 +318,7 @@
   
     (aas-set-snippets 'org-mode
                       :cond #'texmathp
+                      ";0"    "\\emptyset "
                       ";\\"   "\\setminus "
                       ";->"   "\\mapsto "
                       "-<"    "\\prec "
@@ -432,6 +435,8 @@
                               (yas-expand-snippet "\\hat{$1}$0"))
                     "_"     (lambda ()
                               (interactive)
+                              (if (looking-back "[[:space:]]+")
+                                  (replace-match ""))
                               (yas-expand-snippet "_{$1}"))
                     "dd/"   (lambda ()
                               (interactive)
@@ -623,6 +628,19 @@
                             (my/insert-image))
                     "эшь" (lambda ()
                             (interactive)
-                            (my/insert-image))))
+                            (my/insert-image)))
+  
+  (aas-set-snippets 'org-mode
+                    :cond (lambda ()
+                            (not (texmathp)))
+                    "Опр" "_*Определение*_. ")
+  
+  (aas-set-snippets 'org-mode
+                    :cond #'texmathp
+                    "_"     (lambda ()
+                              (interactive)
+                              (if (looking-back "[[:space:]]+")
+                                  (replace-match ""))
+                              (yas-expand-snippet "_"))))
 
 (provide 'init-snippets)
