@@ -6,7 +6,8 @@
                ("k" . magit-previous-line)
                ("J" . magit-section-forward)
                ("K" . magit-section-backward)
-               ("v" . evil-visual-line))
+               ("v" . evil-visual-line)
+               ("d" . magit-discard))
          (:map magit-log-mode-map
                ("j" . magit-next-line)
                ("k" . magit-previous-line))
