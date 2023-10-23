@@ -38,6 +38,7 @@
 #+LATEX_HEADER: \DeclareMathOperator{\sgn}{sgn}
 #+LATEX_HEADER: \DeclareMathOperator{\grad}{grad}
 #+LATEX_HEADER: \DeclareMathOperator{\Ima}{Im}
+#+LATEX_HEADER: \DeclareMathOperator{\Div}{div}
 
 #+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
 #+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1\ \mbf{|}\ #2 \right\}}
@@ -50,6 +51,8 @@
 #+LATEX_HEADER: \newcommand{\da}{\downarrow}
 #+LATEX_HEADER: \newcommand{\uua}{\uparrow\uparrow}
 #+LATEX_HEADER: \newcommand{\uda}{\uparrow\mathrel{\mspace{-1mu}}\downarrow}
+#+LATEX_HEADER: \newcommand{\lla}{\leftleftarrows}
+#+LATEX_HEADER: \newcommand{\rra}{\rightrightarrows}
 #+LATEX_HEADER: \newcommand{\Ra}{\Rightarrow}
 #+LATEX_HEADER: \newcommand{\La}{\Leftarrow}
 #+LATEX_HEADER: \newcommand{\Lra}{\Leftrightarrow}

@@ -293,6 +293,8 @@
     (push '("\\da"       . 8595) prettify-symbols-alist)
     (push '("\\uua"      . ?⇈) prettify-symbols-alist)
     (push '("\\uda"      . ?⇅) prettify-symbols-alist)
+    (push '("\\lla"      . ?⇇) prettify-symbols-alist)
+    (push '("\\rra"      . ?⇉) prettify-symbols-alist)
     (push '("\\Lra"      . ?⇔) prettify-symbols-alist)
     (push '("\\La"       . ?⇐) prettify-symbols-alist)
     (push '("\\Ra"       . ?⇒) prettify-symbols-alist)

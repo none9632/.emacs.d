@@ -131,6 +131,8 @@
                       "da"    "\\da "
                       "uua"   "\\uua "
                       "uda"   "\\uda "
+                      "lla"   "\\lla "
+                      "rra"   "\\rra "
                       "div"   "\\div "
                       "prt"   "\\prt "
                       "sr"    "^2"
