@@ -2363,16 +2363,11 @@ Org configurations.
                     [NO-DEFAULT-PACKAGES]
                     [PACKAGES]
                     [EXTRA]"
-                   ("\\part{%s}"          . "\\part*{%s}")
-                   ("\\section{%s}"       . "\\section*{%s}")
-                   ("\\subsection{%s}"    . "\\subsection*{%s}")
-                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                   ("\\paragraph{%s}"     . "\\paragraph*{%s}"))))
-
-  (use-package org-fragtog
-    :hook (org-mode . org-fragtog-mode)
-    :config
-    (setq org-fragtog-preview-delay 0.25))
+                   ("\\newpage\\section{%s}" . "\\newpage\\section*{%s}")
+                   ("\\subsection{%s}"       . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}"    . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}"        . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}"     . "\\subparagraph*{%s}"))))
 
   (defun my/get-latex-block-count (block-name)
     (setq latex-block-count 0)
@@ -4204,6 +4199,7 @@ Snippets configurations.
                       ";D"    "\\Delta "
                       ";e"    "\\vepsilon "
                       ";E"    "\\Vepsilon "
+                      ";h"    "\\hbar "
                       ";z"    "\\zeta "
                       ";n"    "\\eta "
                       ";o"    "\\theta "
@@ -4272,12 +4268,14 @@ Snippets configurations.
                       "inn"   "\\in "
                       "notin" "\\not\\in "
                       "sup"   "\\sup "
+                      "Sup"   "\\supp "
                       "inf"   "\\inf "
                       "cc"    "\\subset "
                       "c=="   "\\subseteq "
                       "grad"  "\\grad "
                       "nabla" "\\nabla "
-                      "Div"   "\\Div ")
+                      "Div"   "\\Div "
+                      "rot"   "\\rot ")
 
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -4502,7 +4500,6 @@ Snippets configurations.
   (defun my/phys-snippets ()
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
-                      ";h"    "\\hbar "
                       "'k"    "кг"
                       "'g"    "г"
                       "'m"    "м"

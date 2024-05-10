@@ -38,7 +38,11 @@
 #+LATEX_HEADER: \DeclareMathOperator{\sgn}{sgn}
 #+LATEX_HEADER: \DeclareMathOperator{\grad}{grad}
 #+LATEX_HEADER: \DeclareMathOperator{\Ima}{Im}
+#+LATEX_HEADER: \DeclareMathOperator{\Rea}{Re}
 #+LATEX_HEADER: \DeclareMathOperator{\Div}{div}
+#+LATEX_HEADER: \DeclareMathOperator{\rot}{rot}
+#+LATEX_HEADER: \DeclareMathOperator{\supp}{supp}
+#+LATEX_HEADER: \DeclareMathOperator{\Tr}{Tr}
 
 #+LATEX_HEADER: \newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
 #+LATEX_HEADER: \newcommand{\set}[2]{\left\{#1\ \mbf{|}\ #2 \right\}}
@@ -60,11 +64,13 @@
 #+LATEX_HEADER: \newcommand{\Z}{\mathbb{Z}}
 #+LATEX_HEADER: \newcommand{\Q}{\mathbb{Q}}
 #+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
+#+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
 #+LATEX_HEADER: \newcommand{\prt}{\partial}
 #+LATEX_HEADER: \newcommand{\mbf}[1]{\boldsymbol{\mathrm{#1}}}
 #+LATEX_HEADER: \newcommand{\mbb}[1]{\mathbb{#1}}
 #+LATEX_HEADER: \newcommand{\mds}[1]{\mathds{#1}}
 #+LATEX_HEADER: \newcommand{\mrm}[1]{\mathrm{#1}}
+#+LATEX_HEADER: \newcommand{\mfr}[1]{\mathfrak{#1}}
 #+LATEX_HEADER: \newcommand{\mcal}[1]{\mathcal{#1}}
 #+LATEX_HEADER: \newcommand{\mscr}[1]{\mathscr{#1}}
 #+LATEX_HEADER: \newcommand{\tld}[1]{\widetilde{#1}}
@@ -78,6 +84,8 @@
 #+LATEX_HEADER: \renewcommand{\r}{\right}
 #+LATEX_HEADER: \renewcommand{\[}{\left[}
 #+LATEX_HEADER: \renewcommand{\]}{\right]}
+#+LATEX_HEADER: \renewcommand{\ls}{\left[}
+#+LATEX_HEADER: \renewcommand{\rs}{\right]}
 #+LATEX_HEADER: \renewcommand{\<}{\left\langle}
 #+LATEX_HEADER: \renewcommand{\>}{\right\rangle}
 #+LATEX_HEADER: \let\oldlb\{
@@ -92,8 +100,7 @@
 #+LATEX_HEADER: \renewcommand\vphi{\varphi}
 #+LATEX_HEADER: \renewcommand\emptyset{\varnothing}
 #+LATEX_HEADER: \renewcommand\vec[1]{\vv{#1}}
-#+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
-#+LATEX_HEADER: \renewcommand{\hat}[1]{\widehat{#1}}
+#+LATEX_HEADER: %\renewcommand{\hat}[1]{\widehat{#1}}
 #+LATEX_HEADER: \let\oldtext\text
 #+LATEX_HEADER: \renewcommand{\text}[1]{\oldtext{ #1 }}
 #+LATEX_HEADER: \let\oldsum\sum

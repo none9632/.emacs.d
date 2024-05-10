@@ -58,6 +58,7 @@
                       "<>"    "\\Lra "
                       "<="    "\\leq "
                       ">="    "\\geq "
+                      ">~"    "\\gtrsim "
                       ";="    "\\neq "
                       "pm"    "\\pm "
                       "mp"    "\\mp "
@@ -78,6 +79,7 @@
                       ";D"    "\\Delta "
                       ";e"    "\\vepsilon "
                       ";E"    "\\Vepsilon "
+                      ";h"    "\\hbar "
                       ";z"    "\\zeta "
                       ";n"    "\\eta "
                       ";o"    "\\theta "
@@ -146,12 +148,18 @@
                       "inn"   "\\in "
                       "notin" "\\not\\in "
                       "sup"   "\\sup "
+                      "Sup"   "\\supp "
                       "inf"   "\\inf "
                       "cc"    "\\subset "
                       "c=="   "\\subseteq "
                       "grad"  "\\grad "
                       "nabla" "\\nabla "
-                      "Div"   "\\Div ")
+                      "Div"   "\\Div "
+                      "rot"   "\\rot "
+                      "Tr"    "\\Tr "
+                      ";+"    "\\dagger "
+                      "Im"    "\\Ima "
+                      "Re"    "\\Rea ")
   
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -190,7 +198,10 @@
                                 (yas-expand-snippet "\\<$1\\>"))
                       ";>"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\>")))
+                                (yas-expand-snippet "\\>"))
+                      "'<"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\<$1 \\mid $2\\>$0")))
   
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -255,6 +266,9 @@
                       "mcr"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\mscr{$1}$0"))
+                      "mrk"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\mfr{$1}$0"))
                       ".t"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\dot{$1}$0"))
@@ -309,7 +323,6 @@
                       "det"   "\\det "
                       "dim"   "\\dim "
                       "ker"   "\\ker "
-                      "Im"    "\\Ima "
                       ";0"    "\\emptyset "
                       "mod"   (lambda ()
                                 (interactive)
@@ -366,7 +379,6 @@
   (defun my/phys-snippets ()
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
-                      ";h"    "\\hbar "
                       "'k"    "кг"
                       "'g"    "г"
                       "'m"    "м"

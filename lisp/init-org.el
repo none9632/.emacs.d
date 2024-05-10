@@ -92,16 +92,11 @@
                   [NO-DEFAULT-PACKAGES]
                   [PACKAGES]
                   [EXTRA]"
-                 ("\\part{%s}"          . "\\part*{%s}")
-                 ("\\section{%s}"       . "\\section*{%s}")
-                 ("\\subsection{%s}"    . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}"     . "\\paragraph*{%s}"))))
-
-(use-package org-fragtog
-  :hook (org-mode . org-fragtog-mode)
-  :config
-  (setq org-fragtog-preview-delay 0.25))
+                 ("\\newpage\\section{%s}" . "\\newpage\\section*{%s}")
+                 ("\\subsection{%s}"       . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}"    . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}"        . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}"     . "\\subparagraph*{%s}"))))
 
 (defun my/get-latex-block-count (block-name)
   (setq latex-block-count 0)
