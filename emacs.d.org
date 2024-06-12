@@ -4179,6 +4179,7 @@ Snippets configurations.
                       "<>"    "\\Lra "
                       "<="    "\\leq "
                       ">="    "\\geq "
+                      ">~"    "\\gtrsim "
                       ";="    "\\neq "
                       "pm"    "\\pm "
                       "mp"    "\\mp "
@@ -4275,7 +4276,11 @@ Snippets configurations.
                       "grad"  "\\grad "
                       "nabla" "\\nabla "
                       "Div"   "\\Div "
-                      "rot"   "\\rot ")
+                      "rot"   "\\rot "
+                      "Tr"    "\\Tr "
+                      ";+"    "\\dagger "
+                      "Im"    "\\Ima "
+                      "Re"    "\\Rea ")
 
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -4314,10 +4319,16 @@ Snippets configurations.
                                 (yas-expand-snippet "\\<$1\\>"))
                       ";>"    (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "\\>")))
+                                (yas-expand-snippet "\\>"))
+                      "'<"    (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\<$1 \\mid $2\\>$0")))
 
     (aas-set-snippets mode
                       :cond #'texmathp
+                      "^"     (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\hat{$1}$0"))
                       "td"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "^{$1}"))
@@ -4379,6 +4390,9 @@ Snippets configurations.
                       "mcr"   (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\mscr{$1}$0"))
+                      "mrk"   (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\mfr{$1}$0"))
                       ".t"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\dot{$1}$0"))
@@ -4438,7 +4452,6 @@ Snippets configurations.
                       "det"   "\\det "
                       "dim"   "\\dim "
                       "ker"   "\\ker "
-                      "Im"    "\\Ima "
                       ";0"    "\\emptyset "
                       "mod"   (lambda ()
                                 (interactive)
@@ -4570,17 +4583,17 @@ Snippets configurations.
 
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
-                    "^"     (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\hat{$1}$0"))
                     "_"     (lambda ()
                               (interactive)
                               (if (looking-back "[[:space:]]+")
                                   (replace-match ""))
                               (yas-expand-snippet "_{$1}"))
-                    "dd/"   (lambda ()
+                    "dd"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{\\prt $1}{\\prt ${2:x}}$0"))
+                    "DD"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\frac{d $1}{d ${2:x}}$0"))
                     "bar"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\bar{$1}$0"))

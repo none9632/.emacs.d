@@ -205,6 +205,9 @@
   
     (aas-set-snippets mode
                       :cond #'texmathp
+                      "^"     (lambda ()
+                                (interactive)
+                                (yas-expand-snippet "\\hat{$1}$0"))
                       "td"    (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "^{$1}"))
@@ -444,17 +447,17 @@
   
   (aas-set-snippets 'latex-mode
                     :cond #'texmathp
-                    "^"     (lambda ()
-                              (interactive)
-                              (yas-expand-snippet "\\hat{$1}$0"))
                     "_"     (lambda ()
                               (interactive)
                               (if (looking-back "[[:space:]]+")
                                   (replace-match ""))
                               (yas-expand-snippet "_{$1}"))
-                    "dd/"   (lambda ()
+                    "dd"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{\\prt $1}{\\prt ${2:x}}$0"))
+                    "DD"    (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\frac{d $1}{d ${2:x}}$0"))
                     "bar"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\bar{$1}$0"))
