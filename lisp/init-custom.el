@@ -2,22 +2,26 @@
 
 ;; Emacs Lisp Package Archive (ELPA)
 (defcustom centaur-package-archives-alist
-  (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                      (not (gnutls-available-p))))
-         (proto (if no-ssl "http" "https")))
-    `(,(cons 'melpa
-             `(,(cons "gnu"   (concat proto "://elpa.gnu.org/packages/"))
-               ,(cons "melpa" (concat proto "://melpa.org/packages/"))))
-      ,(cons 'netease
-             `(,(cons "gnu"   (concat proto "://mirrors.163.com/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.163.com/elpa/melpa/"))))
-      ,(cons 'ustc
-             `(,(cons "gnu"   (concat proto "://mirrors.ustc.edu.cn/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.ustc.edu.cn/elpa/melpa/"))))
-      ,(cons 'tuna
-             `(,(cons "gnu"   (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/"))
-               ,(cons "melpa" (concat proto "://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))))
-  "The package archives group list."
+  (let ((proto (if (gnutls-available-p) "https" "http")))
+    `((melpa    . (("gnu"    . ,(format "%s://elpa.gnu.org/packages/" proto))
+                   ("nongnu" . ,(format "%s://elpa.nongnu.org/nongnu/" proto))
+                   ("melpa"  . ,(format "%s://melpa.org/packages/" proto))))
+      (bfsu     . (("gnu"    . ,(format "%s://mirrors.bfsu.edu.cn/elpa/gnu/" proto))
+                   ("nongnu" . ,(format "%s://mirrors.bfsu.edu.cn/elpa/nongnu/" proto))
+                   ("melpa"  . ,(format "%s://mirrors.bfsu.edu.cn/elpa/melpa/" proto))))
+      (netease  . (("gnu"    . ,(format "%s://mirrors.163.com/elpa/gnu/" proto))
+                   ("nongnu" . ,(format "%s://mirrors.163.com/elpa/nongnu/" proto))
+                   ("melpa"  . ,(format "%s://mirrors.163.com/elpa/melpa/" proto))))
+      (sjtu     . (("gnu"    . ,(format "%s://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/gnu/" proto))
+                   ("nongnu" . ,(format "%s://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/nongnu/" proto))
+                   ("melpa"  . ,(format "%s://mirrors.sjtug.sjtu.edu.cn/emacs-elpa/melpa/" proto))))
+      (tuna     . (("gnu"    . ,(format "%s://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/" proto))
+                   ("nongnu" . ,(format "%s://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/" proto))
+                   ("melpa"  . ,(format "%s://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/" proto))))
+      (ustc     . (("gnu"    . ,(format "%s://mirrors.ustc.edu.cn/elpa/gnu/" proto))
+                   ("nongnu" . ,(format "%s://mirrors.ustc.edu.cn/elpa/nongnu/" proto))
+                   ("melpa"  . ,(format "%s://mirrors.ustc.edu.cn/elpa/melpa/" proto))))))
+  "A list of the package archives."
   :group 'centaur
   :type '(alist :key-type (symbol :tag "Archive group name")
                 :value-type (alist :key-type (string :tag "Archive name")

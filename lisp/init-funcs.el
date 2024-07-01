@@ -11,6 +11,25 @@
   (find-file org-file)
   (message "Opening ~/.emacs.d/.emacs.d.org...done"))
 
+(defun set-package-archives (archives &optional refresh async)
+  "Set the package archives (ELPA).
+
+REFRESH is non-nil, will refresh archive contents.
+ASYNC specifies whether to perform the downloads in the background.
+Save to `custom-file' if NO-SAVE is nil."
+  (interactive
+   (list
+    (intern (completing-read "Select package archives: "
+                             (mapcar #'car centaur-package-archives-alist)))))
+  ;; Set option
+  (customize-set-variable 'centaur-package-archives archives)
+
+  ;; Refresh if need
+  (and refresh (package-refresh-contents async))
+
+  (message "Set package archives to `%s'" archives))
+(defalias 'centaur-set-package-archives #'set-package-archives)
+
 (defun create-scratch-buffer ()
   "Create a scratch buffer."
   (interactive)
@@ -58,55 +77,5 @@
 ;;   (interactive)
 ;;   (if (my/line-looking-at "^\\*+[[:ascii:]]*")
 ;; 	  (message "test")))
-
-(defun set-package-archives (archives &optional refresh async)
-  "Set the package archives (ELPA).
-
-REFRESH is non-nil, will refresh archive contents.
-ASYNC specifies whether to perform the downloads in the background.
-Save to `custom-file' if NO-SAVE is nil."
-  (interactive
-   (list
-    (intern (completing-read "Select package archives: "
-                             (mapcar #'car centaur-package-archives-alist)))))
-  ;; Set option
-  (customize-set-variable 'centaur-package-archives archives)
-
-  ;; Refresh if need
-  (and refresh (package-refresh-contents async))
-
-  (message "Set package archives to `%s'" archives))
-(defalias 'centaur-set-package-archives #'set-package-archives)
-
-(defvar centaur--updating-packages nil)
-(defun update-packages (&optional sync)
-  "Refresh package contents and update all packages.
-
-If SYNC is non-nil, the updating process is synchronous."
-  (interactive)
-  (when centaur--updating-packages
-    (user-error "Still updating packages..."))
-
-  (message "Updating packages...")
-  (if (and (not sync)
-           (require 'async nil t))
-      (progn
-        (setq centaur--updating-packages t)
-        (async-start
-         `(lambda ()
-            ,(async-inject-variables "\\`\\(load-path\\)\\'")
-            (require 'init-funcs)
-            (require 'init-package)
-            (upgrade-packages)
-            (with-current-buffer auto-package-update-buffer-name
-              (buffer-string)))
-         (lambda (result)
-           (setq centaur--updating-packages nil)
-           (message "%s" result)
-           (message "Updating packages...done"))))
-    (progn
-      (upgrade-packages)
-      (message "Updating packages...done"))))
-(defalias 'centaur-update-packages #'update-packages)
 
 (provide 'init-funcs)
