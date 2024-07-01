@@ -352,7 +352,10 @@
                       "EE"    "\\exists "
                       "nEE"   "\\nexists "
                       "land"  "\\land "
-                      "lor"   "\\lor ")
+                      "lor"   "\\lor "
+                      "det"   "\\det "
+                      "dim"   "\\dim "
+                      "ker"   "\\ker ")
   
     (aas-set-snippets 'latex-mode
                       :cond #'texmathp
@@ -455,9 +458,15 @@
                     "dd"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{\\prt $1}{\\prt ${2:x}}$0"))
+                    "2dd"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\frac{\\prt^2 $1}{\\prt ${2:x}^2}$0"))
                     "DD"    (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\frac{d $1}{d ${2:x}}$0"))
+                    "2DD"   (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\frac{d^2 $1}{d ${2:x}^2}$0"))
                     "bar"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\bar{$1}$0"))
@@ -523,7 +532,7 @@
                               (yas-expand-snippet "\\iiint $0"))
                     "Int"   (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}${3:f(x)}${4:dx}$0"))
+                              (yas-expand-snippet "\\int_{${1:-\\infty}}^{${2:\\infty}}${3:f(x)}d${4:x}$0"))
                     "oin"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\oint $0"))
@@ -564,7 +573,10 @@
                               (yas-expand-snippet "\\mscr{$1}$0"))
                     "stack" (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\substack{$1}$0")))
+                              (yas-expand-snippet "\\substack{$1}$0"))
+                    "bigg"  (lambda ()
+                              (interactive)
+                              (yas-expand-snippet "\\bigg|_{$1}^{$2}$0")))
   
   
   (aas-set-snippets 'org-mode
