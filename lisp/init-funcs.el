@@ -24,12 +24,6 @@
       (async-byte-recompile-directory package-user-dir)
     (byte-recompile-directory package-user-dir 0 t)))
 
-(defun centaur-set-variable (variable value &optional no-save)
-  "Set the VARIABLE to VALUE, and return VALUE.
-
-Save to `custom-file' if NO-SAVE is nil."
-  (customize-set-variable variable value))
-
 (defun my/line-looking-at (regexp)
   (save-excursion
     (beginning-of-line)
@@ -65,7 +59,7 @@ Save to `custom-file' if NO-SAVE is nil."
 ;;   (if (my/line-looking-at "^\\*+[[:ascii:]]*")
 ;; 	  (message "test")))
 
-(defun set-package-archives (archives &optional refresh async no-save)
+(defun set-package-archives (archives &optional refresh async)
   "Set the package archives (ELPA).
 
 REFRESH is non-nil, will refresh archive contents.
@@ -76,7 +70,7 @@ Save to `custom-file' if NO-SAVE is nil."
     (intern (completing-read "Select package archives: "
                              (mapcar #'car centaur-package-archives-alist)))))
   ;; Set option
-  (centaur-set-variable 'centaur-package-archives archives no-save)
+  (customize-set-variable 'centaur-package-archives archives)
 
   ;; Refresh if need
   (and refresh (package-refresh-contents async))

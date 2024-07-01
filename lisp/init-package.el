@@ -11,7 +11,7 @@
     (setq package-selected-packages value)))
 (advice-add 'package--save-selected-packages :override #'my/save-selected-packages)
 
-(set-package-archives centaur-package-archives nil nil t)
+(set-package-archives centaur-package-archives nil nil)
 
 (unless (bound-and-true-p package--initialized) ; To avoid warnings in 27
   (setq package-enable-at-startup nil)          ; To prevent initializing twice
