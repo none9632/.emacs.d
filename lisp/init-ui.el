@@ -73,6 +73,7 @@
         dashboard-set-file-icons    t
         dashboard-set-heading-icons t
         dashboard-set-navigator     nil
+        dashboard-projects-backend  'projectile
         dashboard-items             '((projects  . 10)
                                       (recents   . 8)))
 
