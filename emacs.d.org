@@ -1390,7 +1390,7 @@ Define functions.
 
 #+end_src
 
-** Pakcage repository (ELPA)
+** Package repository (ELPA)
 
 #+begin_src emacs-lisp
 
@@ -3048,7 +3048,7 @@ Emacs Package management configurations.
 
 #+end_src
 
-** use-pakcage
+** use-package
 
 #+begin_src emacs-lisp
 
