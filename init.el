@@ -27,14 +27,14 @@
 (internal-show-cursor nil nil)
 
 ;; Optimize: Force "lisp" at the head to reduce the startup time.
-(defun update-load-path (&rest _)
+(defun my/update-load-path (&rest _)
   "Update `load-path'."
   (dolist (dir '("lisp"))
     (push (expand-file-name dir user-emacs-directory) load-path)))
 
-(advice-add #'package-initialize :after #'update-load-path)
+(advice-add #'package-initialize :after #'my/update-load-path)
 
-(update-load-path)
+(my/update-load-path)
 
 ;; Without this comment Emacs25 adds (package-initialize) here
 (require 'init-package)
