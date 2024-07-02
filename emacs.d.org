@@ -4068,6 +4068,11 @@ Snippets configurations.
     :config
     (add-to-list 'warning-suppress-types '(yasnippet backquote-change))
 
+    (add-hook 'yas-after-exit-snippet-hook (lambda ()
+                                             (interactive)
+                                             (if (looking-back " \\\\)" 10)
+                                                 (replace-match "\\\\)"))))
+
     (defun my/delete-one-blank-line ()
       (interactive)
       (save-excursion
