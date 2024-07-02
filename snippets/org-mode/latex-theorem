@@ -4,7 +4,7 @@
 # condition: t
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (shell-command-to-string "xkb-switch -n") (evil-insert-state) (right-char))))
 # --
-#+begin_latex latex
+#+begin_latex LaTeX
 \begin{theorem}{`(progn (my/get-latex-block-count "theorem") (insert (number-to-string latex-block-count)))`}
   $0
 \end{theorem}

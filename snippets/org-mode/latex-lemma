@@ -4,7 +4,7 @@
 # condition: t
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (evil-insert-state) (right-char))))
 # --
-#+begin_latex latex
+#+begin_latex LaTeX
 \begin{lemma}{`(progn (my/get-latex-block-count "lemma") (insert (number-to-string latex-block-count)))`}
   $0
 \end{lemma}

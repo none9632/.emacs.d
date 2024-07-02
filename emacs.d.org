@@ -751,7 +751,7 @@ Automatic parenthesis pairing
     :ensure nil
     :hook (after-init . electric-pair-mode)
     :init
-    (defvar my/exclude-electic-pair-modes '(latex-mode))
+    (defvar my/exclude-electic-pair-modes '(LaTeX-mode))
 
     (defun my/inhibit-electric-pair-mode (char)
       (member major-mode my/exclude-electic-pair-modes))
@@ -884,7 +884,7 @@ Flexible text folding
     (defun my/org-load-prettify-symbols ()
       (interactive)
       (set-face-background 'org-block-begin-line "#282c34")
-      (push '("#+begin_latex latex" . ? ) prettify-symbols-alist)
+      (push '("#+begin_latex LaTeX" . ? ) prettify-symbols-alist)
       (push '("#+end_latex"         . ? ) prettify-symbols-alist)
       (push '("\\\\"                . ?↵) prettify-symbols-alist)
       (push '("\\l("                . ?\() prettify-symbols-alist)
@@ -2602,7 +2602,17 @@ Org configurations.
                  (not (equal line-str "")))
             (my/inkscape-figures-edit line-str)
           (progn
+            (setq my/in-latex-block nil)
+            (if (or (org-in-block-p '("LaTeX"))
+                    (looking-at "\\$")
+                    (looking-at "\\\\")
+                    (texmathp))
+                (setq my/in-latex-block t))
             (org-edit-special)
+            (if my/in-latex-block
+                (progn
+                  (LaTeX-mode)
+                  (aas-activate-for-major-mode)))
             (toggle-truncate-lines)
             (setq-local previous-major-mode-is-org t)
             (if (equal current-layout "ru\n")
@@ -4088,7 +4098,7 @@ Snippets configurations.
 
     (defun my/enable-snippets (&optional mode)
       (my/common-snippets 'org-mode)
-      (my/common-snippets 'latex-mode)
+      (my/common-snippets 'LaTeX-mode)
       (or mode (setq mode nil))
       (if (eq mode 'phys) (my/phys-snippets))
       (if (eq mode 'math) (my/math-snippets)))
@@ -4360,7 +4370,7 @@ Snippets configurations.
 #+begin_src emacs-lisp :tangle no :noweb-ref snippets
 
   (defun my/math-snippets ()
-    (aas-set-snippets 'latex-mode
+    (aas-set-snippets 'LaTeX-mode
                       :cond #'texmathp
                       ";\\"   "\\setminus "
                       ";->"   "\\mapsto "
@@ -4424,7 +4434,7 @@ Snippets configurations.
                       "dim"   "\\dim "
                       "ker"   "\\ker ")
 
-    (aas-set-snippets 'latex-mode
+    (aas-set-snippets 'LaTeX-mode
                       :cond #'texmathp
                       "binom" (lambda ()
                                 (interactive)
@@ -4455,7 +4465,7 @@ Snippets configurations.
 #+begin_src emacs-lisp :tangle no :noweb-ref snippets
 
   (defun my/phys-snippets ()
-    (aas-set-snippets 'latex-mode
+    (aas-set-snippets 'LaTeX-mode
                       :cond #'texmathp
                       "'k"    "кг"
                       "'g"    "г"
@@ -4485,7 +4495,7 @@ Snippets configurations.
 
 #+begin_src emacs-lisp :tangle no :noweb-ref snippets
 
-  (aas-set-snippets 'latex-mode
+  (aas-set-snippets 'LaTeX-mode
                     :cond (lambda ()
                             (not (texmathp)))
                     "it"  "\\item "
@@ -4525,7 +4535,7 @@ Snippets configurations.
                             (yas-expand-snippet (yas-lookup-snippet "list"))
                             (my/delete-one-blank-line)))
 
-  (aas-set-snippets 'latex-mode
+  (aas-set-snippets 'LaTeX-mode
                     :cond #'texmathp
                     "_"     (lambda ()
                               (interactive)

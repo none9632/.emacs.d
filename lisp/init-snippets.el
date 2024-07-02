@@ -33,7 +33,7 @@
 
   (defun my/enable-snippets (&optional mode)
     (my/common-snippets 'org-mode)
-    (my/common-snippets 'latex-mode)
+    (my/common-snippets 'LaTeX-mode)
     (or mode (setq mode nil))
     (if (eq mode 'phys) (my/phys-snippets))
     (if (eq mode 'math) (my/math-snippets)))
@@ -293,7 +293,7 @@
   
   
   (defun my/math-snippets ()
-    (aas-set-snippets 'latex-mode
+    (aas-set-snippets 'LaTeX-mode
                       :cond #'texmathp
                       ";\\"   "\\setminus "
                       ";->"   "\\mapsto "
@@ -357,7 +357,7 @@
                       "dim"   "\\dim "
                       "ker"   "\\ker ")
   
-    (aas-set-snippets 'latex-mode
+    (aas-set-snippets 'LaTeX-mode
                       :cond #'texmathp
                       "binom" (lambda ()
                                 (interactive)
@@ -383,7 +383,7 @@
   
   
   (defun my/phys-snippets ()
-    (aas-set-snippets 'latex-mode
+    (aas-set-snippets 'LaTeX-mode
                       :cond #'texmathp
                       "'k"    "кг"
                       "'g"    "г"
@@ -408,7 +408,7 @@
                       "'F"    "Ф"))
   
   
-  (aas-set-snippets 'latex-mode
+  (aas-set-snippets 'LaTeX-mode
                     :cond (lambda ()
                             (not (texmathp)))
                     "it"  "\\item "
@@ -448,7 +448,7 @@
                             (yas-expand-snippet (yas-lookup-snippet "list"))
                             (my/delete-one-blank-line)))
   
-  (aas-set-snippets 'latex-mode
+  (aas-set-snippets 'LaTeX-mode
                     :cond #'texmathp
                     "_"     (lambda ()
                               (interactive)

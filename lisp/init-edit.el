@@ -92,7 +92,7 @@
   :ensure nil
   :hook (after-init . electric-pair-mode)
   :init
-  (defvar my/exclude-electic-pair-modes '(latex-mode))
+  (defvar my/exclude-electic-pair-modes '(LaTeX-mode))
 
   (defun my/inhibit-electric-pair-mode (char)
     (member major-mode my/exclude-electic-pair-modes))
@@ -183,7 +183,7 @@
   (defun my/org-load-prettify-symbols ()
     (interactive)
     (set-face-background 'org-block-begin-line "#282c34")
-    (push '("#+begin_latex latex" . ? ) prettify-symbols-alist)
+    (push '("#+begin_latex LaTeX" . ? ) prettify-symbols-alist)
     (push '("#+end_latex"         . ? ) prettify-symbols-alist)
     (push '("\\\\"                . ?↵) prettify-symbols-alist)
     (push '("\\l("                . ?\() prettify-symbols-alist)

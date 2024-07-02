@@ -379,7 +379,17 @@
                (not (equal line-str "")))
           (my/inkscape-figures-edit line-str)
         (progn
+          (setq my/in-latex-block nil)
+          (if (or (org-in-block-p '("LaTeX"))
+                  (looking-at "\\$")
+                  (looking-at "\\\\")
+                  (texmathp))
+              (setq my/in-latex-block t))
           (org-edit-special)
+          (if my/in-latex-block
+              (progn
+                (LaTeX-mode)
+                (aas-activate-for-major-mode)))
           (toggle-truncate-lines)
           (setq-local previous-major-mode-is-org t)
           (if (equal current-layout "ru\n")
