@@ -44,7 +44,8 @@
                ("`"     . nil)
                ("$"     . nil))
          (:map evil-insert-state-map
-               ("<tab>" . expand-snippet-or-cdlatex-tab)))
+               ("<tab>"     . expand-snippet-or-cdlatex-tab)
+               ("<backtab>" . yas-prev-field)))
   :config
   (defun do-yas-expand ()
     (let ((yas/fallback-behavior 'return-nil))

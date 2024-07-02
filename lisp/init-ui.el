@@ -65,7 +65,7 @@
                   (float-time (time-subtract after-init-time before-init-time)))))
 
   (setq dashboard-startup-banner    'logo
-        dashboard-page-separator    "\n\f\n"
+        dashboard-page-separator    "\n\f\n\n"
         dashboard-center-content    t
         dashboard-show-shortcuts    nil
         dashboard-set-footer        nil

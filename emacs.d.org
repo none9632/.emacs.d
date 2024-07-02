@@ -2907,7 +2907,8 @@ Org configurations.
                  ("`"     . nil)
                  ("$"     . nil))
            (:map evil-insert-state-map
-                 ("<tab>" . expand-snippet-or-cdlatex-tab)))
+                 ("<tab>"     . expand-snippet-or-cdlatex-tab)
+                 ("<backtab>" . yas-prev-field)))
     :config
     (defun do-yas-expand ()
       (let ((yas/fallback-behavior 'return-nil))
@@ -3403,7 +3404,7 @@ Visual (UI) configurations for better lookings and appearances.
                     (float-time (time-subtract after-init-time before-init-time)))))
 
     (setq dashboard-startup-banner    'logo
-          dashboard-page-separator    "\n\f\n"
+          dashboard-page-separator    "\n\f\n\n"
           dashboard-center-content    t
           dashboard-show-shortcuts    nil
           dashboard-set-footer        nil
