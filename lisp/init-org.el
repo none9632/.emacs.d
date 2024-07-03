@@ -198,23 +198,28 @@
            (movefile (format "%s_%s.%s" absprefix hash imagetype)))
       (throw 'my-catch movefile))))
 
-(defun my/view-org-fragment ()
+(defun my/view-org-fragment (type)
   (interactive)
   (unless (bound-and-true-p my/latex-window-frame)
     (async-start
      (progn
        (setq latex-fragment-buffer (get-buffer-create " *latex-fragment*"))
-       (let ((latex-image-file   nil)
-             (latex-image        nil)
+       (let ((latex-image        nil)
              (latex-image-width  nil)
              (latex-image-height nil))
          (save-excursion
-           (forward-char)
-           (re-search-backward "(")
-           (re-search-forward  "[[:digit:]]+")
-           (re-search-backward (concat "\\\\tag{" (match-string-no-properties 0) "}"))
-           (setq latex-image-file   (my/get-org-latex-fragment-image)
-                 latex-image        (create-image latex-image-file)
+           (cond ((equal type 'equation) (progn
+                                           (forward-char)
+                                           (re-search-backward "(")
+                                           (re-search-forward  "[[:digit:]]+")
+                                           (re-search-backward (concat "\\tag{" (match-string-no-properties 0) "}"))))
+                 ((equal type 'theorem)  (progn
+                                           (re-search-forward  "[[:digit:]]+")
+                                           (re-search-backward (concat "\\\\begin{theorem}{" (match-string-no-properties 0) "}"))))
+                 ((equal type 'lemma)    (progn
+                                           (re-search-forward  "[[:digit:]]+")
+                                           (re-search-backward (concat "\\\\begin{lemma}{" (match-string-no-properties 0) "}")))))
+           (setq latex-image        (create-image (my/get-org-latex-fragment-image))
                  latex-image-width  (car (image-size latex-image t))
                  latex-image-height (cdr (image-size latex-image t))))
          (with-current-buffer latex-fragment-buffer
@@ -362,15 +367,24 @@
   (if (and (bound-and-true-p org-latex-mode)
            (looking-at "(\\|)\\|[[:digit:]]+"))
       (save-excursion
+        (narrow-to-region (abs (- (point) 12)) (point))
         (setq my/previous-position (point))
-        (narrow-to-region (line-beginning-position) (line-end-position))
-        (if (or (looking-at "(")
-                (re-search-backward "(" nil t))
-            (progn
-              (widen)
-              (if (looking-at "([[:digit:]]+)")
-                  (my/view-org-fragment)))
-          (widen)))
+        (cond ((or (looking-at "(") (re-search-backward "(" nil t))
+               (progn
+                 (widen)
+                 (if (looking-at "([[:digit:]]+)")
+                     (my/view-org-fragment 'equation))))
+              ((re-search-backward "теореме\\|теоремы\\|теорем\\|теореме" nil t)
+               (progn
+                 (widen)
+                 (if (looking-at "теореме\\|теоремы\\|теорем\\|теореме [[:digit:]]+")
+                     (my/view-org-fragment 'theorem))))
+              ((re-search-backward "лемме\\|леммы\\|лемм\\|лемма" nil t)
+               (progn
+                 (widen)
+                 (if (looking-at "лемме\\|леммы\\|лемм\\|лемма [[:digit:]]+")
+                     (my/view-org-fragment 'lemma))))
+              (t (widen))))
     (let* ((line-str           (buffer-substring (line-beginning-position) (line-end-position)))
            (processed-line-str (replace-regexp-in-string "\\[\\[[[:word:]\\|\\.\\|/]*\\]\\]" "" line-str))
            (current-layout     (shell-command-to-string "xkb-switch -p")))
