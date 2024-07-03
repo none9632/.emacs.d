@@ -263,8 +263,6 @@
 
   (defun my/latex-load-prettify-symbols ()
     (interactive)
-    (push '("\\pm"       . ?±)  prettify-symbols-alist)
-    (push '("\\mp"       . ?∓)  prettify-symbols-alist)
     (push '("\\l("       . ?\() prettify-symbols-alist)
     (push '("\\r)"       . ?\)) prettify-symbols-alist)
     (push '("\\{"        . ?\{) prettify-symbols-alist)
@@ -288,7 +286,6 @@
     (push '("\\Q"        . ?ℚ) prettify-symbols-alist)
     (push '("\\R"        . ?ℝ) prettify-symbols-alist)
     (push '("\\C"        . ?ℂ) prettify-symbols-alist)
-    (push '("\\not\\in"  . ?∉) prettify-symbols-alist)
     (push '("\\ua"       . 8593) prettify-symbols-alist)
     (push '("\\da"       . 8595) prettify-symbols-alist)
     (push '("\\uua"      . ?⇈) prettify-symbols-alist)
