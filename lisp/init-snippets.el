@@ -164,7 +164,10 @@
                       "Tr"    "\\Tr "
                       ";+"    "\\dagger "
                       "Im"    "\\Ima "
-                      "Re"    "\\Rea ")
+                      "Re"    "\\Rea "
+                      "det"   "\\det "
+                      "ld"    "\\ddots "
+                      )
   
     (aas-set-snippets mode
                       :cond #'texmathp
@@ -298,6 +301,34 @@
   
   
   (defun my/math-snippets ()
+    (aas-set-snippets 'org-mode
+                      :cond #'texmathp
+                      ";\\"   "\\setminus "
+                      ";->"   "\\mapsto "
+                      "-<"    "\\prec "
+                      ">-"    "\\succ "
+                      "=="    "\\equiv "
+                      "def"   "\\eqdef "
+                      "ml"    "\\models "
+                      "cir"   "\\circ "
+                      "sgn"   "\\sgn "
+                      "nii"   "\\ni "
+                      "cup"   "\\cup "
+                      "cap"   "\\cap "
+                      "notin" "\\not\\in "
+                      "cc"    "\\subset "
+                      ";cc"   "\\supset "
+                      "c=="   "\\subseteq "
+                      ";c=="  "\\supseteq "
+                      "AA"    "\\forall "
+                      "EE"    "\\exists "
+                      "nEE"   "\\nexists "
+                      "land"  "\\land "
+                      "lor"   "\\lor "
+                      "dim"   "\\dim "
+                      "ker"   "\\ker "
+                      ";0"    "\\emptyset ")
+  
     (aas-set-snippets 'LaTeX-mode
                       :cond #'texmathp
                       ";\\"   "\\setminus "
@@ -322,13 +353,6 @@
                       "nEE"   "\\nexists "
                       "land"  "\\land "
                       "lor"   "\\lor "
-                      "NN"    "\\N "
-                      "ZZ"    "\\Z "
-                      "QQ"    "\\Q "
-                      "RR"    "\\R "
-                      "CC"    "\\C "
-                      "ld"    "\\ddots "
-                      "det"   "\\det "
                       "dim"   "\\dim "
                       "ker"   "\\ker "
                       ";0"    "\\emptyset "
@@ -337,33 +361,7 @@
                                 (yas-expand-snippet "\\Mod{$1}$0"))
                       "rng"   (lambda ()
                                 (interactive)
-                                (yas-expand-snippet "${1:1},${2:2},\\ldots,${3:n}$0")))
-  
-    (aas-set-snippets 'org-mode
-                      :cond #'texmathp
-                      ";0"    "\\emptyset "
-                      ";\\"   "\\setminus "
-                      ";->"   "\\mapsto "
-                      "-<"    "\\prec "
-                      ">-"    "\\succ "
-                      "cir"   "\\circ "
-                      "nii"   "\\ni "
-                      "cup"   "\\cup "
-                      "cap"   "\\cap "
-                      "bcup"  "\\bigcup "
-                      "bcap"  "\\bigcap "
-                      "=="    "\\equiv "
-                      "AA"    "\\forall "
-                      "EE"    "\\exists "
-                      "nEE"   "\\nexists "
-                      "land"  "\\land "
-                      "lor"   "\\lor "
-                      "det"   "\\det "
-                      "dim"   "\\dim "
-                      "ker"   "\\ker ")
-  
-    (aas-set-snippets 'LaTeX-mode
-                      :cond #'texmathp
+                                (yas-expand-snippet "${1:1},${2:2},\\ldots,${3:n}$0"))
                       "binom" (lambda ()
                                 (interactive)
                                 (yas-expand-snippet "\\binom{${1:n}}{${2:k}}"))
