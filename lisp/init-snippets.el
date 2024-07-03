@@ -666,7 +666,7 @@
   
   (aas-set-snippets 'org-mode
                     :cond (lambda ()
-                            (not (texmathp)))
+                            (and (not (texmathp)) (= (current-column) 0)))
                     "Опр" "_*Определение*_. ")
   
   (aas-set-snippets 'org-mode
