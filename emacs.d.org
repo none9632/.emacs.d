@@ -2590,15 +2590,13 @@ Org configurations.
            (with-current-buffer latex-fragment-buffer
              (insert "\n   ")
              (insert-image latex-image))
-           (if (or (eq latex-image-height 85)
-                   (eq latex-image-height 31))
-               (setq latex-image-height (+ latex-image-height 10)))
            (setq my/latex-window-frame (posframe-show
                                         latex-fragment-buffer
                                         :position (point)
-                                        :font "SauceCodePro Nerd Font 6"
-                                        :width (floor (* latex-image-width 0.21))
-                                        :height (+ 4 (floor (/ (- latex-image-height 22) 10.55)))
+                                        :width (floor (* latex-image-width 0.09))
+                                        :height (floor (* latex-image-height 0.065))
+                                        :min-width 30
+                                        :min-height 3
                                         :border-width 2
                                         :border-color "#32424b"
                                         :override-parameters '((parent-frame . nil)))))))
