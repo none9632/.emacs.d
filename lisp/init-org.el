@@ -392,10 +392,11 @@
           (my/inkscape-figures-edit line-str)
         (progn
           (setq my/in-latex-block nil)
-          (if (or (org-in-block-p '("LaTeX"))
-                  (looking-at "\\$")
-                  (looking-at "\\\\")
-                  (texmathp))
+          (if (and (bound-and-true-p org-latex-mode)
+                   (or (org-in-block-p '("LaTeX"))
+                       (looking-at "\\$")
+                       (looking-at "\\\\")
+                       (texmathp)))
               (setq my/in-latex-block t))
           (org-edit-special)
           (if my/in-latex-block
