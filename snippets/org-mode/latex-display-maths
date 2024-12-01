@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: display math
-# key: M
+# key: dismath
 # condition: t
 # expand-env: ((yas-after-exit-snippet-hook (lambda () (evil-normal-state) (my/org-edit-special) (evil-insert-state) (right-char))))
 # --

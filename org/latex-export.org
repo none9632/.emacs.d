@@ -64,8 +64,10 @@
 #+LATEX_HEADER: \newcommand{\Z}{\mathbb{Z}}
 #+LATEX_HEADER: \newcommand{\Q}{\mathbb{Q}}
 #+LATEX_HEADER: \newcommand{\R}{\mathbb{R}}
+#+LATEX_HEADER: \newcommand{\K}{\mathbb{K}}
 #+LATEX_HEADER: \renewcommand{\C}{\mathbb{C}}
 #+LATEX_HEADER: \newcommand{\prt}{\partial}
+#+LATEX_HEADER: \newcommand{\what}[1]{\widehat{#1}}
 #+LATEX_HEADER: \newcommand{\mbf}[1]{\boldsymbol{\mathrm{#1}}}
 #+LATEX_HEADER: \newcommand{\mbb}[1]{\mathbb{#1}}
 #+LATEX_HEADER: \newcommand{\mds}[1]{\mathds{#1}}

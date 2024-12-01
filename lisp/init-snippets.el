@@ -150,6 +150,7 @@
                       "QQ"    "\\Q "
                       "RR"    "\\R "
                       "CC"    "\\C "
+                      "KK"    "\\K "
                       "inn"   "\\in "
                       "notin" "\\notin "
                       "sup"   "\\sup "
@@ -515,10 +516,10 @@
                               (yas-expand-snippet "\\sum_{${1:i=1}}^{${2:n}}$0"))
                     "prod"  (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\prod^{$1}_{$2}$0"))
+                              (yas-expand-snippet "\\prod_{$1}^{$2}$0"))
                     "cprod" (lambda ()
                               (interactive)
-                              (yas-expand-snippet "\\coprod^{$1}_{$2}$0"))
+                              (yas-expand-snippet "\\coprod_{$1}^{$2}$0"))
                     "lim"   (lambda ()
                               (interactive)
                               (yas-expand-snippet "\\lim_{${1:n} \\to ${2:\\infty}}$0"))
